@@ -11,10 +11,13 @@ class Video(threading.Thread):
     def __init__(self, ip: str = "192.168.1.1") -> None:
         self.ip = ip
         self.video_port = 5555
+        self.socket_lock = threading.Lock()
+        '''
         if not self.check_telnet():
             raise "cannot connect to the drone"
         else:
             print("Connect successfully to drone")
+        '''
         self.protocol = "tcp"
         self.cam_connect = f'{self.protocol}://{self.ip}:{self.video_port}'
         self.frame_name = "Video Capture"
@@ -25,16 +28,18 @@ class Video(threading.Thread):
         self.running = True
         while self.running:
             # get current frame of video
+            self.socket_lock.acquire()
             self.running, frame = cam.read()
             if self.running:
-
                 cv2.imshow(self.frame_name, frame)
                 if cv2.waitKey(1) & 0xFF == 27: 
                     # escape key pressed
                     self.running = False
+
             else:
                 # error reading frame
                 print('error reading video feed')
+            self.socket_lock.release()
         cam.release()
         cv2.destroyAllWindows()
 
