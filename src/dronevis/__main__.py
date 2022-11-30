@@ -14,10 +14,11 @@ Version
 ------------------
  - dronevis v0.0.1
 """
-
+from dronevis.drone_connect.drone import Drone
 
 def main() -> None:
     print("Welcome to dronevis")
+    drone = Drone()
     
     
 if __name__ == "__main__":
