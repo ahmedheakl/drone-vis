@@ -1,12 +1,12 @@
-from dronevis.object_detection_models import SSD
+from dronevis.object_detection_models.centernet import CenterNet
 from gluoncv import utils
 
 
 # initialize object
-ssd = SSD()
+model = CenterNet()
 
 # load model with default pretrained version
-ssd.load_model()
+model.load_model()
 
 # download img. You can add yourown img
 img_name = utils.download(
@@ -21,10 +21,10 @@ img_name = utils.download(
 # Carefull with transform functions as each model
 # returns a unique set of parameters. Check the docs
 # for more info 
-x, img = ssd.load_and_transform_img(img_name)
+x, img = model.transform_and_load_img(img_name)
 
 # make inference
-ssd.predict(img, x)
+model.predict(img, x)
 
 # show result img with bouding box
-ssd.plot_bounding_box(img)
+model.plot_bounding_box(img)

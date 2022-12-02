@@ -1,9 +1,9 @@
-from dronevis.object_detection_models import SSD 
+from dronevis.object_detection_models.centernet import CenterNet
 
 import cv2
 
 
-model = SSD()
+model = CenterNet()
 model.load_model()
 
 print("Starting Video Stream .... ")

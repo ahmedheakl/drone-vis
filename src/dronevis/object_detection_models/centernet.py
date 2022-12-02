@@ -1,17 +1,17 @@
-from gluoncv import model_zoo, data, utils
-from dronevis.object_detection_models.base_gluoncv_model import GluonCVModel
-import mxnet as mx
+from dronevis.object_detection_models import GluonCVModel
+from gluoncv import data
 import numpy as np
+import mxnet as mx
 
 
-class SSD(GluonCVModel):
-    def __init__(self, short_size: int = 512) -> None:
-        super(SSD, self).__init__(model_name="ssd")
-
-    def load_model(self, model_path: str = "ssd_512_mobilenet1.0_voc_int8") -> None:
-        print("Loading SSD model ...")
-        super().load_model(model_path=model_path)
-
+class CenterNet(GluonCVModel):
+    def __init__(self) -> None:
+        super(CenterNet, self).__init__("center_net")
+        
+    def load_model(self, model_name: str = "center_net_resnet18_v1b_voc") -> None:
+        print("Loading CenterNet model ...")
+        super().load_model(model_name)
+        
     def transform_img(self, img: np.ndarray):
         """Transform the input image to have a short side size of 512
 
@@ -23,11 +23,11 @@ class SSD(GluonCVModel):
                                               and a numpy ndarray as original un-normalized color
                                               image for display
         """
-        return data.transforms.presets.ssd.transform_test(
+        return data.transforms.presets.center_net.transform_test(
             mx.nd.array(img), short=self.short_size
         )
 
-    def load_and_transform_img(self, img_path):
+    def transform_and_load_img(self, img_path):
         """Load img from harddisk
 
         Args:
@@ -36,4 +36,4 @@ class SSD(GluonCVModel):
         Returns:
             (mx.NDArray, np.ndarray): input-ready image for inference, original image non-normalized
         """
-        return data.transforms.presets.ssd.load_test(img_path, short=self.short_size)
+        return data.transforms.presets.center_net.load_test(img_path, short=self.short_size)

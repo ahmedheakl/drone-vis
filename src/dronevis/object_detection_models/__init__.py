@@ -1,3 +1,1 @@
-from dronevis.object_detection_models.ssd import SSD
-from dronevis.object_detection_models.yolo import Yolo
-from dronevis.object_detection_models.abstract_model import CVModel
+from dronevis.object_detection_models.base_gluoncv_model import GluonCVModel
