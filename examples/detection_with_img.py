@@ -17,6 +17,10 @@ img_name = utils.download(
 
 
 # load the img from disk and transform it
+
+# Carefull with transform functions as each model
+# returns a unique set of parameters. Check the docs
+# for more info 
 x, img = ssd.load_and_transform_img(img_name)
 
 # make inference
