@@ -13,7 +13,7 @@ class FasterRCNN:
 
         # classes that the model may predict
         self.coco_names = COCO_NAMES
-
+        
         self.COLORS = np.random.uniform(0, 255, size=(len(self.coco_names), 3))
 
         self.transform = transforms.Compose(
