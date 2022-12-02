@@ -111,3 +111,5 @@ ANIMATIONS = {"flip":flip}
 ANIMATIONS_INFOS = {"flip":"(side)"}
 # Check if animations corelate
 if ANIMATIONS.keys() != ANIMATIONS_INFOS.keys():    raise ImportError("Animations differs")
+
+
