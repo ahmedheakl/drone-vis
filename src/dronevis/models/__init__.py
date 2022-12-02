@@ -1,2 +1,1 @@
-from models.printy import xx
-print("Initializing ML models")
+from dronevis.models.ssd import SSD
