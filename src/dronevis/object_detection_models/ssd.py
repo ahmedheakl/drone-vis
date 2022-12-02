@@ -1,7 +1,8 @@
 from gluoncv import model_zoo, data, utils
-from dronevis.models.abstract_model import CVModel
+from dronevis.object_detection_models.abstract_model import CVModel
 import mxnet as mx
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class SSD(CVModel):
@@ -20,16 +21,8 @@ class SSD(CVModel):
 
     def load_model(self, model_name: str = "ssd_512_mobilenet1.0_voc_int8") -> None:
         """Load the model from model zoo.
-        options model = [
-            ssd_512_mobilenet1.0_voc_int8,
-            
-            ssd_512_resnet50_v1_voc_int8, 
-            ssd_512_resnet50_v1_voc,     
-            
-            ssd_300_vgg16_atrous_voc_int8,
-            ssd_512_vgg16_atrous_voc_int8,
-            
-        ]
+        Run ``get_model_options`` to get model options.
+
         Args:
             model_name (str, optional): name of the pretrained model
         """
@@ -51,7 +44,18 @@ class SSD(CVModel):
             mx.nd.array(img), short=self.short_size
         )
 
-    def predict(self, img_data, img):
+    def load_and_transform_img(self, img_path):
+        """Load img from harddisk
+
+        Args:
+            img_path (str): path of the img on disk
+
+        Returns:
+            (mx.NDArray, np.ndarray): input-ready image for inference, original image non-normalized
+        """
+        return data.transforms.presets.ssd.load_test(img_path, short=self.short_size)
+
+    def predict(self, img, img_data):
         """Generate predictions along with a labelled img
 
         Args:
@@ -73,7 +77,7 @@ class SSD(CVModel):
             class_names=self.net.classes,
         )
         return labelled_img
-    
+
     def add_bounding_box(self, img: np.ndarray):
         """Add bouding boxes along with their scores to input image
 
@@ -86,7 +90,8 @@ class SSD(CVModel):
         assert (
             self.net
         ), "You need to load the model first. Please run load_model method."
-        
+
+        # fmt: off
         assert self.bounding_boxes is not None, "You need to inference the model first. Run predict func."
         assert self.scores is not None, "You need to inference the model first. Run predict func."
         assert self.class_IDs is not None, "You need to inference the model first. Run predict func."
@@ -98,3 +103,35 @@ class SSD(CVModel):
             self.class_IDs[0],
             class_names=self.net.classes,
         )
+
+    def plot_bounding_box(self, img):
+        assert (
+            self.net
+        ), "You need to load the model first. Please run load_model method."
+
+        # fmt: off
+        assert self.bounding_boxes is not None, "You need to inference the model first. Run predict func."
+        assert self.scores is not None, "You need to inference the model first. Run predict func."
+        assert self.class_IDs is not None, "You need to inference the model first. Run predict func."
+        
+        ax = utils.viz.plot_bbox(
+            img,
+            self.bounding_boxes[0],
+            self.scores[0],
+            self.class_IDs[0],
+            class_names=self.net.classes,
+        )
+        
+        plt.show()
+
+    def get_model_options(self):
+        """Get options for model name
+
+        Returns:
+            List[str]: model name options
+        """
+        options_for_ssd = []
+        for model_name in model_zoo.get_model_list():
+            if "ssd" in model_name.lower():
+                options_for_ssd.append(model_name)
+        return options_for_ssd

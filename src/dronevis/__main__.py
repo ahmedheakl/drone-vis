@@ -16,7 +16,7 @@ Version
 """
 
 
-from dronevis.models import SSD
+from dronevis.object_detection_models import SSD
 
 def main() -> None:
     print("Welcome to dronevis")

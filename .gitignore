@@ -1,3 +1,6 @@
+.vscode
 src/dronevis.egg-info
 src/dronevis/__pycache__
-diff.py
+src/dronevis/object_detection_models/__pycache__
+src/dronevis/drone_connect/__pycache__
+data.txt
