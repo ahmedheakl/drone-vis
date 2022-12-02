@@ -4,113 +4,16 @@ import torchvision.transforms as transforms
 from typing import List
 import cv2
 import numpy as np
-import argparse
 from PIL import Image
-import time
-from dronevis.object_detection_models import CVModel
+from dronevis.config.config import COCO_NAMES
 
-COCO_NAMES = [
-    "__background__",
-    "person",
-    "bicycle",
-    "car",
-    "motorcycle",
-    "airplane",
-    "bus",
-    "train",
-    "truck",
-    "boat",
-    "traffic light",
-    "fire hydrant",
-    "N/A",
-    "stop sign",
-    "parking meter",
-    "bench",
-    "bird",
-    "cat",
-    "dog",
-    "horse",
-    "sheep",
-    "cow",
-    "elephant",
-    "bear",
-    "zebra",
-    "giraffe",
-    "N/A",
-    "backpack",
-    "umbrella",
-    "N/A",
-    "N/A",
-    "handbag",
-    "tie",
-    "suitcase",
-    "frisbee",
-    "skis",
-    "snowboard",
-    "sports ball",
-    "kite",
-    "baseball bat",
-    "baseball glove",
-    "skateboard",
-    "surfboard",
-    "tennis racket",
-    "bottle",
-    "N/A",
-    "wine glass",
-    "cup",
-    "fork",
-    "knife",
-    "spoon",
-    "bowl",
-    "banana",
-    "apple",
-    "sandwich",
-    "orange",
-    "broccoli",
-    "carrot",
-    "hot dog",
-    "pizza",
-    "donut",
-    "cake",
-    "chair",
-    "couch",
-    "potted plant",
-    "bed",
-    "N/A",
-    "dining table",
-    "N/A",
-    "N/A",
-    "toilet",
-    "N/A",
-    "tv",
-    "laptop",
-    "mouse",
-    "remote",
-    "keyboard",
-    "cell phone",
-    "microwave",
-    "oven",
-    "toaster",
-    "sink",
-    "refrigerator",
-    "N/A",
-    "book",
-    "clock",
-    "vase",
-    "scissors",
-    "teddy bear",
-    "hair drier",
-    "toothbrush",
-]
-
-
-class FasterRCNN(CVModel):
+class FasterRCNN:
     def __init__(self) -> None:
         """Initialize faster R-CNN model"""
 
         # classes that the model may predict
         self.coco_names = COCO_NAMES
-
+        
         self.COLORS = np.random.uniform(0, 255, size=(len(self.coco_names), 3))
 
         self.transform = transforms.Compose(
@@ -183,7 +86,7 @@ class FasterRCNN(CVModel):
         """
         image = cv2.cvtColor(np.asarray(image), cv2.COLOR_BGR2RGB)
         for i, box in enumerate(boxes):
-            color = self.COLORS[labels[i]] # type: ignore
+            color = self.COLORS[labels[i]]  # type: ignore
             cv2.rectangle(
                 image, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), color, 2
             )
@@ -220,7 +123,6 @@ class FasterRCNN(CVModel):
 
         cap.release()
         cv2.destroyAllWindows()
-
 
     def load_and_predict(self, img_path: str, output_path=None):
         """Detecting objects in a given image using FasterRCNN model
