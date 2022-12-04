@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from gluoncv import data, utils, model_zoo
+from dronevis.object_detection_models.abstract_model import CVModel
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-class GluonCVModel(ABC):
-    """Base class for creating custom comptervision models.
+class GluonCVModel(CVModel):
+    """Base class for creating custom gluoncv models.
     To use the abstract class just inherit it, and override
     the abstract method.
     """

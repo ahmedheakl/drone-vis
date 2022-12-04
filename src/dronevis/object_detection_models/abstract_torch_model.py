@@ -1,42 +1,33 @@
-import torch
-import torchvision
-import torchvision.transforms as transforms
-from typing import List
-import cv2
+from abc import abstractmethod
+from dronevis.object_detection_models.abstract_model import CVModel
 import numpy as np
+import torch
+from torchvision.transforms.functional import to_pil_image
+import cv2
+from typing import List
 from PIL import Image
+import time
 from dronevis.config.config import COCO_NAMES
 
-class FasterRCNN:
-    def __init__(self) -> None:
-        """Initialize faster R-CNN model"""
 
-        # classes that the model may predict
+
+class TorchDetectionModel(CVModel):
+    """Base class for creating custom PyTorch models.
+    To use the abstract class just inherit it, and override
+    the abstract method.
+    """    
+    def __init__(self) -> None:
         self.coco_names = COCO_NAMES
-        
+
         self.COLORS = np.random.uniform(0, 255, size=(len(self.coco_names), 3))
 
-        self.transform = transforms.Compose(
-            [
-                transforms.ToTensor(),
-            ]
-        )
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.net = None    
+    @abstractmethod
+    def load_model(self):
+        pass
 
-        self.net = None
-
-    def load_model(self, model_path=None):
-        """Load model from PyTorchHub
-
-        Args:
-            model_path (str, optional): no need to use it, only for integrity with absract class. Defaults to None.
-        """
-        self.net = torchvision.models.detection.fasterrcnn_mobilenet_v3_large_fpn(
-            pretrained=True
-        )
-        self.net = self.net.eval().to(self.device)
-
-    def predict(self, image, detection_threshold: float = 0.7):
+    def predict(self, image, detection_threshold=0.7):
         """Predict all classes in an image using FasterRCNN model
         Args:
             image(np.ndarray): video frame or image to predict the classes in it.
@@ -49,7 +40,9 @@ class FasterRCNN:
 
         """
         assert self.net, "You need to load the model first. Please run `load_model`."
+        input_image = image
         with torch.no_grad():
+            image = to_pil_image(image)
             image = self.transform(image)
             image = image.unsqueeze(0)  # add a batch dimension
             outputs = self.net(image)[0]  # get outputs array
@@ -57,10 +50,12 @@ class FasterRCNN:
             pred_scores = outputs["scores"].detach().cpu().numpy()
             pred_bboxes = outputs["boxes"].detach().cpu().numpy()
             boxes = pred_bboxes[pred_scores >= detection_threshold].astype(np.int32)
-        print(type(boxes), type(pred_classes), type(outputs["labels"]))
-        return boxes, pred_classes, outputs["labels"]
+            
+        image = self.draw_boxes(boxes, pred_classes, outputs["labels"], input_image)
+        return boxes, pred_classes, outputs["labels"], image
 
-    def transform_img(self, img):
+
+    def transform_img(self, img: np.ndarray):
         """Transform image to tensor
 
         Args:
@@ -69,8 +64,8 @@ class FasterRCNN:
         Returns:
             torch.Tensor: tensor img
         """
-        return self.transform(img).to(self.device)
-
+        return self.transform(to_pil_image(img)).to(self.device)
+    
     def draw_boxes(self, boxes: np.ndarray, classes: List, labels: torch.Tensor, image):
         """Draw boxes for the predicted classes in an image using FasterRCNN model
 
@@ -82,7 +77,6 @@ class FasterRCNN:
 
         Returns:
             np.ndarray: cv2 image after drawing boxes of the predicted classes on it with their labels
-
         """
         image = cv2.cvtColor(np.asarray(image), cv2.COLOR_BGR2RGB)
         for i, box in enumerate(boxes):
@@ -91,40 +85,19 @@ class FasterRCNN:
                 image, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), color, 2
             )
             cv2.putText(
-                image,
-                classes[i],
-                (int(box[0]), int(box[1] - 5)),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.8,
-                color,
-                2,
+                img=image,
+                text=classes[i],
+                org=(int(box[0]), int(box[1] - 5)),
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=0.8,
+                color=color,
+                thickness=2,
                 lineType=cv2.LINE_AA,
             )
         return image
-
-    def detect_webcam(self) -> None:
-        """Detecting objects with a webcam using FasterRCNN model
-        (to quit running this function press 'q')"""
-
-        cam_index = 0
-        cap = cv2.VideoCapture(cam_index)
-        if not cap.isOpened():
-            print("Error while trying to read video. Please check path again")
-
-        while cap.isOpened():
-            _, frame = cap.read()
-
-            boxes, classes, labels = self.predict(frame, 0.7)
-            image = self.draw_boxes(boxes, classes, labels, frame)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            cv2.imshow("image", image)
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
-
-        cap.release()
-        cv2.destroyAllWindows()
-
-    def load_and_predict(self, img_path: str, output_path=None):
+    
+    
+    def transform_and_load_img(self, img_path, output_path):
         """Detecting objects in a given image using FasterRCNN model
             (to quit running this function press 'q')
 
@@ -138,9 +111,37 @@ class FasterRCNN:
         if output_path is not None:
             cv2.imwrite(output_path, image)
         cv2.waitKey(0)
+        
+    def detect_webcam(self, video_index=0) -> None:
+        """Detecting objects with a webcam using FasterRCNN model
+        (to quit running this function press 'q')"""
 
+        cap = cv2.VideoCapture(video_index)
+        if not cap.isOpened():
+            print("Error while trying to read video. Please check path again")
 
-if __name__ == "__main__":
-    model = FasterRCNN()
-    model.load_model()
-    model.detect_webcam()
+        while cap.isOpened():
+            _, frame = cap.read()
+            start_time = time.time()
+            with torch.no_grad():
+                _, _, _, image = self.predict(frame, 0.7)
+            end_time = time.time()
+            fps = 1 / (end_time - start_time)
+            cv2.putText(
+                image,
+                f"{fps:.3f} FPS",
+                (15, 30),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (0, 255, 0),
+                2,
+            )
+            wait_time = max(1, int(fps / 4))
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            cv2.imshow("image", image)
+            if cv2.waitKey(wait_time) & 0xFF == ord("q"):
+                break
+
+        cap.release()
+        cv2.destroyAllWindows()
+

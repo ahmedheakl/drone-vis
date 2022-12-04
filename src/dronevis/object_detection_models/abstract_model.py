@@ -8,13 +8,13 @@ class CVModel(ABC):
     """
 
     @abstractmethod
-    def load_model(self, model_path):
+    def load_model(self):
         pass
 
     @abstractmethod
-    def predict(self, img, img_data=None):
+    def predict(self, image):
         pass
 
     @abstractmethod
-    def transform_img(self, img):
+    def transform_img(self, image):
         pass

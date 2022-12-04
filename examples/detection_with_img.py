@@ -1,4 +1,4 @@
-from dronevis.object_detection_models.centernet import CenterNet
+from dronevis.object_detection_models.centernet_gluoncv import CenterNet
 from gluoncv import utils
 
 
