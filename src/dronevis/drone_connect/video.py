@@ -9,21 +9,22 @@ class Video(threading.Thread):
         threading (Thread): thread for video stream
     """
     def __init__(self, ip: str = "192.168.1.1") -> None:
+        """Initialize drone instance
+
+        Args:
+            ip (str, optional): ip of the drone. Defaults to "192.168.1.1".
+        """
         self.ip = ip
         self.video_port = 5555
         self.socket_lock = threading.Lock()
-        '''
-        if not self.check_telnet():
-            raise "cannot connect to the drone"
-        else:
-            print("Connect successfully to drone")
-        '''
         self.protocol = "tcp"
         self.cam_connect = f'{self.protocol}://{self.ip}:{self.video_port}'
         self.frame_name = "Video Capture"
         threading.Thread.__init__(self)
 
     def run(self) -> None:
+        """Create video stream and view frames
+        """
         cam = cv2.VideoCapture(self.cam_connect)
         self.running = True
         while self.running:
@@ -45,6 +46,9 @@ class Video(threading.Thread):
 
     def check_telnet(self) -> bool:
         """Check if we can connect to telnet
+
+        Returns:
+            bool: flag whether there is a valid connection
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connection_port = 23
