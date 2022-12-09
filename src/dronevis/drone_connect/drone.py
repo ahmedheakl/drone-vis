@@ -6,6 +6,7 @@ from dronevis.config import config
 import struct
 import time
 import threading
+import socket
 
 
 class Drone():
@@ -26,7 +27,12 @@ class Drone():
 
     def connect(self) -> None:
         """Start communication thread to send control commands"""
+        if not self.check_telnet():
+            raise ConnectionError(
+                "Couldn't connect to the drone. Make sure you are connected to the drone network."
+            )
         try:
+            
             self.comThread = Command(self.ip)
             self.c = self.comThread.command  # Alias
             self.comThread.start()
@@ -306,3 +312,19 @@ class Drone():
             int: value of the result integer
         """
         return int(struct.unpack("=l", struct.pack("f", float(my_float)))[0])
+
+    def check_telnet(self) -> bool:
+        """Check if we can connect to telnet
+
+        Returns:
+            bool: flag whether there is a valid connection
+        """
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        connection_port = 23
+        try:
+            sock.connect((self.ip, connection_port))
+        except:
+            return False
+        else:
+            sock.close()
+            return True
