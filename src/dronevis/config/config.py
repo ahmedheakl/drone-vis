@@ -1,6 +1,3 @@
-
-
-
 def activate_navdata(activate=True):
     "Prepare the drone so he can send navdata back to us"
     if activate:

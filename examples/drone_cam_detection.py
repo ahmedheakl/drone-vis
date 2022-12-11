@@ -1,6 +1,5 @@
-from dronevis.object_detection_models.ssd_torch import SSDTorch
+from dronevis.detection_gluoncv import Yolo
 
-model = SSDTorch()
+model = Yolo()
 model.load_model()
-video_index = 'tcp://192.168.1.1:5555'
-model.detect_webcam(video_index)
+model.detect_webcam(video_index="192.168.1.1", window_name="Drone Detection")

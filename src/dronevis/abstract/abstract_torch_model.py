@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from dronevis.object_detection_models.abstract_model import CVModel
+from dronevis.abstract.abstract_model import CVModel
 import numpy as np
 import torch
 from torchvision.transforms.functional import to_pil_image
@@ -22,7 +22,8 @@ class TorchDetectionModel(CVModel):
         self.COLORS = np.random.uniform(0, 255, size=(len(self.coco_names), 3))
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.net = None    
+        self.net = None   
+         
     @abstractmethod
     def load_model(self):
         pass
@@ -43,7 +44,7 @@ class TorchDetectionModel(CVModel):
         input_image = image
         with torch.no_grad():
             image = to_pil_image(image)
-            image = self.transform(image)
+            image = self.transform(image).to(self.device)
             image = image.unsqueeze(0)  # add a batch dimension
             outputs = self.net(image)[0]  # get outputs array
             pred_classes = [self.coco_names[i] for i in outputs["labels"].cpu().numpy()]
@@ -112,7 +113,7 @@ class TorchDetectionModel(CVModel):
             cv2.imwrite(output_path, image)
         cv2.waitKey(0)
         
-    def detect_webcam(self, video_index=0) -> None:
+    def detect_webcam(self, video_index=0, window_name="Cam Detection") -> None:
         """Detecting objects with a webcam using FasterRCNN model
         (to quit running this function press 'q')"""
 
@@ -138,7 +139,7 @@ class TorchDetectionModel(CVModel):
             )
             wait_time = max(1, int(fps / 4))
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            cv2.imshow("image", image)
+            cv2.imshow(window_name, image)
             if cv2.waitKey(wait_time) & 0xFF == ord("q"):
                 break
 

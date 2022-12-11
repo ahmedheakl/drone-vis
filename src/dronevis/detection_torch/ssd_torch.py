@@ -1,22 +1,14 @@
-import torch
-import time
-from typing import List
-import cv2
-import numpy as np
-from PIL import Image
-from dronevis.config.config import COCO_NAMES
-from torchvision.transforms.functional import to_pil_image
 from torchvision.models.detection import (
     ssdlite320_mobilenet_v3_large,
     SSDLite320_MobileNet_V3_Large_Weights,
 )
-from dronevis.object_detection_models import TorchDetectionModel
+from dronevis.abstract.abstract_torch_model import TorchDetectionModel
 
 
-class SSDTorch(TorchDetectionModel):
+class SSD(TorchDetectionModel):
     def __init__(self) -> None:
         """Initialize faster R-CNN model"""
-        super(SSDTorch, self).__init__()        
+        super(SSD, self).__init__()        
         self.weights = SSDLite320_MobileNet_V3_Large_Weights.DEFAULT
         self.transform = self.weights.transforms()
 
@@ -32,6 +24,6 @@ class SSDTorch(TorchDetectionModel):
         self.net = self.net.eval().to(self.device)
 
 if __name__ == "__main__":
-    model = SSDTorch()
+    model = SSD()
     model.load_model()
     model.detect_webcam()

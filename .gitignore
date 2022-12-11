@@ -1,4 +1,5 @@
 .vscode
+notes
 src/dronevis.egg-info
 src/dronevis/__pycache__
 src/dronevis/object_detection_models/__pycache__

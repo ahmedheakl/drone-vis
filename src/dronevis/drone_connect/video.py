@@ -43,20 +43,3 @@ class Video(threading.Thread):
             self.socket_lock.release()
         cam.release()
         cv2.destroyAllWindows()
-
-    def check_telnet(self) -> bool:
-        """Check if we can connect to telnet
-
-        Returns:
-            bool: flag whether there is a valid connection
-        """
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        connection_port = 23
-        try:
-            sock.connect((self.ip, connection_port))
-        except:
-            return False
-        else:
-            sock.close()
-            return True
-

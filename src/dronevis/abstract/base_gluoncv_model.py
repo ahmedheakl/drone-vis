@@ -1,9 +1,10 @@
-from abc import ABC, abstractmethod
-from gluoncv import data, utils, model_zoo
-from dronevis.object_detection_models.abstract_model import CVModel
+from abc import abstractmethod
+from gluoncv import utils, model_zoo
+from dronevis.abstract.abstract_model import CVModel
 import matplotlib.pyplot as plt
 import numpy as np
-
+import cv2
+import time
 
 class GluonCVModel(CVModel):
     """Base class for creating custom gluoncv models.
@@ -84,7 +85,7 @@ class GluonCVModel(CVModel):
         pass
 
     @abstractmethod
-    def transform_and_load_img(self, img_path):
+    def load_and_transform_img(self, img_path):
         pass
 
     def add_bounding_box(self, img: np.ndarray):
@@ -125,3 +126,40 @@ class GluonCVModel(CVModel):
             if self.model_name in model_name.lower():
                 options_for_center_net.append(model_name)
         return options_for_center_net
+    
+    def detect_webcam(self, video_index=0, window_name: str="Cam Detection") -> None:
+        """Detecting objects with a webcam using current model
+        (to quit running this function press 'q')
+
+        Args:
+            video_index (int | str, optional): index of cam, can be a `url`. Defaults to 0.
+            window_name (str, optional): name of video window. Defaults to "Cam Detection".
+        """
+
+        cap = cv2.VideoCapture(video_index)
+        if not cap.isOpened():
+            print("Error while trying to read video. Please check path again")
+
+        while cap.isOpened():
+            _, frame = cap.read()
+            start_time = time.time()
+            x, img = self.transform_img(frame)
+            image = self.predict(img, x)
+            end_time = time.time()
+            fps = 1 / (end_time - start_time)
+            cv2.putText(
+                image,
+                f"{fps:.3f} FPS",
+                (15, 30),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (0, 255, 0),
+                2,
+            )
+            wait_time = max(1, int(fps / 4))
+            cv2.imshow(window_name, image)
+            if cv2.waitKey(wait_time) & 0xFF == ord("q"):
+                break
+
+        cap.release()
+        cv2.destroyAllWindows()

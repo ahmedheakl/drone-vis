@@ -1,0 +1,2 @@
+from dronevis.detection_torch.ssd_torch import SSD
+from dronevis.detection_torch.faster_rcnn_torch import FasterRCNN

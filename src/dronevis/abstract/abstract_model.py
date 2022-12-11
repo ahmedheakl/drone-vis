@@ -18,3 +18,7 @@ class CVModel(ABC):
     @abstractmethod
     def transform_img(self, image):
         pass
+
+    @abstractmethod
+    def detect_webcam(self, video_index, window_name="Cam Detection"):
+        pass

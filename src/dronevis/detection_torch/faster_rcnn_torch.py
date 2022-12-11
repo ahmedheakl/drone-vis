@@ -1,16 +1,13 @@
-from typing import List
-from dronevis.config.config import COCO_NAMES
-from torchvision.transforms.functional import to_pil_image
 from torchvision.models.detection import (
     fasterrcnn_mobilenet_v3_large_320_fpn,
     FasterRCNN_MobileNet_V3_Large_320_FPN_Weights
 )
-from dronevis.object_detection_models import TorchDetectionModel
+from dronevis.abstract.abstract_torch_model import TorchDetectionModel
 
-class FasterRCNNTorch(TorchDetectionModel):
+class FasterRCNN(TorchDetectionModel):
     def __init__(self) -> None:
         """Initialize faster R-CNN model"""
-        super(FasterRCNNTorch, self).__init__()
+        super(FasterRCNN, self).__init__()
         self.weights = FasterRCNN_MobileNet_V3_Large_320_FPN_Weights.DEFAULT
         self.transform = self.weights.transforms()
 
@@ -27,6 +24,6 @@ class FasterRCNNTorch(TorchDetectionModel):
 
 
 if __name__ == "__main__":
-    model = FasterRCNNTorch()
+    model = FasterRCNN()
     model.load_model()
     model.detect_webcam()

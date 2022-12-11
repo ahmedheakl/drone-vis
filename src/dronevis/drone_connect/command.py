@@ -1,6 +1,5 @@
 import socket
-import threading
-from dronevis.config import config
+import threading        
 import time
 import random
 

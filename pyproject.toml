@@ -26,6 +26,7 @@ dependencies = {file = ["requirements.txt"]}
 
     [project.scripts]
     dronevis = "dronevis.__main__:main"
+    dronevis-gui = "dronevis.gui.main:main"
 
     [project.urls]
     repository = "https://github.com/ahmedheakl/drone-vis"
