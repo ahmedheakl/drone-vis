@@ -16,26 +16,34 @@ Version
 """
 
 
-from dronevis.detection_torch import SSD
+from time import sleep
+from dronevis.drone_connect.drone import Drone
+
+def print_navdata(navdata):
+    "Print the navdata as RAW text" 
+    print(navdata['navdata_demo']["battery_percentage"])
 
 def main() -> None:
     print("Welcome to dronevis")
-    ssd = SSD()
-    # drone = Drone()
-    # drone.connect()
+    drone = Drone()
+    drone.connect()
+    # drone.
     # print(drone.list_config())
-    # drone.set_config(max_altitude=50)
+    drone.set_config(activate_gps=True,activate_navdata=True)
+    drone.set_config(max_altitude=50)
     # drone.connect_video()
-    # #drone.emergency()
+    print("Getting Navdata ...")
+    drone.set_callback(print_navdata)
+    sleep(1)
     # drone.takeoff()
     # sleep(10)
     # #drone.forward()
     # drone.land()
-    # #sleep(2)
+    #sleep(2)
     # #drone.takeoff()
     # #sleep(2)
     # #drone.land()
-    # drone.stop()
+    drone.stop()
     
     
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import threading
-import socket
 import cv2
+import time
 
 class Video(threading.Thread):
     """Connect video stream from drone
@@ -8,7 +8,7 @@ class Video(threading.Thread):
     Args:
         threading (Thread): thread for video stream
     """
-    def __init__(self, ip: str = "192.168.1.1") -> None:
+    def __init__(self, ip: str = "192.168.1.1", model=None) -> None:
         """Initialize drone instance
 
         Args:
@@ -20,26 +20,52 @@ class Video(threading.Thread):
         self.protocol = "tcp"
         self.cam_connect = f'{self.protocol}://{self.ip}:{self.video_port}'
         self.frame_name = "Video Capture"
+        self.is_stream = False
+        self.cap = None
+        self.detection = True
+        self.model = model
         threading.Thread.__init__(self)
 
     def run(self) -> None:
         """Create video stream and view frames
         """
-        cam = cv2.VideoCapture(self.cam_connect)
-        self.running = True
-        while self.running:
-            # get current frame of video
+        """Detecting objects with a webcam using FasterRCNN model
+        (to quit running this function press 'q')"""
+        print("Running Stream ..")
+        if self.cap is None:
+            self.cap = cv2.VideoCapture(self.cam_connect)
+            if not self.cap.isOpened():
+                print("Error while trying to read video. Please check path again")
+        self.is_stream = True
+        while self.cap.isOpened():
             self.socket_lock.acquire()
-            self.running, frame = cam.read()
-            if self.running:
-                cv2.imshow(self.frame_name, frame)
-                if cv2.waitKey(1) & 0xFF == 27: 
-                    # escape key pressed
-                    self.running = False
-
+            if not self.is_stream:
+                self.socket_lock.release()
+                break
+            running, frame = self.cap.read()
+                
+            if running:
+                if self.detection:
+                    frame, wait_time = self.model.frame_detection(frame)
+                else:
+                    wait_time = 1
+                    fps = self.cap.get(cv2.CAP_PROP_FPS)
+                    cv2.putText(
+                        frame,
+                        f"{fps:.3f} FPS",
+                        (15, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        1,
+                        (0, 255, 0),
+                        2,
+                    )
+                cv2.imshow("Drone connection", frame)
+                if cv2.waitKey(wait_time) & 0xFF == ord("q"):
+                    break
             else:
-                # error reading frame
                 print('error reading video feed')
             self.socket_lock.release()
-        cam.release()
+        print("Stream Closed ...")
+        self.cap.release()
         cv2.destroyAllWindows()
+        

@@ -1,5 +1,5 @@
-from dronevis.detection_gluoncv import Yolo
+from dronevis.detection_torch import FasterRCNN
 
-model = Yolo()
+model = FasterRCNN()
 model.load_model()
-model.detect_webcam(video_index="192.168.1.1", window_name="Drone Detection")
+model.detect_webcam(video_index="tcp://192.168.1.1:5555", window_name="Drone Detection")

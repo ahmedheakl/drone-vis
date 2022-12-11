@@ -2,15 +2,15 @@ from dronevis.drone_connect import nav_data_decode
 import threading
 import socket
 import time
-
-
+DATA_PORT = 5554
+MAX_PACKET_SIZE = 1024 * 10
 class Navdata(threading.Thread):
     "Manage the incoming data"
     def __init__(self, communication, callback = None):
         "Create the navdata handler thread"
         self.running = True
-        self.port = 5554
-        self.size = 1024*10
+        self.port = DATA_PORT
+        self.size = MAX_PACKET_SIZE
         self.com = communication
         self.ip = self.com.ip
         self.callback = callback
@@ -22,6 +22,7 @@ class Navdata(threading.Thread):
         self.sock.bind(('0.0.0.0'.encode(),self.port))
         self.sock.setblocking(0)
         threading.Thread.__init__(self)
+        
     def change_callback(self, new_callback):
         "Change the callback function"
         # Check if the argument is a function
@@ -50,10 +51,7 @@ class Navdata(threading.Thread):
                 self.callback(rep)
 
             time.sleep(0.05)
-            
-            self.socket_lock.release()
-
-       
+            self.socket_lock.release()       
         self.com._activate_navdata(activate=False) # Tell com thread that we are out
         self.sock.close()
 

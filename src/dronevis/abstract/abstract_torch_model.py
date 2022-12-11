@@ -145,4 +145,23 @@ class TorchDetectionModel(CVModel):
 
         cap.release()
         cv2.destroyAllWindows()
+        
+    def frame_detection(self, frame):
+        start_time = time.time()
+        with torch.no_grad():
+            _, _, _, image = self.predict(frame, 0.7)
+        end_time = time.time()
+        fps = 1 / (end_time - start_time)
+        cv2.putText(
+            image,
+            f"{fps:.3f} FPS",
+            (15, 30),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 255, 0),
+            2,
+        )
+        wait_time = max(1, int(fps / 4))
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)    
+        return image, wait_time    
 
