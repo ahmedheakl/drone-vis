@@ -2,7 +2,9 @@
 MAIN_COLOR = "#01112a"
 LIGHT_MAIN_COLOR = "#04327a"
 WHITE_COLOR = "#fff"
-GREEN_COLOR = "#55eb75"
+LIGHT_GREEN_COLOR = "#55eb75"
+GREEN_COLOR = "green"
+RED_COLOR = "#FF0000"
 
 # fonts
 MAIN_FONT_FAMILY = "monofur for Powerline"

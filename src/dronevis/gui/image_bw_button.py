@@ -1,48 +1,47 @@
-from tkinter import Button, Event, messagebox
-from typing import Tuple
-from dronevis.gui.configs import * 
-from PIL import Image, ImageTk
-import inspect
-import os 
+from tkinter import Button, messagebox, Event
 import dronevis
+import os
+import inspect
+from dronevis.gui.configs import WHITE_COLOR, MAIN_COLOR
+from PIL import Image, ImageTk, ImageOps
+from typing import Tuple
 
 
-class ImageButton(Button):
+class ImageBWButton(Button):
     def __init__(
         self,
         master,
         title: str,
         message: str,
-        passive_img_path: str,
-        active_img_path: str,
+        img: str,
         size: Tuple[int, ...],
         *args,
-        **kw
+        **kw,
     ) -> None:
-        super(ImageButton, self).__init__(master, *args, **kw)
+        """Initialize image button
+        The button deals with two images ``passive`` and ``active``. 
+        Each image is used in case of hover/no-hover. 
         
-        self.title = title
-        self.message = message
+        The active image is an __inverted__ version of the passive. 
         
+        Image path is defaulted to be in the assets folder. 
+
+        Args:
+            master (tkiner.widget): master widget
+            title (str): title of info box
+            message (str): message to be displayed in info box
+            img (str): image path
+            size (Tuple[int, ...]): size for image to be resized
+            is_inverted (bool): whether to invert the colors
+        """
+        super(ImageBWButton, self).__init__(master, *args, **kw)
         self["background"] = MAIN_COLOR
         self["activebackground"] = WHITE_COLOR
-        
-        # get path of library is site-packages
         package_path = os.path.dirname(inspect.getfile(dronevis))
-        
-        # get path of images
-        passive_img_path = f"{package_path}/assets/{passive_img_path}"
-        active_img_path = f"{package_path}/assets/{active_img_path}"
-        
-        # load images
+        passive_img_path = f"{package_path}/assets/{img}"
         passive_img = Image.open(passive_img_path)
-        active_img = Image.open(active_img_path)
-        
-        # resize images
         passive_img = passive_img.resize(size, Image.Resampling.HAMMING)
-        active_img = active_img.resize(size, Image.Resampling.HAMMING)
-        
-        
+        active_img = ImageOps.invert(passive_img.convert("1"))
         self.passive_img = ImageTk.PhotoImage(passive_img)
         self.active_img = ImageTk.PhotoImage(active_img)
         self["image"] = self.passive_img
@@ -52,8 +51,8 @@ class ImageButton(Button):
 
         self.bind("<Button-3>", self.on_info)
         self.bind("<Enter>", self.on_enter)
-        self.bind("<Leave>", self.on_leave)    
-        
+        self.bind("<Leave>", self.on_leave)
+
     def on_info(self, e: Event) -> None:
         """Show information about the button
 
@@ -77,3 +76,4 @@ class ImageButton(Button):
             e (tkinter.Event): Event handler for hover
         """
         self["image"] = self.passive_img
+
