@@ -2,13 +2,13 @@ from tkinter import *
 from tkinter.ttk import *
 from dronevis.gui.configs import *
 from dronevis.gui.image_bw_button import ImageBWButton
-from dronevis.gui.image_button import ImageButton
 from dronevis.gui.main_button import MainButton
 from dronevis.drone_connect.drone import Drone
 from dronevis.detection_torch.faster_rcnn_torch import FasterRCNN
 import matplotlib.pyplot as plt
-import pandas as pd
 import random 
+from dronevis.gui.circular_progressbar import CircularProgressbar
+from dronevis.gui.navdata_frame import DataFrame
 
 class DroneVisGui:
     def __init__(self, drone=None):
@@ -69,7 +69,6 @@ class DroneVisGui:
             self.ax.plot(self.index, self.data, color='g', linewidth=2)
             from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
             self.scatter3 = FigureCanvasTkAgg(figure3, self.frm_nav_h)
-            # self.scatter3.new_timer(interval=1, callbacks=[(self.printy, (), {})])
             self.scatter3.get_tk_widget().grid(row=0, column=0, sticky='nsew', pady=5, padx=5)
             self.axis_config(self.ax)
         else:
@@ -94,8 +93,6 @@ class DroneVisGui:
             self.scatter3.draw()
         self.cnt += 1
         self.window.after(int(self.step_index * 50), self.on_plot)
-    def printy(self):
-        print("data")
         
     def init_frames(self):
         frm_left = Frame(master=self.window)
@@ -148,13 +145,25 @@ class DroneVisGui:
         self.on_plot()
         
         frm_navdata = Frame(frm_nav_h)
-        for i in range(4):
-            frm_navdata.rowconfigure(i, weight=1)
-        frm_navdata.columnconfigure(0, weight=1)
-        lbl_navdata_latit = Label(frm_navdata, text="Latit: 35.363")
-        lbl_navdata_long = Label(frm_navdata, text="Long: 149.165")
-        lbl_navdata_vx = Label(frm_navdata, text="vx: 0.50 km\h")
-        lbl_navdata_vy = Label(frm_navdata, text="vy: 2.04 km\h")
+        frm_navdata.rowconfigure(0, weight=1)
+        frm_navdata.rowconfigure(1, weight=1)
+        frm_navdata.rowconfigure(2, weight=1)
+        
+        self.frm_nav_vx = DataFrame(frm_navdata, title="vx")
+        self.frm_nav_vx.grid(row=0, column=0, sticky="ew")
+        
+        self.frm_nav_vy = DataFrame(frm_navdata, title="vy")
+        self.frm_nav_vy.grid(row=1, column=0, sticky="ew")
+        
+        self.frm_nav_vz = DataFrame(frm_navdata, title="vz")
+        self.frm_nav_vz.grid(row=2, column=0, sticky="ew")
+        # for i in range(4):
+        #     frm_navdata.rowconfigure(i, weight=1)
+        # frm_navdata.columnconfigure(0, weight=1)
+        # lbl_navdata_latit = Label(frm_navdata, text="Latit: 35.363")
+        # lbl_navdata_long = Label(frm_navdata, text="Long: 149.165")
+        # lbl_navdata_vx = Label(frm_navdata, text="vx: 0.50 km\h")
+        # lbl_navdata_vy = Label(frm_navdata, text="vy: 2.04 km\h")
         
 
         ######################## Basic Control ##################################
@@ -359,10 +368,10 @@ class DroneVisGui:
         # height graph
         frm_nav_h.grid(row=1, column=0, sticky="nsew")
         frm_navdata.grid(row=0, column=1, padx=5, pady=5, sticky="ns")
-        lbl_navdata_latit.grid(row=0, column=0)
-        lbl_navdata_long.grid(row=1, column=0)
-        lbl_navdata_vx.grid(row=2, column=0)
-        lbl_navdata_vy.grid(row=3, column=0)
+        # lbl_navdata_latit.grid(row=0, column=0)
+        # lbl_navdata_long.grid(row=1, column=0)
+        # lbl_navdata_vx.grid(row=2, column=0)
+        # lbl_navdata_vy.grid(row=3, column=0)
 
         # vision control
         lbl_vision_control.grid(row=0, column=1, pady=10)
@@ -396,6 +405,12 @@ class DroneVisGui:
         self.btn_connect["foreground"] = WHITE_COLOR
         self.btn_connect["activebackground"] = RED_COLOR
         self.btn_connect["activeforeground"] = WHITE_COLOR
+        lbls = [self.frm_nav_vx, self.frm_nav_vy, self.frm_nav_vz]
+        for i in range(3):
+            randi = random.random()
+            angle = round(randi * 360.0, 2)
+            text = f"{round(randi * 17, 1)} km\h"
+            lbls[i].cpb.change(angle, text)
         
     def on_navdata(self, navdata):
         battery_percentage = int(navdata["navdata_demo"]["battery_percentage"])  
