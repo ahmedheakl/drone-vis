@@ -12,7 +12,7 @@ Or just run the following to the default
     
 Version
 ------------------
- - dronevis v0.0.2
+ - dronevis v0.0.3
 """
 
 

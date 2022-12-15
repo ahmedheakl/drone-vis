@@ -1,5 +1,6 @@
 .vscode
 types.txt
+dist
 src/dronevis/human_counting
 notes
 src/dronevis.egg-info
