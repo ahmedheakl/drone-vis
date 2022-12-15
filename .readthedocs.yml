@@ -21,4 +21,4 @@ formats: all
 # Set requirements using conda env
 python:
   install:
-    - requirements: docs/requirements.txt
+    - requirements: src/requirements.txt
