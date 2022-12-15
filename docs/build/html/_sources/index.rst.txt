@@ -6,6 +6,8 @@
 Welcome to DroneVis's documentation!
 ====================================
 
+.. autoclass:: dronevis.drone_connect.drone.Drone
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
