@@ -20,7 +20,5 @@ formats: all
 
 # Set requirements using conda env
 python:
-   install:
-   - method: setuptools
-     path: .
-   
+  install:
+    - requirements: docs/requirements.txt
