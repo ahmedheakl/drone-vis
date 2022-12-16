@@ -6,7 +6,7 @@
 Welcome to DroneVis's documentation!
 ====================================
 
-Full compatible drone library to automate computer vision algorithms on parrot drones. The library and computer vision alogirthms were built with real-time constraints on-mind. 
+**DroneVis** is a full compatible drone library to automate computer vision algorithms on parrot drones. The library and computer vision alogirthms were built with real-time constraints on-mind. 
 
 All of the implemented real-time data, inference, and detection achieve a minimum ``fps >= 4.5`` on an *Intel core 8* CPU.
 
@@ -16,7 +16,7 @@ Check out the :doc:`guides/install` section for further information, including h
 install the project.
 
 Main Features
---------------
+~~~~~~~~~~~~~
 
 - Unified state-of-the art computer vision algoritms
 - Full control over the drone
@@ -32,7 +32,7 @@ Main Features
 
 .. toctree::
    :maxdepth: 2
-   :caption: User Guide
+   :caption: User Guides
 
    guides/install
    guides/quickstart
@@ -40,8 +40,9 @@ Main Features
 
 .. toctree::
    :maxdepth: 2
-   :caption: Connections:
+   :caption: Connections
 
+   connection/drone_connection
    connection/drone
    connection/command
    connection/video

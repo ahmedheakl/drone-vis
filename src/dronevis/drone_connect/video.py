@@ -31,7 +31,7 @@ class Video(threading.Thread):
         """
         """Detecting objects with a webcam using FasterRCNN model
         (to quit running this function press 'q')"""
-        print("Running Stream ..")
+        
         if self.cap is None:
             self.cap = cv2.VideoCapture(self.cam_connect)
             if not self.cap.isOpened():

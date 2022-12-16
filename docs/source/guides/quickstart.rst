@@ -40,4 +40,3 @@ If you are not a GUI fan, you can use the command-line to run library and connec
 .. note::
 
     The library is built with default configurations, however, you can change those configurations by incorporating your own `.config` files. 
-    .. See section :ref:`configs <yourconfigs>` for more details.
