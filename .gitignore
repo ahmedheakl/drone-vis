@@ -2,7 +2,7 @@
 types.txt
 dist
 src/dronevis/human_counting
-notes
+docs/build
 src/dronevis.egg-info
 src/dronevis/__pycache__
 src/dronevis/object_detection_models/__pycache__

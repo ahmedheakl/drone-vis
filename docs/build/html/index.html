@@ -19,7 +19,8 @@
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="guides/install.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -37,40 +38,18 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Welcome to DroneVis’s documentation!</a><ul>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone"><code class="docutils literal notranslate"><span class="pre">Drone</span></code></a><ul>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.connect"><code class="docutils literal notranslate"><span class="pre">Drone.connect()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.set_config"><code class="docutils literal notranslate"><span class="pre">Drone.set_config()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.list_config"><code class="docutils literal notranslate"><span class="pre">Drone.list_config()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.takeoff"><code class="docutils literal notranslate"><span class="pre">Drone.takeoff()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.land"><code class="docutils literal notranslate"><span class="pre">Drone.land()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.calibrate"><code class="docutils literal notranslate"><span class="pre">Drone.calibrate()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.forward"><code class="docutils literal notranslate"><span class="pre">Drone.forward()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.backward"><code class="docutils literal notranslate"><span class="pre">Drone.backward()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.left"><code class="docutils literal notranslate"><span class="pre">Drone.left()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.up"><code class="docutils literal notranslate"><span class="pre">Drone.up()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.down"><code class="docutils literal notranslate"><span class="pre">Drone.down()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.rotate_left"><code class="docutils literal notranslate"><span class="pre">Drone.rotate_left()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.rotate_right"><code class="docutils literal notranslate"><span class="pre">Drone.rotate_right()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.right"><code class="docutils literal notranslate"><span class="pre">Drone.right()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.navigate"><code class="docutils literal notranslate"><span class="pre">Drone.navigate()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.hover"><code class="docutils literal notranslate"><span class="pre">Drone.hover()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.emergency"><code class="docutils literal notranslate"><span class="pre">Drone.emergency()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.stop"><code class="docutils literal notranslate"><span class="pre">Drone.stop()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.set_callback"><code class="docutils literal notranslate"><span class="pre">Drone.set_callback()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.reset"><code class="docutils literal notranslate"><span class="pre">Drone.reset()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.bin2dec"><code class="docutils literal notranslate"><span class="pre">Drone.bin2dec()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.float2dec"><code class="docutils literal notranslate"><span class="pre">Drone.float2dec()</span></code></a></li>
-<li><a class="reference internal" href="#dronevis.drone_connect.drone.Drone.check_telnet"><code class="docutils literal notranslate"><span class="pre">Drone.check_telnet()</span></code></a></li>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/quickstart.html">Getting Started</a></li>
 </ul>
-</li>
+<p class="caption" role="heading"><span class="caption-text">Connections:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="connection/drone.html">Drone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection/command.html">Command Thread</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection/video.html">Video Thread</a></li>
 </ul>
-</li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
-</div>
+
         </div>
       </div>
     </nav>
@@ -97,345 +76,63 @@
              
   <section id="welcome-to-dronevis-s-documentation">
 <h1>Welcome to DroneVis’s documentation!<a class="headerlink" href="#welcome-to-dronevis-s-documentation" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dronevis.drone_connect.drone.</span></span><span class="sig-name descname"><span class="pre">Drone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'192.168.1.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone" title="Permalink to this definition"></a></dt>
-<dd><dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.connect">
-<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.connect" title="Permalink to this definition"></a></dt>
-<dd><p>Start communication thread to send control commands</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.set_config">
-<span class="sig-name descname"><span class="pre">set_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.set_config" title="Permalink to this definition"></a></dt>
-<dd><p>Set a configuration onto the drone</p>
-<p>See possibles arguments with <code class="docutils literal notranslate"><span class="pre">`list_config`</span></code>
-:raises AttributeError: raised when there is an invalid config</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a flag that everything went fine</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.list_config">
-<span class="sig-name descname"><span class="pre">list_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.list_config" title="Permalink to this definition"></a></dt>
-<dd><p>List all possible configuration</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>list of configurations</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.takeoff">
-<span class="sig-name descname"><span class="pre">takeoff</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.takeoff" title="Permalink to this definition"></a></dt>
-<dd><p>Take Off</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.land">
-<span class="sig-name descname"><span class="pre">land</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.land" title="Permalink to this definition"></a></dt>
-<dd><p>Land</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.calibrate">
-<span class="sig-name descname"><span class="pre">calibrate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.calibrate" title="Permalink to this definition"></a></dt>
-<dd><p>Calibrate sensors</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.forward" title="Permalink to this definition"></a></dt>
-<dd><p>Make the drone go forward, speed is between 0 and 1</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – speed of the forward move. Defaults to 0.2.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.backward">
-<span class="sig-name descname"><span class="pre">backward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.backward" title="Permalink to this definition"></a></dt>
-<dd><p>Make the drone go backward, speed is between 0 and 1</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – speed of back move. Defaults to 0.2.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.left">
-<span class="sig-name descname"><span class="pre">left</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.left" title="Permalink to this definition"></a></dt>
-<dd><p>Make the drone go left, speed is between 0 and 1</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – speed of left move. Defaults to 0.2.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.up">
-<span class="sig-name descname"><span class="pre">up</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.up" title="Permalink to this definition"></a></dt>
-<dd><p>Make the drone rise in the air, speed is between 0 and 1</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – speed of right move. Defaults to 0.2.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.down">
-<span class="sig-name descname"><span class="pre">down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.down" title="Permalink to this definition"></a></dt>
-<dd><p>Make the drone descend, speed is between 0 and 1</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – speed of down move. Defaults to 0.2.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.rotate_left">
-<span class="sig-name descname"><span class="pre">rotate_left</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.8</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.rotate_left" title="Permalink to this definition"></a></dt>
-<dd><p>Make the drone turn left, speed is between 0 and 1</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – speed of rotation. Defaults to 0.8.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.rotate_right">
-<span class="sig-name descname"><span class="pre">rotate_right</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.8</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.rotate_right" title="Permalink to this definition"></a></dt>
-<dd><p>Make the drone turn right, speed is between 0 and 1</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – speed of rotation. Defaults to 0.8.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.right">
-<span class="sig-name descname"><span class="pre">right</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.right" title="Permalink to this definition"></a></dt>
-<dd><p>Make the drone go right, speed is between 0 and 1</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>speed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – speed of rotation. Defaults to 0.2.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.navigate">
-<span class="sig-name descname"><span class="pre">navigate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">front_back</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">up_down</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_change</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.navigate" title="Permalink to this definition"></a></dt>
-<dd><p>Command the drone, all the arguments are between -1 and 1</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>left_right</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – how much horizontal move (y-axis). Defaults to 0.</p></li>
-<li><p><strong>front_back</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – how much horizontal move (x-axis). Defaults to 0.</p></li>
-<li><p><strong>up_down</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – how much vertical move (z-axis). Defaults to 0.</p></li>
-<li><p><strong>angle_change</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – how much to change the angle. Defaults to 0.</p></li>
+<p>Full compatible drone library to automate computer vision algorithms on parrot drones. The library and computer vision alogirthms were built with real-time constraints on-mind.</p>
+<p>All of the implemented real-time data, inference, and detection achieve a minimum <code class="docutils literal notranslate"><span class="pre">fps</span> <span class="pre">&gt;=</span> <span class="pre">4.5</span></code> on an <em>Intel core 8</em> CPU.</p>
+<p>Github repository: <a class="reference external" href="https://github.com/ahmedheakl/drone-vis">https://github.com/ahmedheakl/drone-vis</a></p>
+<p>Check out the <a class="reference internal" href="guides/install.html"><span class="doc">Installation</span></a> section for further information, including how to
+install the project.</p>
+<section id="main-features">
+<h2>Main Features<a class="headerlink" href="#main-features" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Unified state-of-the art computer vision algoritms</p></li>
+<li><p>Full control over the drone</p></li>
+<li><p>PEP8 compliant (unified code style)</p></li>
+<li><p>Documented functions and classes</p></li>
+<li><p>Tests, high code coverage and type hints</p></li>
+<li><p>Clean code</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.hover">
-<span class="sig-name descname"><span class="pre">hover</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.hover" title="Permalink to this definition"></a></dt>
-<dd><p>Make the drone stationary</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.emergency">
-<span class="sig-name descname"><span class="pre">emergency</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.emergency" title="Permalink to this definition"></a></dt>
-<dd><p>Enter in emergency mode
-:returns: a flag for valid execution
-:rtype: str</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.stop" title="Permalink to this definition"></a></dt>
-<dd><p>Stop the drone</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.set_callback">
-<span class="sig-name descname"><span class="pre">set_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.set_callback" title="Permalink to this definition"></a></dt>
-<dd><p>Set the callback function</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.reset">
-<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.reset" title="Permalink to this definition"></a></dt>
-<dd><p>Reset the state of the drone</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a flag for valid execution</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.bin2dec">
-<span class="sig-name descname"><span class="pre">bin2dec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.bin2dec" title="Permalink to this definition"></a></dt>
-<dd><p>Convert a binary number to an int</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bin</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – binary string</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>value of the result integer</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.float2dec">
-<span class="sig-name descname"><span class="pre">float2dec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_float</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.float2dec" title="Permalink to this definition"></a></dt>
-<dd><p>Convert a python float to an int</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>my_float</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – input float</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>value of the result integer</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="dronevis.drone_connect.drone.Drone.check_telnet">
-<span class="sig-name descname"><span class="pre">check_telnet</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#dronevis.drone_connect.drone.Drone.check_telnet" title="Permalink to this definition"></a></dt>
-<dd><p>Check if we can connect to telnet</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>flag whether there is a valid connection</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<div class="toctree-wrapper compound">
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This project is under active development.</p>
 </div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/install.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/install.html#windows-10">Windows 10</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/install.html#linux">Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/install.html#development-version">Development version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/install.html#dockerinstall">Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guides/quickstart.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/quickstart.html#graphical-user-interface">1. Graphical User Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/quickstart.html#command-line-interface">1. Command-Line Interface</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Connections:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="connection/drone.html">Drone</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="connection/drone.html#drone-class">Drone class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="connection/command.html">Command Thread</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="connection/command.html#sending-commands">Sending Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection/command.html#command-class">Command Class</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="connection/video.html">Video Thread</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="connection/video.html#video-specs">Video Specs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="connection/video.html#command-class">Command Class</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
 </section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h1>
@@ -449,7 +146,9 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="guides/install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

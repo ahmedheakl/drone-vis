@@ -1,6 +1,6 @@
 gluoncv>=0.10.5
 matplotlib>=3.5.3
-mxnet>=1.9.1
+mxnet>=1.9.0
 numpy>=1.17.4
 opencv_python>=4.6.0.66
 Pillow>=9.3.0

@@ -6,11 +6,45 @@
 Welcome to DroneVis's documentation!
 ====================================
 
-.. autoclass:: dronevis.drone_connect.drone.Drone
+Full compatible drone library to automate computer vision algorithms on parrot drones. The library and computer vision alogirthms were built with real-time constraints on-mind. 
+
+All of the implemented real-time data, inference, and detection achieve a minimum ``fps >= 4.5`` on an *Intel core 8* CPU.
+
+Github repository: https://github.com/ahmedheakl/drone-vis
+
+Check out the :doc:`guides/install` section for further information, including how to
+install the project.
+
+Main Features
+--------------
+
+- Unified state-of-the art computer vision algoritms
+- Full control over the drone
+- PEP8 compliant (unified code style)
+- Documented functions and classes
+- Tests, high code coverage and type hints
+- Clean code
+
+.. note::
+
+   This project is under active development.
+
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: User Guide
+
+   guides/install
+   guides/quickstart
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Connections:
+
+   connection/drone
+   connection/command
+   connection/video
 
 
 
