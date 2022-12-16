@@ -25,6 +25,63 @@ Main Features
 - Tests, high code coverage and type hints
 - Clean code
 
++------------------------+------------+----------+----------+
+| Header row, column 1   | Header 2   | Header 3 | Header 4 |
+| (header rows optional) |            |          |          |
++========================+============+==========+==========+
+| body row 1, column 1   | column 2   | column 3 | column 4 |
++------------------------+------------+----------+----------+
+| body row 2             | ...        | ...      |          |
++------------------------+------------+----------+----------+
+
+.. |check_| raw:: html
+
+    <input checked=""  disabled="" type="checkbox">
+
+.. |uncheck_| raw:: html
+
+    <input disabled="" type="checkbox">
+
+.. raw:: html
+
+   <details>
+   <summary><a style="font-size: 1.15em">Drone Control</a></summary>
+
+- |check_| Right
+- |check_| Left
+- |check_| Up
+- |check_| Down
+- |check_| Back
+- |check_| Forward
+- |check_| Reset
+- |check_| Emergency
+- |check_| Takeoff
+- |check_| Hover
+- |check_| Land
+- |check_| Caliberate
+- |uncheck_|  Flip
+
+.. raw:: html
+
+   </details>
+
+
+.. raw:: html
+
+   <details>
+   <summary><a style="font-size: 1.15em">Detection Models</a></summary>
+
+- |check_| Faster R-CNN
+- |check_| CenterNet
+- |check_| YOLO
+- |check_| SSD
+
+.. raw:: html
+
+   </details>
+
+|
+
 .. note::
 
    This project is under active development.
@@ -46,6 +103,13 @@ Main Features
    connection/drone
    connection/command
    connection/video
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Detection
+
+   detection/detect_algo
+
 
 
 

@@ -234,6 +234,7 @@ class Drone():
 
     def emergency(self) -> bool:
         """Enter in emergency mode
+        
         Returns:
            str: a flag for valid execution
         """

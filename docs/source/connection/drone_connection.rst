@@ -82,4 +82,4 @@ For example, you can create a callback ``print_navdata``, and bind it to the inc
     drone.set_callback(print_navdata) # bind callback
     sleep(5)      # wait for 5 seconds
     drone.stop()
-
+    

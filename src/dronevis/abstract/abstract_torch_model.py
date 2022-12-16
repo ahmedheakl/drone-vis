@@ -12,11 +12,16 @@ from dronevis.config.config import COCO_NAMES
 
 
 class TorchDetectionModel(CVModel):
-    """Base class for creating custom PyTorch models.
-    To use the abstract class just inherit it, and override
-    the abstract method.
+    """Base class (inherits from CV abstract model) for creating custom PyTorch models.
+    To use the abstract class just inherit it, and override the abstract method.
     """    
     def __init__(self) -> None:
+        """Construct torch models, and detect device for inference (cuda or cpu).
+        
+        Torch detection models are assumed to be trained on `COCO dataset <https://cocodataset.org/>`_.
+        In addition, torch can detect if you have an available GPU. The property ``device``, contains the device
+        that will be used for inference. You can change the device by changing the ``device`` property. 
+        """
         self.coco_names = COCO_NAMES
 
         self.COLORS = np.random.uniform(0, 255, size=(len(self.coco_names), 3))
@@ -29,7 +34,8 @@ class TorchDetectionModel(CVModel):
         pass
 
     def predict(self, image, detection_threshold=0.7):
-        """Predict all classes in an image using FasterRCNN model
+        """Predict all classes in an image using torch model
+        
         Args:
             image(np.ndarray): video frame or image to predict the classes in it.
             detection_threshold(float): thershold to determine if the calss will be taken or not.
@@ -68,7 +74,7 @@ class TorchDetectionModel(CVModel):
         return self.transform(to_pil_image(img)).to(self.device)
     
     def draw_boxes(self, boxes: np.ndarray, classes: List, labels: torch.Tensor, image):
-        """Draw boxes for the predicted classes in an image using FasterRCNN model
+        """Draw boxes for the predicted classes in an image using torch model
 
         Args:
             boxes(np.ndarray): predicted boxes returned by predict function
@@ -99,8 +105,9 @@ class TorchDetectionModel(CVModel):
     
     
     def transform_and_load_img(self, img_path, output_path):
-        """Detecting objects in a given image using FasterRCNN model
-            (to quit running this function press 'q')
+        """Detecting objects in a given image using torch model
+        
+        *(to quit running this function press 'q')*
 
         Args:
             img_path (str): path of the image to load
@@ -114,8 +121,15 @@ class TorchDetectionModel(CVModel):
         cv2.waitKey(0)
         
     def detect_webcam(self, video_index=0, window_name="Cam Detection") -> None:
-        """Detecting objects with a webcam using FasterRCNN model
-        (to quit running this function press 'q')"""
+        """Detecting objects with a webcam using torch model
+        *(to quit running this function press 'q')*
+        
+        The stream is retrieved and decoded using `opencv library <https://opencv.org/>`_.
+
+        Args:
+            video_index (int, optional): device index used to retrieve video stream, it can be an index or an IP. Defaults to 0.
+            window_name (str, optional): name of video stream window. Defaults to "Cam Detection".
+        """
 
         cap = cv2.VideoCapture(video_index)
         if not cap.isOpened():
@@ -147,6 +161,14 @@ class TorchDetectionModel(CVModel):
         cv2.destroyAllWindows()
         
     def frame_detection(self, frame):
+        """Detect a single frame of a video stream
+
+        Args:
+            frame (np.array): input frame
+
+        Returns:
+            Tuple[np.array, float]: image with detection results and wait time between frames
+        """
         start_time = time.time()
         with torch.no_grad():
             _, _, _, image = self.predict(frame, 0.7)

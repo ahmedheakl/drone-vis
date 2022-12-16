@@ -48,6 +48,10 @@
 <li class="toctree-l1"><a class="reference internal" href="connection/command.html">Command Thread</a></li>
 <li class="toctree-l1"><a class="reference internal" href="connection/video.html">Video Thread</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Detection</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="detection/detect_algo.html">Detection Algorithms</a></li>
+</ul>
 
         </div>
       </div>
@@ -77,14 +81,17 @@
 
 <div class="genindex-jumpbox">
  <a href="#_"><strong>_</strong></a>
+ | <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#N"><strong>N</strong></a>
+ | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
@@ -95,14 +102,26 @@
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="connection/command.html#dronevis.drone_connect.command.Command.__init__">__init__() (dronevis.drone_connect.command.Command method)</a>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel.__init__">__init__() (dronevis.abstract.abstract_gluoncv_model.GluonCVModel method)</a>
 
       <ul>
+        <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.__init__">(dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
+</li>
+        <li><a href="connection/command.html#dronevis.drone_connect.command.Command.__init__">(dronevis.drone_connect.command.Command method)</a>
+</li>
         <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.__init__">(dronevis.drone_connect.drone.Drone method)</a>
 </li>
         <li><a href="connection/video.html#dronevis.drone_connect.video.Video.__init__">(dronevis.drone_connect.video.Video method)</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel.add_bounding_box">add_bounding_box() (dronevis.abstract.abstract_gluoncv_model.GluonCVModel method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -135,16 +154,26 @@
 </li>
       <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.connect">connect() (dronevis.drone_connect.drone.Drone method)</a>
 </li>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_model.CVModel">CVModel (class in dronevis.abstract.abstract_model)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.down">down() (dronevis.drone_connect.drone.Drone method)</a>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel.detect_webcam">detect_webcam() (dronevis.abstract.abstract_gluoncv_model.GluonCVModel method)</a>
+
+      <ul>
+        <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.detect_webcam">(dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.down">down() (dronevis.drone_connect.drone.Drone method)</a>
+</li>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.draw_boxes">draw_boxes() (dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
+</li>
       <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone">Drone (class in dronevis.drone_connect.drone)</a>
 </li>
   </ul></td>
@@ -167,6 +196,20 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.forward">forward() (dronevis.drone_connect.drone.Drone method)</a>
 </li>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.frame_detection">frame_detection() (dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel.get_model_options">get_model_options() (dronevis.abstract.abstract_gluoncv_model.GluonCVModel method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel">GluonCVModel (class in dronevis.abstract.abstract_gluoncv_model)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -183,11 +226,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.land">land() (dronevis.drone_connect.drone.Drone method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.left">left() (dronevis.drone_connect.drone.Drone method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.list_config">list_config() (dronevis.drone_connect.drone.Drone method)</a>
+</li>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel.load_model">load_model() (dronevis.abstract.abstract_gluoncv_model.GluonCVModel method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -197,6 +242,22 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.navigate">navigate() (dronevis.drone_connect.drone.Drone method)</a>
 </li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel.plot_bounding_box">plot_bounding_box() (dronevis.abstract.abstract_gluoncv_model.GluonCVModel method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel.predict">predict() (dronevis.abstract.abstract_gluoncv_model.GluonCVModel method)</a>
+
+      <ul>
+        <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.predict">(dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -246,6 +307,14 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.takeoff">takeoff() (dronevis.drone_connect.drone.Drone method)</a>
+</li>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel">TorchDetectionModel (class in dronevis.abstract.abstract_torch_model)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.transform_and_load_img">transform_and_load_img() (dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
+</li>
+      <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.transform_img">transform_img() (dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
 </li>
   </ul></td>
 </tr></table>

@@ -1,4 +1,4 @@
-from dronevis.abstract.base_gluoncv_model import GluonCVModel
+from dronevis.abstract.abstract_gluoncv_model import GluonCVModel
 from gluoncv import data
 import numpy as np
 import mxnet as mx

@@ -1,5 +1,5 @@
 from gluoncv import data
-from dronevis.abstract.base_gluoncv_model import GluonCVModel
+from dronevis.abstract.abstract_gluoncv_model import GluonCVModel
 import mxnet as mx
 import numpy as np
 
@@ -19,9 +19,9 @@ class SSD(GluonCVModel):
             img (np.ndarray): input image
 
         Returns:
-            Tuple[mxnet.NDArray, np.ndarray]: A (1, 3, H, W) mxnet NDArray as input to network,
-                                              and a numpy ndarray as original un-normalized color
-                                              image for display
+            Tuple[mxnet.NDArray, np.ndarray]: A (1, 3, H, W) mxnet NDArray as
+                input to network, and a numpy ndarray as original un-normalized
+                color image for display
         """
         return data.transforms.presets.ssd.transform_test(
             mx.nd.array(img), short=self.short_size
@@ -34,6 +34,7 @@ class SSD(GluonCVModel):
             img_path (str): path of the img on disk
 
         Returns:
-            (mx.NDArray, np.ndarray): input-ready image for inference, original image non-normalized
+            (mx.NDArray, np.ndarray): input-ready image for inference,
+                original image non-normalized
         """
         return data.transforms.presets.ssd.load_test(img_path, short=self.short_size)

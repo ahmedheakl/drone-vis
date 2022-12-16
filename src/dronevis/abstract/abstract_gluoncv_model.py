@@ -7,9 +7,11 @@ import cv2
 import time
 
 class GluonCVModel(CVModel):
-    """Base class for creating custom gluoncv models.
-    To use the abstract class just inherit it, and override
-    the abstract method.
+    """Base class (inherits from CV abstract model) for creating custom gluoncv models.
+    To use the abstract class just inherit it, and override the following abstract methods:
+    
+    - ``transform_img``: transform input image to be fed into model for inference
+    - ``load_and_transform_img``: load image from given path and transform it
     """
     
     def __init__(self, model_name: str, short_size: int=512) -> None:
@@ -61,6 +63,15 @@ class GluonCVModel(CVModel):
         return labelled_img
 
     def plot_bounding_box(self, img):
+        """Show bounding boxes on input on ``matplotlib`` window
+        
+        .. note::
+            
+            You must run the inference in the input image first
+            
+        Args:
+            img (np.array): input_image
+        """
         assert (
             self.net
         ), "You need to load the model first. Please run load_model method."
@@ -129,7 +140,7 @@ class GluonCVModel(CVModel):
     
     def detect_webcam(self, video_index=0, window_name: str="Cam Detection") -> None:
         """Detecting objects with a webcam using current model
-        (to quit running this function press 'q')
+        *(to quit running this function press 'q')*
 
         Args:
             video_index (int | str, optional): index of cam, can be a `url`. Defaults to 0.
