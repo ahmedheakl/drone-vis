@@ -12,6 +12,12 @@ from dronevis.gui.navdata_frame import DataFrame
 
 class DroneVisGui:
     def __init__(self, drone=None):
+        """Contruct new GUI window
+
+        Args:
+            drone (dronevis.Drone, optional): drone instance for connection.
+                If the you don't provide an instance a demo will be run. Defaults to None.
+        """
         window = Tk()
         self.drone = drone
         self.window = window
@@ -45,6 +51,11 @@ class DroneVisGui:
         self.init_frames()
         
     def axis_config(self, ax):
+        """Set the axis paramets for height graph
+
+        Args:
+            ax (plt.ax): matplotlib axis
+        """
         ax.legend(['height'])
         ax.set_xlabel('Time')
         ax.set_ylabel("Height") 
@@ -62,6 +73,8 @@ class DroneVisGui:
         ax.set_xlim([0, 20])
         
     def on_plot(self):
+        """Handles heights points and graph them
+        """
         if self.ax is None:
             figure3 = plt.Figure(figsize=(5, 4), dpi=90)
             figure3.set_facecolor(MAIN_COLOR)
@@ -95,6 +108,8 @@ class DroneVisGui:
         self.window.after(int(self.step_index * 50), self.on_plot)
         
     def init_frames(self):
+        """Initialize main frames for the GUI
+        """
         frm_left = Frame(master=self.window)
         frm_right = Frame(master=self.window)
 
@@ -393,12 +408,21 @@ class DroneVisGui:
         frm_right.grid(row=0, column=1, sticky="nsew")
         
     def on_close_window(self):
+        """Event handler for closing the GUI window
+        
+        It stop the drone connection and destroyes and GUI window
+        """
         if self.drone.is_connected:
             print("Closing drone connection...")
             self.drone.stop()
         self.window.destroy()
         
     def on_drone_connect(self, e):
+        """Event handler for drone connection
+
+        Args:
+            e (tkiner.Event): event for pressing on start button
+        """
         # TODO: add is_connected
         self.btn_connect["text"] = "Connected"
         self.btn_connect["background"] = GREEN_COLOR
@@ -413,12 +437,19 @@ class DroneVisGui:
             lbls[i].cpb.change(angle, text)
         
     def on_navdata(self, navdata):
+        """Callback handler to retrieve navdata from drone instance
+
+        Args:
+            navdata (dict): navigation data dictionary
+        """
         battery_percentage = int(navdata["navdata_demo"]["battery_percentage"])  
         self.pb_battery["value"] = battery_percentage
         
         self.lbl_battery_percentage["text"] = f"{battery_percentage}%"
         
     def on_stream(self):
+        """Event handler for pressing on stream button
+        """
         if self.is_stream:
             self.btn_video_stream["text"] = "Stream"
             b = hasattr(self.drone, "video_thread")

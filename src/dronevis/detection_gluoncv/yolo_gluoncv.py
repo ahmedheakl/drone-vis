@@ -4,12 +4,12 @@ import mxnet as mx
 import numpy as np
 
 
-class Yolo(GluonCVModel):
+class YOLO(GluonCVModel):
     def __init__(self) -> None:
-        super(Yolo, self).__init__(model_name="yolo")
+        super(YOLO, self).__init__(model_name="yolo")
 
     def load_model(self, model_path: str = "yolo3_darknet53_voc"):
-        print("Loading Yolo model ...")
+        print("Loading YOLO model ...")
         super().load_model(model_path=model_path)
 
     def transform_img(self, img: np.ndarray):

@@ -20,8 +20,8 @@ class SSD(GluonCVModel):
 
         Returns:
             Tuple[mxnet.NDArray, np.ndarray]: A (1, 3, H, W) mxnet NDArray as
-                input to network, and a numpy ndarray as original un-normalized
-                color image for display
+            input to network, and a numpy ndarray as original un-normalized
+            color image for display
         """
         return data.transforms.presets.ssd.transform_test(
             mx.nd.array(img), short=self.short_size
@@ -35,6 +35,6 @@ class SSD(GluonCVModel):
 
         Returns:
             (mx.NDArray, np.ndarray): input-ready image for inference,
-                original image non-normalized
+            original image non-normalized
         """
         return data.transforms.presets.ssd.load_test(img_path, short=self.short_size)

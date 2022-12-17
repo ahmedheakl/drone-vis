@@ -7,7 +7,7 @@ from dronevis.abstract.abstract_torch_model import TorchDetectionModel
 
 class SSD(TorchDetectionModel):
     def __init__(self) -> None:
-        """Initialize faster R-CNN model"""
+        """Initialize SSD model and load weights"""
         super(SSD, self).__init__()        
         self.weights = SSDLite320_MobileNet_V3_Large_Weights.DEFAULT
         self.transform = self.weights.transforms()

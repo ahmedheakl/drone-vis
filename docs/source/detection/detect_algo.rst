@@ -149,9 +149,9 @@ However, each inherited model must implement the ``transform_img`` and ``load_an
                 img (np.ndarray): input image
 
             Returns:
-                Tuple[mxnet.NDArray, np.ndarray]: A (1, 3, H, W) mxnet NDArray as input to network,
-                                                and a numpy ndarray as original un-normalized color
-                                                image for display
+                Tuple[mxnet.NDArray, np.ndarray]: A (1, 3, H, W) mxnet NDArray as input
+                    to network, and a numpy ndarray as original un-normalized color
+                    image for display
             """
             pass
 
@@ -162,7 +162,8 @@ However, each inherited model must implement the ``transform_img`` and ``load_an
                 img_path (str): path of the img on disk
 
             Returns:
-                (mx.NDArray, np.ndarray): input-ready image for inference, original image non-normalized
+                (mx.NDArray, np.ndarray): input-ready image for inference,
+                    original image non-normalized
             """
             pass
     

@@ -16,7 +16,7 @@ Check out the :doc:`guides/install` section for further information, including h
 install the project.
 
 Main Features
-~~~~~~~~~~~~~
+-------------
 
 - Unified state-of-the art computer vision algoritms
 - Full control over the drone
@@ -24,63 +24,26 @@ Main Features
 - Documented functions and classes
 - Tests, high code coverage and type hints
 - Clean code
+- Multiple implementations for the same models
 
-+------------------------+------------+----------+----------+
-| Header row, column 1   | Header 2   | Header 3 | Header 4 |
-| (header rows optional) |            |          |          |
-+========================+============+==========+==========+
-| body row 1, column 1   | column 2   | column 3 | column 4 |
-+------------------------+------------+----------+----------+
-| body row 2             | ...        | ...      |          |
-+------------------------+------------+----------+----------+
++-------------------+----------------------+----------------+
+| Drone Control     | Detection Models     | Human Counting |
++===================+======================+================+
+| Right, Left       | Faster R-CNN         | CSRNet         |
++-------------------+----------------------+----------------+
+| Up, Down          | CenterNet            | ...            |
++-------------------+----------------------+----------------+
+| Forward, Back     | YOLO                 | ...            |
++-------------------+----------------------+----------------+
+| Takeoff, Land     | Single Shot Detector | ...            |
++-------------------+----------------------+----------------+
+| Reset, Emergency  | ...                  | ...            |
++-------------------+----------------------+----------------+
+| Rotate Left/Right | ...                  | ...            |
++-------------------+----------------------+----------------+
+| Hover, Caliberate | ...                  | ...            |
++-------------------+----------------------+----------------+
 
-.. |check_| raw:: html
-
-    <input checked=""  disabled="" type="checkbox">
-
-.. |uncheck_| raw:: html
-
-    <input disabled="" type="checkbox">
-
-.. raw:: html
-
-   <details>
-   <summary><a style="font-size: 1.15em">Drone Control</a></summary>
-
-- |check_| Right
-- |check_| Left
-- |check_| Up
-- |check_| Down
-- |check_| Back
-- |check_| Forward
-- |check_| Reset
-- |check_| Emergency
-- |check_| Takeoff
-- |check_| Hover
-- |check_| Land
-- |check_| Caliberate
-- |uncheck_|  Flip
-
-.. raw:: html
-
-   </details>
-
-
-.. raw:: html
-
-   <details>
-   <summary><a style="font-size: 1.15em">Detection Models</a></summary>
-
-- |check_| Faster R-CNN
-- |check_| CenterNet
-- |check_| YOLO
-- |check_| SSD
-
-.. raw:: html
-
-   </details>
-
-|
 
 .. note::
 
@@ -89,7 +52,7 @@ Main Features
 
 .. toctree::
    :maxdepth: 2
-   :caption: User Guides
+   :caption: User Guide
 
    guides/install
    guides/quickstart
@@ -109,9 +72,17 @@ Main Features
    :caption: Detection
 
    detection/detect_algo
+   detection/ssd
+   detection/yolo
+   detection/centernet
+   detection/fasterrcnn
 
+.. toctree::
+   :maxdepth: 2
+   :caption: User Interfaces
 
-
+   interfaces/gui
+   interfaces/commandline
 
 Indices and tables
 ==================

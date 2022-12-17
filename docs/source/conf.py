@@ -28,7 +28,7 @@ extensions = [
     'sphinxcontrib.napoleon'
 ]
 
-pdf_documents = [('index', u'highrldocs', u'Highl Docs', u'Ahmed Heakl'),]
+pdf_documents = [('index', u'dronevisdocs', u'DroneVis Docs', u'Ahmed Heakl'),]
 pdf_stylesheets = ['twocolumn']
 autodoc_default_options = {
     'members': True,
