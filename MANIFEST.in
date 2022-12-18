@@ -1,2 +1,3 @@
 include src/dronevis/assets/*
 include requirements.txt
+include src/dronevis/drone_connect/drone-vis.code-workspace
