@@ -1,8 +1,10 @@
-from dronevis.abstract import CVModel
-import cv2
+"""Module for pose estimation and single-instance human segmentation"""
+
 import time
+from dronevis.abstract import CVModel
 import mediapipe as mp
 import numpy as np
+import cv2
 
 BG_COLOR = (0, 2, 102)
 PERSON_BG_COLOR = (168, 29, 54)
@@ -19,6 +21,7 @@ class PoseSegEstimation(CVModel):
     def __init__(self):
         self.pose_module = mp.solutions.pose
         self.drawer = mp.solutions.drawing_utils
+        self.net = None
 
     def load_model(self):
         """Load model from weights associated with mediapipe"""
@@ -47,6 +50,7 @@ class PoseSegEstimation(CVModel):
             Tuple[np.array, ...]: output image with keypoints drawn, segmented image
             segmented image with pose points
         """
+        assert self.net, "You need to load the model first. Please run ``load_model``."
         image = self.transform_img(image)
         res = self.net.process(image)
         seg_image = image.copy()
@@ -71,7 +75,9 @@ class PoseSegEstimation(CVModel):
 
     def detect_webcam(self, video_index=0, window_name="Pose", is_seg=False):
         """Start webcam pose estimation from video_index
-        *(to quit this function, press ``q``)*
+        *(to quit running this function press 'q')*
+
+        The stream is retrieved and decoded using `opencv library <https://opencv.org/>`_.
 
         Args:
             video_index (int | str, optional): index of video stream device. Defaults to 0.
@@ -101,7 +107,7 @@ class PoseSegEstimation(CVModel):
             if is_seg:
                 cv2.imshow(window_name + "Segmentation", seg)
                 cv2.imshow("Segmented Pose", seg_pose)
-                
+
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
