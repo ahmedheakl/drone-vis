@@ -1,4 +1,5 @@
 <p><img src="https://badge.fury.io/py/dronevis.svg">
+<img src="https://readthedocs.org/projects/drone-vis/badge/?version=latest">
 <img src="https://github.com/ahmedheakl/drone-vis/workflows/build/badge.svg">
 <img src="https://img.shields.io/badge/code%20style-black-000000.svg"></p>
 
