@@ -79,6 +79,12 @@ Main Features
 
 .. toctree::
    :maxdepth: 2
+   :caption: Pose Estimation and Segmentation
+
+   pose/pose
+
+.. toctree::
+   :maxdepth: 2
    :caption: User Interfaces
 
    interfaces/gui

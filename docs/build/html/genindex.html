@@ -56,6 +56,10 @@
 <li class="toctree-l1"><a class="reference internal" href="detection/centernet.html">CenterNet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="detection/fasterrcnn.html">Faster R-CNN</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Pose Estimation and Segmentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pose/pose.html">Pose Estimation and Human Segmentation</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">User Interfaces</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="interfaces/gui.html">Graphical User Interface</a></li>
@@ -146,6 +150,8 @@
 </li>
         <li><a href="interfaces/gui.html#dronevis.gui.main_button.MainButton.__init__">(dronevis.gui.main_button.MainButton method)</a>
 </li>
+        <li><a href="pose/pose.html#dronevis.pose.PoseSegEstimation.__init__">(dronevis.pose.PoseSegEstimation method)</a>
+</li>
       </ul></li>
   </ul></td>
 </tr></table>
@@ -210,11 +216,13 @@
       <ul>
         <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.detect_webcam">(dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
 </li>
-      </ul></li>
-      <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.down">down() (dronevis.drone_connect.drone.Drone method)</a>
+        <li><a href="pose/pose.html#dronevis.pose.PoseSegEstimation.detect_webcam">(dronevis.pose.PoseSegEstimation method)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.down">down() (dronevis.drone_connect.drone.Drone method)</a>
+</li>
       <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.draw_boxes">draw_boxes() (dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
 </li>
       <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone">Drone (class in dronevis.drone_connect.drone)</a>
@@ -314,6 +322,8 @@
 </li>
         <li><a href="detection/ssd.html#dronevis.detection_torch.ssd_torch.SSD.load_model">(dronevis.detection_torch.ssd_torch.SSD method)</a>
 </li>
+        <li><a href="pose/pose.html#dronevis.pose.PoseSegEstimation.load_model">(dronevis.pose.PoseSegEstimation method)</a>
+</li>
       </ul></li>
   </ul></td>
 </tr></table>
@@ -377,12 +387,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel.plot_bounding_box">plot_bounding_box() (dronevis.abstract.abstract_gluoncv_model.GluonCVModel method)</a>
 </li>
+      <li><a href="pose/pose.html#dronevis.pose.PoseSegEstimation">PoseSegEstimation (class in dronevis.pose)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel.predict">predict() (dronevis.abstract.abstract_gluoncv_model.GluonCVModel method)</a>
 
       <ul>
         <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.predict">(dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
+</li>
+        <li><a href="pose/pose.html#dronevis.pose.PoseSegEstimation.predict">(dronevis.pose.PoseSegEstimation method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -445,8 +459,6 @@
 </li>
       <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.transform_and_load_img">transform_and_load_img() (dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.transform_img">transform_img() (dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
 
       <ul>
@@ -455,6 +467,8 @@
         <li><a href="detection/ssd.html#dronevis.detection_gluoncv.ssd_gluoncv.SSD.transform_img">(dronevis.detection_gluoncv.ssd_gluoncv.SSD method)</a>
 </li>
         <li><a href="detection/yolo.html#dronevis.detection_gluoncv.yolo_gluoncv.YOLO.transform_img">(dronevis.detection_gluoncv.yolo_gluoncv.YOLO method)</a>
+</li>
+        <li><a href="pose/pose.html#dronevis.pose.PoseSegEstimation.transform_img">(dronevis.pose.PoseSegEstimation method)</a>
 </li>
       </ul></li>
   </ul></td>
