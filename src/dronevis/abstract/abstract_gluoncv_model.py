@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 import time
+from dronevis.utils.image_process import write_fps
 
 class GluonCVModel(CVModel):
     """Base class (inherits from CV abstract model) for creating custom gluoncv models.
@@ -158,17 +159,8 @@ class GluonCVModel(CVModel):
             image = self.predict(img, x)
             end_time = time.time()
             fps = 1 / (end_time - start_time)
-            cv2.putText(
-                image,
-                f"{fps:.3f} FPS",
-                (15, 30),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (0, 255, 0),
-                2,
-            )
             wait_time = max(1, int(fps / 4))
-            cv2.imshow(window_name, image)
+            cv2.imshow(window_name, write_fps(image, fps))
             if cv2.waitKey(wait_time) & 0xFF == ord("q"):
                 break
 

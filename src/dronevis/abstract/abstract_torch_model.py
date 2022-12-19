@@ -8,6 +8,7 @@ from typing import List
 from PIL import Image
 import time
 from dronevis.config.config import COCO_NAMES
+from dronevis.utils.image_process import write_fps
 
 
 
@@ -134,26 +135,17 @@ class TorchDetectionModel(CVModel):
         cap = cv2.VideoCapture(video_index)
         if not cap.isOpened():
             print("Error while trying to read video. Please check path again")
-
+        prev_time = 0
         while cap.isOpened():
             _, frame = cap.read()
-            start_time = time.time()
             with torch.no_grad():
                 _, _, _, image = self.predict(frame, 0.7)
-            end_time = time.time()
-            fps = 1 / (end_time - start_time)
-            cv2.putText(
-                image,
-                f"{fps:.3f} FPS",
-                (15, 30),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (0, 255, 0),
-                2,
-            )
+            cur_time = time.time()
+            fps = 1 / (cur_time - prev_time)
             wait_time = max(1, int(fps / 4))
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            cv2.imshow(window_name, image)
+            cv2.imshow(window_name, write_fps(image, fps))
+            prev_time = cur_time
             if cv2.waitKey(wait_time) & 0xFF == ord("q"):
                 break
 

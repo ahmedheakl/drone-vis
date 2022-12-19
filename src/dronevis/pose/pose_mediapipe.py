@@ -5,6 +5,7 @@ from dronevis.abstract import CVModel
 import mediapipe as mp
 import numpy as np
 import cv2
+from dronevis.utils.image_process import write_fps
 
 BG_COLOR = (0, 2, 102)
 PERSON_BG_COLOR = (168, 29, 54)
@@ -94,16 +95,7 @@ class PoseSegEstimation(CVModel):
             cur_time = time.time()
             fps = 1 / (cur_time - prev_time)
             prev_time = cur_time
-            cv2.putText(
-                image,
-                str(int(fps)),
-                (70, 50),
-                cv2.FONT_HERSHEY_PLAIN,
-                3,
-                (255, 0, 0),
-                3,
-            )
-            cv2.imshow(window_name, image)
+            cv2.imshow(window_name, write_fps(image, fps))
             if is_seg:
                 cv2.imshow(window_name + "Segmentation", seg)
                 cv2.imshow("Segmented Pose", seg_pose)
@@ -113,3 +105,8 @@ class PoseSegEstimation(CVModel):
 
         cv2.destroyAllWindows()
         cap.release()
+
+if __name__ == "__main__":
+    model = PoseSegEstimation()
+    model.load_model()
+    model.detect_webcam(is_seg=True)
