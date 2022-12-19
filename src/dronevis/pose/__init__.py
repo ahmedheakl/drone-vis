@@ -1,1 +1,1 @@
-from dronevis.pose.pose_mediapipe import PoseEstimation
+from dronevis.pose.pose_mediapipe import PoseSegEstimation

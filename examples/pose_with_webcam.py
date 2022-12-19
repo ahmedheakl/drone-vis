@@ -1,5 +1,5 @@
-from dronevis.pose import PoseEstimation
+from dronevis.pose import PoseSegEstimation
 
-model = PoseEstimation()
+model = PoseSegEstimation()
 model.load_model()
-model.detect_webcam()
+model.detect_webcam(is_seg=True)
