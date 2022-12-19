@@ -74,13 +74,13 @@ To pull our docker image ``ahmedheakl/dronevis``:abbr:
 
 .. code-block:: console
 
-    docker pull ahmedheakl/dronevis
+    $ docker pull ahmedheakl/dronevis
 
 
 To run the image with interactive terminal: 
 
 .. code-block:: console
 
-    docker run -it ahmedheakl/dronevis:latest
+    $ docker run -it ahmedheakl/dronevis
 
 You can now start running your favourites computer vision alogrithms. 
