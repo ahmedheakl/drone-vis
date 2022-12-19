@@ -12,5 +12,9 @@
 <img src="https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge" height=20>
 </p>
 
+**`Documentation`** |
+------------------- |
+[![Documentation](https://img.shields.io/badge/api-reference-blue.svg)](https://www.drone-vis.readthedocs.io/en/latest) |
+
 # DroneVis: Full compatible drone library to automate computer vision algorithms on parrot drones.
 
