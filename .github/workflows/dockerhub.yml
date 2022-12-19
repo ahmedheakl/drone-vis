@@ -3,7 +3,7 @@ name: dockerhub
 on:
   push:
     branches:
-      - "feat/docker"
+      - "release"
 
 jobs:
   build:
@@ -26,6 +26,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./Dockerfile
+          file: ./docker/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/dronevis:latest

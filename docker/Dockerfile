@@ -5,4 +5,4 @@ WORKDIR /home/dronevis
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends software-properties-common
 RUN apt install -y python3-pip
-RUN pip install -e .
+RUN pip install .
