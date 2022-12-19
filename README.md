@@ -1,5 +1,5 @@
 <p>
-<img src="https://badge.fury.io/py/dronevis.svg)](https://badge.fury.io/py/dronevis">
+<img src="https://badge.fury.io/py/dronevis.svg">
 <img src="https://github.com/ahmedheakl/drone-vis/workflows/build/badge.svg">
 <img src="https://img.shields.io/badge/code%20style-black-000000.svg">
 <img src="https://img.shields.io/badge/gitlab%20ci-%23181717.svg?style=for-the-badge&logo=gitlab&logoColor=white" height=20>
