@@ -68,6 +68,19 @@ To contribute to DroneVis, with support for running tests and building the docum
 Docker
 ------
 
-.. note:: 
-    
-    Still under development.
+You can now `install docker <https://docs.docker.com/get-docker/>`_ on your platform, and pull our image from ``docker hub`` and start working right-away. 
+
+To pull our docker image ``ahmedheakl/dronevis``:abbr:
+
+.. code-block:: console
+
+    docker pull ahmedheakl/dronevis
+
+
+To run the image with interactive terminal: 
+
+.. code-block:: console
+
+    docker run -it ahmedheakl/dronevis:latest
+
+You can now start running your favourites computer vision alogrithms. 
