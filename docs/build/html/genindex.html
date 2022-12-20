@@ -60,6 +60,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pose/pose.html">Pose Estimation and Human Segmentation</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Face Detection</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="face_detect/face_detect.html">Face Detection</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">User Interfaces</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="interfaces/gui.html">Graphical User Interface</a></li>
@@ -140,6 +144,8 @@
 </li>
         <li><a href="connection/video.html#dronevis.drone_connect.video.Video.__init__">(dronevis.drone_connect.video.Video method)</a>
 </li>
+        <li><a href="face_detect/face_detect.html#dronevis.face_detection.FaceDetectModel.__init__">(dronevis.face_detection.FaceDetectModel method)</a>
+</li>
         <li><a href="interfaces/gui.html#dronevis.gui.circular_progressbar.CircularProgressbar.__init__">(dronevis.gui.circular_progressbar.CircularProgressbar method)</a>
 </li>
         <li><a href="interfaces/gui.html#dronevis.gui.image_button.ImageButton.__init__">(dronevis.gui.image_button.ImageButton method)</a>
@@ -216,6 +222,8 @@
       <ul>
         <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.detect_webcam">(dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
 </li>
+        <li><a href="face_detect/face_detect.html#dronevis.face_detection.FaceDetectModel.detect_webcam">(dronevis.face_detection.FaceDetectModel method)</a>
+</li>
         <li><a href="pose/pose.html#dronevis.pose.PoseSegEstimation.detect_webcam">(dronevis.pose.PoseSegEstimation method)</a>
 </li>
       </ul></li>
@@ -243,12 +251,14 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="detection/fasterrcnn.html#dronevis.detection_torch.faster_rcnn_torch.FasterRCNN">FasterRCNN (class in dronevis.detection_torch.faster_rcnn_torch)</a>
+      <li><a href="face_detect/face_detect.html#dronevis.face_detection.FaceDetectModel">FaceDetectModel (class in dronevis.face_detection)</a>
 </li>
-      <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.float2dec">float2dec() (dronevis.drone_connect.drone.Drone method)</a>
+      <li><a href="detection/fasterrcnn.html#dronevis.detection_torch.faster_rcnn_torch.FasterRCNN">FasterRCNN (class in dronevis.detection_torch.faster_rcnn_torch)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.float2dec">float2dec() (dronevis.drone_connect.drone.Drone method)</a>
+</li>
       <li><a href="connection/drone.html#dronevis.drone_connect.drone.Drone.forward">forward() (dronevis.drone_connect.drone.Drone method)</a>
 </li>
       <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.frame_detection">frame_detection() (dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
@@ -307,8 +317,6 @@
         <li><a href="detection/yolo.html#dronevis.detection_gluoncv.yolo_gluoncv.YOLO.load_and_transform_img">(dronevis.detection_gluoncv.yolo_gluoncv.YOLO method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel.load_model">load_model() (dronevis.abstract.abstract_gluoncv_model.GluonCVModel method)</a>
 
       <ul>
@@ -321,6 +329,8 @@
         <li><a href="detection/fasterrcnn.html#dronevis.detection_torch.faster_rcnn_torch.FasterRCNN.load_model">(dronevis.detection_torch.faster_rcnn_torch.FasterRCNN method)</a>
 </li>
         <li><a href="detection/ssd.html#dronevis.detection_torch.ssd_torch.SSD.load_model">(dronevis.detection_torch.ssd_torch.SSD method)</a>
+</li>
+        <li><a href="face_detect/face_detect.html#dronevis.face_detection.FaceDetectModel.load_model">(dronevis.face_detection.FaceDetectModel method)</a>
 </li>
         <li><a href="pose/pose.html#dronevis.pose.PoseSegEstimation.load_model">(dronevis.pose.PoseSegEstimation method)</a>
 </li>
@@ -389,12 +399,12 @@
 </li>
       <li><a href="pose/pose.html#dronevis.pose.PoseSegEstimation">PoseSegEstimation (class in dronevis.pose)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_gluoncv_model.GluonCVModel.predict">predict() (dronevis.abstract.abstract_gluoncv_model.GluonCVModel method)</a>
 
       <ul>
         <li><a href="detection/detect_algo.html#dronevis.abstract.abstract_torch_model.TorchDetectionModel.predict">(dronevis.abstract.abstract_torch_model.TorchDetectionModel method)</a>
+</li>
+        <li><a href="face_detect/face_detect.html#dronevis.face_detection.FaceDetectModel.predict">(dronevis.face_detection.FaceDetectModel method)</a>
 </li>
         <li><a href="pose/pose.html#dronevis.pose.PoseSegEstimation.predict">(dronevis.pose.PoseSegEstimation method)</a>
 </li>
@@ -467,6 +477,8 @@
         <li><a href="detection/ssd.html#dronevis.detection_gluoncv.ssd_gluoncv.SSD.transform_img">(dronevis.detection_gluoncv.ssd_gluoncv.SSD method)</a>
 </li>
         <li><a href="detection/yolo.html#dronevis.detection_gluoncv.yolo_gluoncv.YOLO.transform_img">(dronevis.detection_gluoncv.yolo_gluoncv.YOLO method)</a>
+</li>
+        <li><a href="face_detect/face_detect.html#dronevis.face_detection.FaceDetectModel.transform_img">(dronevis.face_detection.FaceDetectModel method)</a>
 </li>
         <li><a href="pose/pose.html#dronevis.pose.PoseSegEstimation.transform_img">(dronevis.pose.PoseSegEstimation method)</a>
 </li>

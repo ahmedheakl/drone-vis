@@ -20,7 +20,7 @@ You can visit the section :ref:`docker <dockerinstall>` for more details.
 Linux
 -----
 
-The library is **only** heavily tested on ``Ubuntu 20.04 (focal)``. 
+The library is **only** heavily tested on ``Ubuntu >= 20.04``. 
 
 Creating a virtual env
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -70,7 +70,7 @@ Docker
 
 You can now `install docker <https://docs.docker.com/get-docker/>`_ on your platform, and pull our image from ``docker hub`` and start working right-away. 
 
-To pull our docker image ``ahmedheakl/dronevis``:abbr:
+To pull our docker image ``ahmedheakl/dronevis``:
 
 .. code-block:: console
 

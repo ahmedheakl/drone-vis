@@ -84,7 +84,13 @@ Main Features
    pose/pose
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :caption: Face Detection
+
+   face_detect/face_detect
+
+.. toctree::
+   :maxdepth: 1
    :caption: User Interfaces
 
    interfaces/gui
