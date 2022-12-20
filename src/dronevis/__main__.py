@@ -12,7 +12,7 @@ Or just run the following to the default
     
 Version
 ------------------
- - dronevis v0.1.1
+ - dronevis v0.2.0
 """
 from termcolor import colored
 from pyfiglet import Figlet

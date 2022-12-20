@@ -18,5 +18,5 @@
 ------------------- |
 [![Documentation](https://img.shields.io/badge/api-reference-blue.svg)](https://drone-vis.readthedocs.io/en/latest) |
 
-# DroneVis: Full compatible drone library to automate computer vision algorithms on parrot drones.
 
+# DroneVis: Full compatible drone library to automate computer vision algorithms on parrot drones.
