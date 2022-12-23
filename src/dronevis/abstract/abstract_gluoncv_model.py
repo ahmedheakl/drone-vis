@@ -6,16 +6,18 @@ import numpy as np
 import cv2
 import time
 from dronevis.utils.image_process import write_fps
+from typing import List, Union
+
 
 class GluonCVModel(CVModel):
     """Base class (inherits from CV abstract model) for creating custom gluoncv models.
     To use the abstract class just inherit it, and override the following abstract methods:
-    
+
     - ``transform_img``: transform input image to be fed into model for inference
     - ``load_and_transform_img``: load image from given path and transform it
     """
-    
-    def __init__(self, model_name: str, short_size: int=512) -> None:
+
+    def __init__(self, model_name: str, short_size: int = 512) -> None:
         """Initialize Base model
 
         Args:
@@ -29,9 +31,8 @@ class GluonCVModel(CVModel):
         self.scores = None
         self.bounding_boxes = None
         self.model_name = model_name
-        
 
-    def load_model(self, model_path: str):
+    def load_model(self, model_path: str) -> None:
         """Load the model from model zoo.
         Run ``get_model_options`` to get model options.
 
@@ -40,19 +41,18 @@ class GluonCVModel(CVModel):
         """
         self.net = model_zoo.get_model(model_path, pretrained=True)
 
-    def predict(self, img, img_data=None):
+    def predict(self, img: np.ndarray, img_data=None) -> np.ndarray:
         """Generate predictions along with a labelled img
 
         Args:
-            img_data: input to the network
-            img: normal img with un-normalized colors
+            img_data (mxnet.NDArray): input to the network
+            img (np.ndarray): normal img with un-normalized colors
 
         Returns:
             classesID, scores, bounding boxes, and the labelled img
         """
-        assert (
-            self.net
-        ), "You need to load the model first. Please run load_model method."
+        assert self.net, "You need to load the model first. Please run load_model method."
+
         self.class_IDs, self.scores, self.bounding_boxes = self.net(img_data)
         labelled_img = utils.viz.cv_plot_bbox(
             img,
@@ -63,26 +63,24 @@ class GluonCVModel(CVModel):
         )
         return labelled_img
 
-    def plot_bounding_box(self, img):
+    def plot_bounding_box(self, img: np.ndarray) -> None:
         """Show bounding boxes on input on ``matplotlib`` window
-        
+
         .. note::
-            
+
             You must run the inference in the input image first
-            
+
         Args:
             img (np.array): input_image
         """
-        assert (
-            self.net
-        ), "You need to load the model first. Please run load_model method."
+        assert self.net, "You need to load the model first. Please run load_model method."
 
         # fmt: off
         assert self.bounding_boxes is not None, "You need to inference the model first. Run predict func."
         assert self.scores is not None, "You need to inference the model first. Run predict func."
         assert self.class_IDs is not None, "You need to inference the model first. Run predict func."
         
-        ax = utils.viz.plot_bbox(
+        utils.viz.plot_bbox(
             img,
             self.bounding_boxes[0],
             self.scores[0],
@@ -93,14 +91,14 @@ class GluonCVModel(CVModel):
         plt.show()
 
     @abstractmethod
-    def transform_img(self, img: np.ndarray):
+    def transform_img(self, img) -> np.ndarray:
         pass
 
     @abstractmethod
     def load_and_transform_img(self, img_path):
         pass
 
-    def add_bounding_box(self, img: np.ndarray):
+    def add_bounding_box(self, img: np.ndarray) -> np.ndarray:
         """Add bouding boxes along with their scores to input image
 
         Args:
@@ -126,9 +124,9 @@ class GluonCVModel(CVModel):
             class_names=self.net.classes,
         )
 
-    def get_model_options(self):
+    def get_model_options(self) -> List[str]:
         """Get options for model name
-        
+
         Returns:
             List[str]: model name options
         """
@@ -138,8 +136,12 @@ class GluonCVModel(CVModel):
             if self.model_name in model_name.lower():
                 options_for_center_net.append(model_name)
         return options_for_center_net
-    
-    def detect_webcam(self, video_index=0, window_name: str="Cam Detection") -> None:
+
+    def detect_webcam(
+        self,
+        video_index: Union[str, int] = 0,
+        window_name: str = "Cam Detection"
+    ) -> None:
         """Detecting objects with a webcam using current model
         *(to quit running this function press 'q')*
 

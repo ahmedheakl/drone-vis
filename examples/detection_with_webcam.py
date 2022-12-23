@@ -1,5 +1,4 @@
-from dronevis.detection_torch import FasterRCNN
+from gluoncv import model_zoo, data, utils
+from matplotlib import pyplot as plt
 
-model = FasterRCNN()
-model.load_model()
-model.detect_webcam()
+net = model_zoo.get_model('ssd_512_resnet50_v1_voc', pretrained=True)
