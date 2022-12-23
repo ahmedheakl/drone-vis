@@ -37,7 +37,7 @@ class GluonCVModel(CVModel):
         Run ``get_model_options`` to get model options.
 
         Args:
-            model_name (str, optional): name of the pretrained model
+            model_name (str): name of the pretrained model
         """
         self.net = model_zoo.get_model(model_path, pretrained=True)
 
@@ -46,11 +46,12 @@ class GluonCVModel(CVModel):
 
         Args:
             img_data (mxnet.NDArray): input to the network
-            img (np.ndarray): normal img with un-normalized colors
+            img (numpy.ndarray): normal img with un-normalized colors
 
         Returns:
-            classesID, scores, bounding boxes, and the labelled img
+            numpy.ndarray: output image with boxes drawn around detected objects
         """
+        # fmt: off
         assert self.net, "You need to load the model first. Please run load_model method."
 
         self.class_IDs, self.scores, self.bounding_boxes = self.net(img_data)
@@ -71,7 +72,7 @@ class GluonCVModel(CVModel):
             You must run the inference in the input image first
 
         Args:
-            img (np.array): input_image
+            img (numpy.ndarray): input_image
         """
         assert self.net, "You need to load the model first. Please run load_model method."
 
@@ -102,16 +103,13 @@ class GluonCVModel(CVModel):
         """Add bouding boxes along with their scores to input image
 
         Args:
-            img (np.ndarray): input image
+            img (numpy.ndarray): input image
 
         Returns:
-            np.ndarray: labelled image
+            numpy.ndarray: labelled image
         """
-        assert (
-            self.net
-        ), "You need to load the model first. Please run load_model method."
-
         # fmt: off
+        assert self.net, "You need to load the model first. Please run load_model method."
         assert self.bounding_boxes is not None, "You need to inference the model first. Run predict func."
         assert self.scores is not None, "You need to inference the model first. Run predict func."
         assert self.class_IDs is not None, "You need to inference the model first. Run predict func."
@@ -146,7 +144,7 @@ class GluonCVModel(CVModel):
         *(to quit running this function press 'q')*
 
         Args:
-            video_index (int | str, optional): index of cam, can be a `url`. Defaults to 0.
+            video_index (Union[str, int], optional): index of cam, can be a `url`. Defaults to 0.
             window_name (str, optional): name of video window. Defaults to "Cam Detection".
         """
 

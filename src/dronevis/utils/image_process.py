@@ -1,23 +1,29 @@
 import cv2
-def write_fps(image, fps):
+import numpy as np
+from typing import Union
+
+
+def write_fps(image: np.ndarray, fps: Union[str, int, float]) -> np.ndarray:
     """Write fps on input image
 
     Args:
         image (np.array): input image
-        fps (str | int | float): frame per second
+        fps (Union[str, int, float]): frame per second
 
     Returns:
         np.array: processed image with fps written
     """
+    assert isinstance(fps, (str, int, float)), "Please enter a valid fps value"
     if not isinstance(fps, str):
         fps = str(int(fps))
+
     cv2.putText(
-        image,
-        f"{fps} FPS",
-        (15, 30),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        1,
-        (100, 200, 0),
-        2,
+        img=image,
+        text=f"{fps} FPS",
+        org=(15, 30),
+        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+        fontScale=1,
+        color=(100, 200, 0),
+        thickness=2,
     )
-    return image 
+    return image

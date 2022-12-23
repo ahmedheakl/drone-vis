@@ -1,4 +1,13 @@
-from gluoncv import model_zoo, data, utils
-from matplotlib import pyplot as plt
+# from dronevis.detection_torch.yolov5_torch import YOLOv5
 
-net = model_zoo.get_model('ssd_512_resnet50_v1_voc', pretrained=True)
+# model = YOLOv5()
+# model.load_model()
+# model.detect_webcam()
+
+from dronevis.detection_torch import SSD
+import numpy as np
+
+image = np.zeros((10, 10), dtype=np.float32)
+
+model = SSD()
+model.predict(image)

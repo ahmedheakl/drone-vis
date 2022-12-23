@@ -12,18 +12,13 @@ class FasterRCNN(TorchDetectionModel):
         self.transform = self.weights.transforms()
 
 
-    def load_model(self):
+    def load_model(self) -> None:
         """Load model from PyTorchHub
-
-        Args:
-            model_path (str, optional): no need to use it, only for integrity with absract class. Defaults to None.
+        
+        .. note::
+            
+            Default weights used are ``fasterrcnn_mobilenet_v3_large_320_fpn``.
         """
         print("Loading Faster R-CNN model ...")
         self.net = fasterrcnn_mobilenet_v3_large_320_fpn(weights=self.weights)
         self.net = self.net.eval().to(self.device)
-
-
-if __name__ == "__main__":
-    model = FasterRCNN()
-    model.load_model()
-    model.detect_webcam()

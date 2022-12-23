@@ -43,8 +43,8 @@ class TorchDetectionModel(CVModel):
         """Predict all classes in an image using torch model
 
         Args:
-            image(numpy.ndarray): video frame or image to predict the classes in it.
-            detection_threshold(float): thershold to determine if the calss will be taken or not.
+            image (numpy.ndarray): video frame or image to predict the classes in it
+            detection_threshold (float): thershold to determine if the calss will be taken or not
 
         Returns:
             numpy.ndarray: output image with boxes drawn
@@ -75,27 +75,31 @@ class TorchDetectionModel(CVModel):
         """Transform image to tensor
 
         Args:
-            img (np.ndarray): input array
+            img (numpy.ndarray): input array
 
         Returns:
             torch.Tensor: tensor img
         """
-        assert self.transform, "Model not initialized. You need to load the model first. Please run `load_model`."
+        assert self.transform is not None, "Model not initialized. You need to load the model first. Please run `load_model`."
         return self.transform(to_pil_image(img)).to(self.device)
 
     def draw_boxes(
-        self, boxes: np.ndarray, classes: List, labels: torch.Tensor, image: np.ndarray
+        self,
+        boxes: np.ndarray,
+        classes: List,
+        labels: torch.Tensor,
+        image: np.ndarray
     ) -> np.ndarray:
         """Draw boxes for the predicted classes in an image using torch model
 
         Args:
-            boxes(np.ndarray): predicted boxes returned by predict function
+            boxes(numpy.ndarray): predicted boxes returned by predict function
             classes(List): predicted classes in an image returned by predict function
             labels(torch.Tensor): class labels in an image returned by predict function
-            image(np.ndarray): an image to draw boxes on.
+            image(numpy.ndarray): an image to draw boxes on.
 
         Returns:
-            np.ndarray: cv2 image after drawing boxes of the predicted classes on it with their labels
+            numpy.ndarray: cv2 image after drawing boxes of the predicted classes on it with their labels
         """
         image = cv2.cvtColor(np.asarray(image), cv2.COLOR_BGR2RGB)
         for i, box in enumerate(boxes):
@@ -175,25 +179,16 @@ class TorchDetectionModel(CVModel):
         """Detect a single frame of a video stream
 
         Args:
-            frame (np.array): input frame
+            frame (numpy.ndarray): input frame
 
         Returns:
-            Tuple[np.array, float]: image with detection results and wait time between frames
+            Tuple[numpy.ndarray, float]: image with detection results and wait time between frames
         """
         start_time = time.time()
         with torch.no_grad():
             image = self.predict(frame, 0.7)
         end_time = time.time()
         fps = 1 / (end_time - start_time)
-        cv2.putText(
-            img=image,
-            text=f"{fps:.3f} FPS",
-            org=(15, 30),
-            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-            fontScale=1,
-            color=(0, 255, 0),
-            thickness=2,
-        )
         wait_time = max(1, int(fps / 4))
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = cv2.cvtColor(write_fps(image, fps), cv2.COLOR_BGR2RGB)
         return image, wait_time
