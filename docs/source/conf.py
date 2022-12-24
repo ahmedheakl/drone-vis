@@ -37,6 +37,7 @@ autodoc_default_options = {
     # 'undoc-members': True,
     # 'exclude-members': '__weakref__'
 }
+autodoc_typehints = "none"
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),

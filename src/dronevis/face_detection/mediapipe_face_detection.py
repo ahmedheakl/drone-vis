@@ -49,7 +49,7 @@ class FaceDetectModel(CVModel):
         Returns:
             np.array: output image with keypoints drawn
         """
-        image = self.transform_img(image)
+        image = self.transform_img(img)
         results = self.face_detection.process(image)
         if results.detections:
             for detection in results.detections:

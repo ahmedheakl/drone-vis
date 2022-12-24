@@ -16,14 +16,10 @@ class SSD(TorchDetectionModel):
     def load_model(self):
         """Load model from PyTorchHub
 
-        Args:
-            model_path (str, optional): no need to use it, only for integrity with absract class. Defaults to None.
+        .. note::
+            
+            Default weights used are ``ssdlite320_mobilenet_v3_large``.
         """
         print("Loading SSD Torch model ...")
         self.net = ssdlite320_mobilenet_v3_large(weights=self.weights)
         self.net = self.net.eval().to(self.device)
-
-if __name__ == "__main__":
-    model = SSD()
-    model.load_model()
-    model.detect_webcam()
