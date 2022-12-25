@@ -1,71 +1,60 @@
 import threading
 import cv2
+from dronevis.utils.image_process import write_fps
+from typing import Callable
 import time
+from dronevis.abstract import NOOPModel
 
-class Video(threading.Thread):
+
+class VideoThread(threading.Thread):
     """Connect video stream from drone
 
     Args:
         threading (Thread): thread for video stream
     """
-    def __init__(self, ip: str = "192.168.1.1", model=None) -> None:
+
+    def __init__(self, closing_callback: Callable, ip: str = "192.168.1.1", model=None) -> None:
         """Initialize drone instance
 
         Args:
             ip (str, optional): ip of the drone. Defaults to "192.168.1.1".
         """
+        super(VideoThread, self).__init__()
+        self.callback = closing_callback
         self.ip = ip
         self.video_port = 5555
         self.socket_lock = threading.Lock()
         self.protocol = "tcp"
-        self.cam_connect = f'{self.protocol}://{self.ip}:{self.video_port}'
+        self.video_index = f"{self.protocol}://{self.ip}:{self.video_port}"
         self.frame_name = "Video Capture"
-        self.is_stream = False
-        self.cap = None
-        self.detection = True
+        self.running = True
         self.model = model
-        threading.Thread.__init__(self)
+        self.close_callback = closing_callback
 
     def run(self) -> None:
-        """Create video stream and view frames
-        """
-        """Detecting objects with a webcam using FasterRCNN model
-        (to quit running this function press 'q')"""
-        
-        if self.cap is None:
-            self.cap = cv2.VideoCapture(self.cam_connect)
-            if not self.cap.isOpened():
-                print("Error while trying to read video. Please check path again")
-        self.is_stream = True
-        while self.cap.isOpened():
-            self.socket_lock.acquire()
-            if not self.is_stream:
-                self.socket_lock.release()
+        """Create video stream and view frames"""
+
+        cap = cv2.VideoCapture(self.video_index)
+        if not cap.isOpened():
+            print("Error while trying to read video. Please check path again")
+        prev_time = 0
+        while cap.isOpened():
+            if not self.running:
                 break
-            running, frame = self.cap.read()
-                
-            if running:
-                if self.detection:
-                    frame, wait_time = self.model.frame_detection(frame)
-                else:
-                    wait_time = 1
-                    fps = self.cap.get(cv2.CAP_PROP_FPS)
-                    cv2.putText(
-                        frame,
-                        f"{fps:.3f} FPS",
-                        (15, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        1,
-                        (0, 255, 0),
-                        2,
-                    )
-                cv2.imshow("Drone connection", frame)
-                if cv2.waitKey(wait_time) & 0xFF == ord("q"):
-                    break
-            else:
-                print('error reading video feed')
-            self.socket_lock.release()
-        print("Stream Closed ...")
-        self.cap.release()
+            _, frame = cap.read()
+            frame = self.model.predict(frame)
+            cur_time = time.time()
+            fps = 1 / (cur_time - prev_time)
+            prev_time = cur_time
+            cv2.imshow(self.frame_name, write_fps(frame, fps))
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
+            
+        print("Closing video stream")
+        cap.release()
         cv2.destroyAllWindows()
+        self.close_callback()
+
         
+    def stop(self):
+        self.running = False

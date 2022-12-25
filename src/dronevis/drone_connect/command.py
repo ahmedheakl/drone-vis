@@ -11,7 +11,7 @@ class Command(threading.Thread):
         threading (threading.Thread): parent thread class
     """
 
-    def __init__(self, ip="192.168.1.1") -> None:
+    def __init__(self, ip: str ="192.168.1.1") -> None:
         """Initialize thread instance
 
         Args:
@@ -139,7 +139,7 @@ class Command(threading.Thread):
 
     # Internal functions
     def _ack_command(self) -> bool:
-        """Call this function when the command is acknoledge
+        """Call this function when the command is acknowledge
 
         Returns:
             bool: flag for valid ack

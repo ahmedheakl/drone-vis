@@ -175,14 +175,14 @@ class TorchDetectionModel(CVModel):
         cap.release()
         cv2.destroyAllWindows()
 
-    def frame_detection(self, frame: np.ndarray) -> Tuple[np.ndarray, float]:
+    def frame_detection(self, frame: np.ndarray) -> Tuple[np.ndarray, float, float]:
         """Detect a single frame of a video stream
 
         Args:
             frame (numpy.ndarray): input frame
 
         Returns:
-            Tuple[numpy.ndarray, float]: image with detection results and wait time between frames
+            Tuple[numpy.ndarray, float, fps]: image with detection results and wait time between frames
         """
         start_time = time.time()
         with torch.no_grad():
@@ -191,4 +191,4 @@ class TorchDetectionModel(CVModel):
         fps = 1 / (end_time - start_time)
         wait_time = max(1, int(fps / 4))
         image = cv2.cvtColor(write_fps(image, fps), cv2.COLOR_BGR2RGB)
-        return image, wait_time
+        return image, wait_time, fps

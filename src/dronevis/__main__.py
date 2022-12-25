@@ -1,4 +1,5 @@
 """Connect to your drone and run your CV models
+
 Usage
 ------------------
     
@@ -12,7 +13,7 @@ Or just run the following to the default
     
 Version
 ------------------
- - dronevis v0.2.0
+ - dronevis v0.2.1
 """
 from termcolor import colored
 from pyfiglet import Figlet

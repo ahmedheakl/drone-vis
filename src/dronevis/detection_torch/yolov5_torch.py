@@ -56,7 +56,7 @@ class YOLOv5(CVModel):
         assert (
             self.net
         ), "Please load the model first by invoking the ``load_model`` method."
-        return self.net(image)
+        return self.net(image).render()[0]
 
     def detect_webcam(
         self,
@@ -77,7 +77,7 @@ class YOLOv5(CVModel):
         while True:
             _, frame = cap.read()
 
-            image = self.predict(frame).render()[0]
+            image = self.predict(frame)
             cur_time = time.time()
             fps = 1 / (cur_time - prev_time)
             cv2.imshow(window_name, write_fps(image, fps))
