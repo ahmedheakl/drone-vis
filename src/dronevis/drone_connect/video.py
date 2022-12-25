@@ -46,7 +46,7 @@ class VideoThread(threading.Thread):
             cur_time = time.time()
             fps = 1 / (cur_time - prev_time)
             prev_time = cur_time
-            cv2.imshow(self.frame_name, write_fps(frame, fps))
+            cv2.imshow(self.frame_name, frame)
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
             

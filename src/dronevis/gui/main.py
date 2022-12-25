@@ -13,6 +13,7 @@ from typing import Union
 from dronevis.abstract import NOOPModel
 from dronevis.detection_torch import YOLOv5, SSD
 from dronevis.face_detection import FaceDetectModel
+from dronevis.pose import PoseSegEstimation
 
 
 class DroneVisGui:
@@ -341,7 +342,9 @@ class DroneVisGui:
             "none": NOOPModel,
             "yolov5": YOLOv5,
             "ssd": SSD,
-            "face": FaceDetectModel
+            "face": FaceDetectModel,
+            "pose": PoseSegEstimation,
+            "seg": PoseSegEstimation
         }
         btn_detection = OptionMenu(
             frm_vision_control,
@@ -459,20 +462,20 @@ class DroneVisGui:
         
         # velocity handling
         to_angle = lambda x, mx: (x/mx) * 360.0
-        vx = int(navdata["navdata_demo"]["vx"])
-        vx_text = f"{abs(vx)} km\\h"
-        self.frm_nav_vx.cpb.change(to_angle(abs(vx), 17.0), vx_text)
+        vx = int(navdata["navdata_demo"]["vx"] // 1000.0) 
+        vx_text = f"{abs(vx)} m\\s"
+        self.frm_nav_vx.cpb.change(to_angle(abs(vx), 2.0), vx_text)
         
-        vy = int(navdata["navdata_demo"]["vy"])
-        vy_text = f"{abs(vy)} km\\h"
-        self.frm_nav_vy.cpb.change(to_angle(abs(vy), 17.0), vy_text)
+        vy = int(navdata["navdata_demo"]["vy"] // 1000.0)
+        vy_text = f"{abs(vy)} m\\s"
+        self.frm_nav_vy.cpb.change(to_angle(abs(vy), 2.0), vy_text)
         
-        vz = int(navdata["navdata_demo"]["vz"])
-        vz_text = f"{abs(vz)} km\\h"
-        self.frm_nav_vz.cpb.change(to_angle(abs(vz), 17.0), vz_text)
+        vz = int(navdata["navdata_demo"]["vz"] // 1000.0)
+        vz_text = f"{abs(vz)} m\\s"
+        self.frm_nav_vz.cpb.change(to_angle(abs(vz), 2.0), vz_text)
         
         # elevation handling
-        h = int(navdata["navdata_demo"]["altitude"])
+        h = int(navdata["navdata_demo"]["altitude"] // 1000.0)
         self.data.append(h)
         last_index = self.index[-1]
         self.index.append(last_index + self.step_index) # type: ignore
@@ -482,7 +485,9 @@ class DroneVisGui:
         """Event handler for pressing on stream button"""
         if self.drone.video_thread is None:
             print(self.clicked.get())
-            model = self.models[self.clicked.get()]()
+            model_class = self.models[self.clicked.get()]
+            if self.clicked.get() == "seg":
+                model = model_class()
             model.load_model()
             self.drone.connect_video(self.close_stream_callback, model)
             self.btn_video_stream["text"] = "streaming"

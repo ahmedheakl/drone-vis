@@ -23,6 +23,7 @@ class PoseSegEstimation(CVModel):
         self.pose_module = mp.solutions.pose
         self.drawer = mp.solutions.drawing_utils
         self.net = None
+        self.is_seg = True
 
     def load_model(self):
         """Load model from weights associated with mediapipe"""
@@ -51,6 +52,7 @@ class PoseSegEstimation(CVModel):
             Tuple[np.array, ...]: output image with keypoints drawn, segmented image
             segmented image with pose points
         """
+        is_seg = self.is_seg
         assert self.net, "You need to load the model first. Please run ``load_model``."
         image = self.transform_img(image)
         res = self.net.process(image)
@@ -72,7 +74,10 @@ class PoseSegEstimation(CVModel):
         self.drawer.draw_landmarks(
             seg_pose_image, res.pose_landmarks, self.pose_module.POSE_CONNECTIONS
         )
-        return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), seg_image, seg_pose_image
+        if is_seg:
+            return seg_pose_image
+
+        return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     def detect_webcam(self, video_index=0, window_name="Pose", is_seg=False):
         """Start webcam pose estimation from video_index
