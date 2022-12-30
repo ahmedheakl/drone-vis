@@ -18,7 +18,6 @@ class DemoDrone:
         """Construct demo object"""
 
         self.is_connected = False
-
         self.nav_thread = None
         self.video_thread = None
 
@@ -26,10 +25,9 @@ class DemoDrone:
 
         if not hasattr(callable, "__call__"):
             raise TypeError("Need a function")
-        
+
             # if not isinstance(model, CVModel):
             #     raise TypeError("Please provide a model of type ``CVModel``")
-        print(type(model))
         self.video_thread = DemoVideoThread(callback, model)
         self.video_thread.start()
 
@@ -38,6 +36,7 @@ class DemoDrone:
             raise ValueError("Video is not initialized")
 
         self.video_thread.stop()
+        time.sleep(0.2)
         self.video_thread = None
 
     def connect(self) -> None:
@@ -57,6 +56,9 @@ class DemoDrone:
         else:
             self.nav_thread.change_callback(callback)
             self.nav_thread.start()
+            
+    def set_config(self, activate_gps=True, activate_navdata=True):
+        pass
 
     def print_navdata(self, navdata: dict) -> None:
         print(navdata)
@@ -117,22 +119,20 @@ class DemoVideoThread(Thread):
         close_callback: Callable,
         model: CVModel,
         video_index: Union[str, int] = 0,
-        detection: bool = False,
+        frame_name: str = "Demo Video Capture",
     ) -> None:
 
         super(DemoVideoThread, self).__init__()
         self.close_callback = close_callback
         self.model = model
-        self.frame_name = "Demo Video Capture"
+        self.frame_name = frame_name
         self.video_index = video_index
         self.running = True
 
     def run(self):
-        cap = cv2.VideoCapture(self.video_index)
-        if not cap.isOpened():
-            print("Error while trying to read video. Please check path again")
+        cap = cv2.VideoCapture(0)
         prev_time = 0
-        while cap.isOpened():
+        while True:
             if not self.running:
                 break
             _, frame = cap.read()
@@ -143,9 +143,9 @@ class DemoVideoThread(Thread):
             cv2.imshow(self.frame_name, write_fps(frame, fps))
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
-            
+
         print("Closing video stream")
-        self.cap.release()
+        cap.release()
         cv2.destroyAllWindows()
         self.close_callback()
 
@@ -158,7 +158,7 @@ class DemoNavThread(Thread):
         super(DemoNavThread, self).__init__()
         self.callback = callback
         self.running = True
-        
+
     def change_callback(self, new_callback: Callable) -> bool:
         if not hasattr(new_callback, "__call__"):
             return False
@@ -170,12 +170,12 @@ class DemoNavThread(Thread):
         vx, vy, vz, h = [0.0] * 4
         battery = random.randint(0, 100)
         while self.running:
-            
+
             mov_avg = lambda old, new: old * 0.9 + new * 0.1
-            vx = mov_avg(vx, random.uniform(0, 17))
-            vy = mov_avg(vy, random.uniform(0, 17))
-            vz = mov_avg(vz, random.uniform(0, 17))
-            h = mov_avg(h, random.uniform(0, 50))
+            vx = mov_avg(vx, random.uniform(0, 2000))
+            vy = mov_avg(vy, random.uniform(0, 2000))
+            vz = mov_avg(vz, random.uniform(0, 2000))
+            h = mov_avg(h, random.uniform(0, 50000))
 
             data = {
                 "navdata_demo": {
@@ -183,11 +183,8 @@ class DemoNavThread(Thread):
                     "vx": vx,
                     "vy": vy,
                     "vz": vz,
+                    "altitude": h
                 },
-                
-                "gps_info": {
-                    "elevation": h
-                }
             }
             assert self.callback, "Please provide a callback"
             self.callback(data)

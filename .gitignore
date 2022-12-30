@@ -13,3 +13,4 @@ src/dronevis/abstract/__pycache__
 __pycache__
 yolov5s.pt
 test.py
+dronevis-features.md

@@ -31,14 +31,13 @@ class DroneVisGui:
         if mode not in ["real", "demo"]:
             raise ValueError("Please enter a valid mode, either `real` or `demo`.")
         self.mode = mode
-        window = Tk()
+        self.window = Tk()
         self.drone = drone if drone else DemoDrone()
-        self.window = window
         self.is_stream = False
 
         ################# Configurations #######################
-        window.protocol("WM_DELETE_WINDOW", self.on_close_window)
-        window.geometry("1000x580")
+        self.window.protocol("WM_DELETE_WINDOW", self.on_close_window)
+        self.window.geometry("1000x580")
         s = Style()
         s.theme_use("clam")
         s.configure(".", font=MAIN_FONT, background=MAIN_COLOR, foreground=WHITE_COLOR)
@@ -48,10 +47,10 @@ class DroneVisGui:
             troughcolor=WHITE_COLOR,
             background=GREEN_COLOR,
         )
-        window.title("Drone Vision")
-        window.rowconfigure(0, weight=1)
-        window.columnconfigure(0, minsize=600, weight=1)
-        window.columnconfigure(1, minsize=330, weight=1)
+        self.window.title("Drone Vision")
+        self.window.rowconfigure(0, weight=1)
+        self.window.columnconfigure(0, minsize=600, weight=1)
+        self.window.columnconfigure(1, minsize=330, weight=1)
 
         self.ax = None
         self.init_demo_data()
@@ -462,16 +461,16 @@ class DroneVisGui:
         
         # velocity handling
         to_angle = lambda x, mx: (x/mx) * 360.0
-        vx = int(navdata["navdata_demo"]["vx"] // 1000.0) 
-        vx_text = f"{abs(vx)} m\\s"
+        vx = navdata["navdata_demo"]["vx"] / 1000.0
+        vx_text = f"{abs(vx):0.2f} m\\s"
         self.frm_nav_vx.cpb.change(to_angle(abs(vx), 2.0), vx_text)
         
-        vy = int(navdata["navdata_demo"]["vy"] // 1000.0)
-        vy_text = f"{abs(vy)} m\\s"
+        vy = navdata["navdata_demo"]["vy"] / 1000.0
+        vy_text = f"{abs(vy):0.2f} m\\s"
         self.frm_nav_vy.cpb.change(to_angle(abs(vy), 2.0), vy_text)
         
-        vz = int(navdata["navdata_demo"]["vz"] // 1000.0)
-        vz_text = f"{abs(vz)} m\\s"
+        vz = navdata["navdata_demo"]["vz"] / 1000.0
+        vz_text = f"{abs(vz):0.2f} m\\s"
         self.frm_nav_vz.cpb.change(to_angle(abs(vz), 2.0), vz_text)
         
         # elevation handling
@@ -487,6 +486,8 @@ class DroneVisGui:
             print(self.clicked.get())
             model_class = self.models[self.clicked.get()]
             if self.clicked.get() == "seg":
+                model = model_class(is_seg=True)
+            else:
                 model = model_class()
             model.load_model()
             self.drone.connect_video(self.close_stream_callback, model)
@@ -494,12 +495,12 @@ class DroneVisGui:
             
         else:
             self.drone.disconnect_video()
-            
+                
     def close_stream_callback(self):
         self.btn_video_stream["text"] = "Stream"
 
 
 def main():
-    drone = Drone()
+    drone = DemoDrone()
     gui = DroneVisGui(drone=drone)
     gui.window.mainloop()

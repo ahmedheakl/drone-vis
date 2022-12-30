@@ -121,7 +121,7 @@ class TorchDetectionModel(CVModel):
                 thickness=2,
                 lineType=cv2.LINE_AA,
             )
-        return image
+        return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     def transform_and_load_img(self, img_path: str, output_path: str) -> None:
         """Detecting objects in a given image using torch model

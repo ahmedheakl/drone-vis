@@ -42,11 +42,11 @@ class VideoThread(threading.Thread):
             if not self.running:
                 break
             _, frame = cap.read()
-            frame = self.model.predict(frame)
+            image = self.model.predict(frame)
             cur_time = time.time()
             fps = 1 / (cur_time - prev_time)
             prev_time = cur_time
-            cv2.imshow(self.frame_name, frame)
+            cv2.imshow(self.frame_name, image)
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
             

@@ -6,6 +6,7 @@ import mediapipe as mp
 import numpy as np
 import cv2
 from dronevis.utils.image_process import write_fps
+from typing import Union
 
 BG_COLOR = (0, 2, 102)
 PERSON_BG_COLOR = (168, 29, 54)
@@ -19,17 +20,17 @@ class PoseSegEstimation(CVModel):
     methods: ``load_model``, ``transform_img``, ``predict``, ``detect_webcam``.
     """
 
-    def __init__(self):
+    def __init__(self, is_seg=False):
         self.pose_module = mp.solutions.pose
         self.drawer = mp.solutions.drawing_utils
         self.net = None
-        self.is_seg = True
+        self.is_seg = is_seg
 
-    def load_model(self):
+    def load_model(self) -> None:
         """Load model from weights associated with mediapipe"""
         self.net = self.pose_module.Pose(enable_segmentation=True)
 
-    def transform_img(self, image):
+    def transform_img(self, image: np.ndarray) -> np.ndarray:
         """Transform image from ``BGR`` to ``RGB``
 
         Args:
@@ -38,9 +39,10 @@ class PoseSegEstimation(CVModel):
         Returns:
             np.array: transformed image
         """
+        image = np.asarray(image)
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    def predict(self, image, is_seg=False):
+    def predict(self, image: np.ndarray, is_seg: bool=False):
         """Predict keypoints for pose and draw them on input image.
         **Input image is assumed to be BGR**.
 
@@ -52,7 +54,7 @@ class PoseSegEstimation(CVModel):
             Tuple[np.array, ...]: output image with keypoints drawn, segmented image
             segmented image with pose points
         """
-        is_seg = self.is_seg
+        is_seg |= self.is_seg
         assert self.net, "You need to load the model first. Please run ``load_model``."
         image = self.transform_img(image)
         res = self.net.process(image)
@@ -68,18 +70,27 @@ class PoseSegEstimation(CVModel):
             person_bg[:] = PERSON_BG_COLOR
             seg_image = np.where(condition, bg_image, person_bg)
         self.drawer.draw_landmarks(
-            image, res.pose_landmarks, self.pose_module.POSE_CONNECTIONS
+            image,
+            res.pose_landmarks,
+            self.pose_module.POSE_CONNECTIONS,
         )
         seg_pose_image = seg_image.copy()
         self.drawer.draw_landmarks(
-            seg_pose_image, res.pose_landmarks, self.pose_module.POSE_CONNECTIONS
+            seg_pose_image,
+            res.pose_landmarks,
+            self.pose_module.POSE_CONNECTIONS,
         )
         if is_seg:
-            return seg_pose_image
+            return seg_image
 
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    def detect_webcam(self, video_index=0, window_name="Pose", is_seg=False):
+    def detect_webcam(
+        self,
+        video_index: Union[str, int] = 0,
+        window_name: str = "Pose",
+        is_seg: bool = False,
+    ) -> None:
         """Start webcam pose estimation from video_index
         *(to quit running this function press 'q')*
 
@@ -110,6 +121,7 @@ class PoseSegEstimation(CVModel):
 
         cv2.destroyAllWindows()
         cap.release()
+
 
 if __name__ == "__main__":
     model = PoseSegEstimation()
