@@ -5,7 +5,7 @@ from dronevis.abstract import CVModel
 import mediapipe as mp
 import numpy as np
 import cv2
-from dronevis.utils.utils import write_fps
+from dronevis.utils import write_fps
 from typing import Union
 
 BG_COLOR = (0, 2, 102)

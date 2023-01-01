@@ -18,6 +18,7 @@ Version
 ------------------
  - dronevis v0.2.2
 """
+
 from termcolor import colored
 from dronevis.drone_connect import DemoDrone, Drone
 from dronevis.cli import DroneCli
