@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import numpy as np
 
 class CVModel(ABC):
     """Base class for creating custom comptervision models.
@@ -29,7 +30,7 @@ class CVModel(ABC):
         pass
 
     @abstractmethod
-    def predict(self, image):
+    def predict(self, image) -> np.ndarray:
         pass
 
     @abstractmethod

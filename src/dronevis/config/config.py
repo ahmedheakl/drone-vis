@@ -48,16 +48,11 @@ def nervosity_level(percentage=20):
     com.append(("control:control_vz_max",str(vertical_speed)))
     com.append(("control:control_yaw",str(yaw)))
     return com
+
 def max_altitude(altitude=5):
     "Set the max altitude of the drone"
     return [("control:altitude_max",str(int(altitude*1000)))]
 
-'''
-def set_ultrasound(freq=0):
-    "Set the ultrasound frequence"
-    if freq:    return [("pic:ultrasound_freq","7")]
-    else:       return [("pic:ultrasound_freq","8")]
-'''
 def activate_video(activate = True):
     "Start/Stop the recording of a video on the USB key"
     if activate:
@@ -102,8 +97,7 @@ def goto_gps_point(latitude, longitude, altitude=2, cap=0, speed=1, continuous=F
 SUPPORTED_CONFIG = {
     "detect_tag":detect_tag, "activate_navdata":activate_navdata, "activate_gps":activate_gps,           # Data activation
     "indoor":indoor, "outdoor":outdoor, "nervosity_level":nervosity_level, "max_altitude":max_altitude,# One-time config
-    
-    }
+}
 AUTONOMOUS_FLIGHT = {"gps":goto_gps_point}
 ANIMATIONS = {"flip":flip}
 ANIMATIONS_INFOS = {"flip":"(side)"}

@@ -1,6 +1,6 @@
 import threading
 import cv2
-from dronevis.utils.image_process import write_fps
+from dronevis.utils.utils import write_fps
 from typing import Callable
 import time
 from dronevis.abstract import NOOPModel

@@ -2,10 +2,9 @@ imutils>=0.5.0
 opencv_contrib_python
 gluoncv>=0.10.5
 matplotlib>=3.5.3
-numpy>=1.17.0
+numpy
 opencv_python>=4.6.0.66
 Pillow>=9.3.0
-setuptools>=61.0.0
 torch>=1.13.0
 torchvision>=0.14.0
 mediapipe>=0.8.0 

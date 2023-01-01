@@ -1,26 +1,24 @@
-from tkinter import Tk, HORIZONTAL, LEFT, StringVar
-from tkinter.ttk import Label, Frame, Style, Progressbar, OptionMenu
+from tkinter import Tk, StringVar, HORIZONTAL, LEFT
+from tkinter.ttk import Style, Frame, Label, Progressbar, OptionMenu
 from dronevis.gui.configs import *
 from dronevis.gui.image_bw_button import ImageBWButton
 from dronevis.gui.main_button import MainButton
-from dronevis.drone_connect.drone import Drone
-from dronevis.drone_connect.demo_drone import DemoDrone
-from dronevis.detection_torch import YOLOv5
 import matplotlib.pyplot as plt
-from dronevis.gui.circular_progressbar import CircularProgressbar
 from dronevis.gui.navdata_frame import DataFrame
 from typing import Union
 from dronevis.abstract import NOOPModel
-from dronevis.detection_torch import YOLOv5, SSD
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from dronevis.face_detection import FaceDetectModel
+from dronevis.detection_torch import FasterRCNN, YOLOv5
 from dronevis.pose import PoseSegEstimation
+from dronevis.drone_connect import Drone, DemoDrone
+from dronevis.utils import axis_config
 
 
 class DroneVisGui:
     def __init__(
         self,
         drone: Union[Drone, DemoDrone, None] = None,
-        mode: str = "real",
     ) -> None:
         """Contruct a GUI window
 
@@ -28,12 +26,17 @@ class DroneVisGui:
             drone (Union[Drone, DemoDrone, None], optional): drone instance for connection.
                 If the you don't provide an instance a demo will be run. Defaults to None.
         """
-        if mode not in ["real", "demo"]:
-            raise ValueError("Please enter a valid mode, either `real` or `demo`.")
-        self.mode = mode
         self.window = Tk()
         self.drone = drone if drone else DemoDrone()
-        self.is_stream = False
+        self.models = {
+            "none": NOOPModel,
+            "face": FaceDetectModel,
+            "yolov5": YOLOv5,
+            "faster r-cnn": FasterRCNN,
+            "pose": PoseSegEstimation,
+            "seg": PoseSegEstimation,
+            "pose+seg": PoseSegEstimation,
+        }
 
         ################# Configurations #######################
         self.window.protocol("WM_DELETE_WINDOW", self.on_close_window)
@@ -52,55 +55,96 @@ class DroneVisGui:
         self.window.columnconfigure(0, minsize=600, weight=1)
         self.window.columnconfigure(1, minsize=330, weight=1)
 
+        # Constants
+        self.INDEX_STEP = 0.2
+        self.MAX_VELOCITY = 2.0  # m/s
+        self.MILLI_TO_METER_FACTOR = 1 / 1000.0
+        self.MAX_ANGLE = 360.0
+
+        # attributes initializations
         self.ax = None
-        self.init_demo_data()
-        self.init_frames()
-        
-    def init_demo_data(self):
+        self.navdata = None
+        self.is_stream = False
         self.data = [0]
         self.index = [0]
-        self.step_index = 0.2
-        self.mid_point = int((20.0 / self.step_index) // 2)
+        self.mid_point = int((GUI_X_LIMIT / self.INDEX_STEP) // 2)
 
-    def axis_config(self, ax) -> None:
-        """Set the axis paramets for height graph
+    def handle_navdata(self):
+        """Handle incomming navdata and convert them to suitable format"""
+        if self.navdata is None:
+            return
 
-        Args:
-            ax (plt.ax): matplotlib axis
-        """
-        ax.legend(["height"])
-        ax.set_xlabel("Time")
-        ax.set_ylabel("Height")
-        ax.yaxis.label.set_color(WHITE_COLOR)
-        ax.xaxis.label.set_color(WHITE_COLOR)
-        ax.title.set_color(WHITE_COLOR)
-        ax.spines["bottom"].set_color(WHITE_COLOR)
-        ax.spines["top"].set_color(WHITE_COLOR)
-        ax.spines["right"].set_color(WHITE_COLOR)
-        ax.spines["left"].set_color(WHITE_COLOR)
-        ax.tick_params(axis="x", colors=WHITE_COLOR)
-        ax.tick_params(axis="y", colors=WHITE_COLOR)
-        ax.set_facecolor(MAIN_COLOR)
-        ax.set_ylim([0, 50])
-        ax.set_xlim([0, 20])
+        navdata = self.navdata
+
+        ### battery handling ###
+        # battery comes in percentage format
+        battery_percentage = int(navdata["navdata_demo"]["battery_percentage"])
+        self.pb_battery["value"] = battery_percentage
+        self.lbl_battery_percentage["text"] = f"{battery_percentage}%"
+
+        ### velocity handling ###
+        # velocity comes in mm/s format
+        to_angle = lambda x, mx: (x / mx) * self.MAX_ANGLE
+        vx = navdata["navdata_demo"]["vx"] * self.MILLI_TO_METER_FACTOR
+        vx_text = f"{abs(vx):0.2f} m\\s"
+        self.frm_nav_vx.cpb.change(to_angle(abs(vx), self.MAX_VELOCITY), vx_text)
+
+        vy = navdata["navdata_demo"]["vy"] * self.MILLI_TO_METER_FACTOR
+        vy_text = f"{abs(vy):0.2f} m\\s"
+        self.frm_nav_vy.cpb.change(to_angle(abs(vy), self.MAX_VELOCITY), vy_text)
+
+        vz = navdata["navdata_demo"]["vz"] * self.MILLI_TO_METER_FACTOR
+        vz_text = f"{abs(vz):0.2f} m\\s"
+        self.frm_nav_vz.cpb.change(to_angle(abs(vz), self.MAX_VELOCITY), vz_text)
+
+        ### elevation handling ###
+        # elevation comes in mm format
+        h = int(navdata["navdata_demo"]["altitude"] * self.MILLI_TO_METER_FACTOR)
+        self.data.append(h)
+        last_index = self.index[-1]
+        self.index.append(last_index + self.INDEX_STEP)  # type: ignore
 
     def on_plot(self) -> None:
         """Handles heights points and graph them"""
-        if self.ax is None:
-            figure3 = plt.figure(figsize=(5, 4), dpi=90)  # type
-            figure3.set_facecolor(MAIN_COLOR)
-            self.ax = figure3.add_subplot(111)
-            self.ax.plot(self.index, self.data, color="g", linewidth=2)
-            from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
+        # convert incoming navdata to suitable format
+        self.handle_navdata()
+
+        # initialize axis if not exist
+        if self.ax is None:
+
+            # initialize a figure instance
+            figure3 = plt.figure(figsize=(5, 4), dpi=90)
+
+            # set background color to MAIN COLOR
+            figure3.set_facecolor(MAIN_COLOR)
+
+            # create a subplot instance stored in self.ax
+            self.ax = figure3.add_subplot(111)
+
+            # plot data on created axis
+            self.ax.plot(self.index, self.data, color="g", linewidth=2)
+
+            # create a tkinter widget with axis object
             self.scatter3 = FigureCanvasTkAgg(figure3, self.frm_nav_h)
+
+            # place the plotting-tkiner widget
             self.scatter3.get_tk_widget().grid(
-                row=0, column=0, sticky="nsew", pady=5, padx=5
+                row=0,
+                column=0,
+                sticky="nsew",
+                pady=5,
+                padx=5,
             )
-            self.axis_config(self.ax)
+
+            # set configurations for the axis
+            axis_config(self.ax)
+
         else:
+
+            # if number of points exceeded the width of the graph
             if len(self.index) > self.mid_point * 2:
-                
+
                 # shifting data to left
                 first_point = self.index[self.mid_point]
                 self.index = self.index[self.mid_point :]
@@ -110,9 +154,13 @@ class DroneVisGui:
                 self.ax.clear()
                 self.scatter3.draw()
 
+            # plot updated data and reset configs
             self.ax.plot(self.index, self.data, color="g", linewidth=2)
-            self.axis_config(self.ax)
+            axis_config(self.ax)
             self.scatter3.draw()
+
+        # recursive call to the plot function to run each 51 ms
+        self._plot_job = self.window.after(ms=51, func=self.on_plot)
 
     def init_frames(self):
         """Initialize main frames for the GUI"""
@@ -335,20 +383,10 @@ class DroneVisGui:
             text="Record",
             message="Record a video which will be saved on drone controller memory",
         )
-        self.clicked = StringVar()
-        self.clicked.set("none")
-        self.models = {
-            "none": NOOPModel,
-            "yolov5": YOLOv5,
-            "ssd": SSD,
-            "face": FaceDetectModel,
-            "pose": PoseSegEstimation,
-            "seg": PoseSegEstimation
-        }
+        self.models_choice = StringVar()
+        self.models_choice.set("none")
         btn_detection = OptionMenu(
-            frm_vision_control,
-            self.clicked,
-            *self.models.keys()
+            frm_vision_control, self.models_choice, *self.models.keys()
         )
 
         self.btn_video_stream = MainButton(
@@ -402,7 +440,9 @@ class DroneVisGui:
         lbl_vision_control.grid(row=0, column=1, pady=10)
         btn_record_video.grid(row=1, column=0, sticky="ew", padx=10, pady=10, ipady=2)
         btn_detection.grid(row=1, column=1, sticky="ew", padx=10, pady=10, ipady=2)
-        self.btn_video_stream.grid(row=1, column=2, sticky="ew", padx=10, pady=10, ipady=2)
+        self.btn_video_stream.grid(
+            row=1, column=2, sticky="ew", padx=10, pady=10, ipady=2
+        )
 
         # Left Frame
         frm_vision_control.grid(row=1, column=0, sticky="nsew")
@@ -417,34 +457,25 @@ class DroneVisGui:
         frm_left.grid(row=0, column=0, sticky="nsew")
         frm_right.grid(row=0, column=1, sticky="nsew")
 
-    def on_close_window(self):
-        """Event handler for closing the GUI window
-
-        It stop the drone connection and destroyes and GUI window
-        """
-        self.drone.stop()
-        self.window.destroy()
-
     def on_drone_connect(self, e):
         """Event handler for drone connection
 
         Args:
             e (tkiner.Event): event for pressing on start button
         """
-        self.drone.connect() # connect drone
+        self.drone.connect()  # connect drone
         self.drone.set_config(activate_gps=True, activate_navdata=True)
-        
-        
+
         # change connect button color
         self.btn_connect["text"] = "Connected"
         self.btn_connect["background"] = GREEN_COLOR
         self.btn_connect["foreground"] = WHITE_COLOR
         self.btn_connect["activebackground"] = RED_COLOR
         self.btn_connect["activeforeground"] = WHITE_COLOR
-        
+
         # set navdata handler as callback
         self.drone.set_callback(self.on_navdata)
-        
+
     def on_navdata(self, navdata):
         """Callback handler to retrieve navdata from drone instance
 
@@ -454,53 +485,54 @@ class DroneVisGui:
         if not self.drone.is_connected:
             return
 
-        # battery handling
-        battery_percentage = int(navdata["navdata_demo"]["battery_percentage"])
-        self.pb_battery["value"] = battery_percentage
-        self.lbl_battery_percentage["text"] = f"{battery_percentage}%"
-        
-        # velocity handling
-        to_angle = lambda x, mx: (x/mx) * 360.0
-        vx = navdata["navdata_demo"]["vx"] / 1000.0
-        vx_text = f"{abs(vx):0.2f} m\\s"
-        self.frm_nav_vx.cpb.change(to_angle(abs(vx), 2.0), vx_text)
-        
-        vy = navdata["navdata_demo"]["vy"] / 1000.0
-        vy_text = f"{abs(vy):0.2f} m\\s"
-        self.frm_nav_vy.cpb.change(to_angle(abs(vy), 2.0), vy_text)
-        
-        vz = navdata["navdata_demo"]["vz"] / 1000.0
-        vz_text = f"{abs(vz):0.2f} m\\s"
-        self.frm_nav_vz.cpb.change(to_angle(abs(vz), 2.0), vz_text)
-        
-        # elevation handling
-        h = int(navdata["navdata_demo"]["altitude"] // 1000.0)
-        self.data.append(h)
-        last_index = self.index[-1]
-        self.index.append(last_index + self.step_index) # type: ignore
-        self.on_plot()
-        
+        self.navdata = navdata
+
     def on_stream(self):
         """Event handler for pressing on stream button"""
-        if self.drone.video_thread is None:
-            print(self.clicked.get())
-            model_class = self.models[self.clicked.get()]
-            if self.clicked.get() == "seg":
-                model = model_class(is_seg=True)
-            else:
-                model = model_class()
-            model.load_model()
-            self.drone.connect_video(self.close_stream_callback, model)
-            self.btn_video_stream["text"] = "streaming"
-            
+        if self.drone.video_thread is not None:
+            self.on_change_stream_model()
+            return
+
+        print(f"Current Model: {self.models_choice.get()}")
+        self.is_stream = True
+        model = self.get_and_load_model()
+        close_stream_callback = lambda: None
+        self.drone.connect_video(close_stream_callback, model)
+        self.btn_video_stream["text"] = "change"
+
+    def get_and_load_model(self):
+        model_class = self.models[self.models_choice.get()]
+        if self.models_choice.get() == "seg":
+            model = model_class(is_seg=True)  # type: ignore
+
+        elif self.models_choice.get() == "pose+seg":
+            model = model_class(is_seg_pose=True)
+
         else:
-            self.drone.disconnect_video()
-                
-    def close_stream_callback(self):
-        self.btn_video_stream["text"] = "Stream"
+            model = model_class()
 
+        model.load_model()
+        return model
 
-def main():
-    drone = DemoDrone()
-    gui = DroneVisGui(drone=drone)
-    gui.window.mainloop()
+    def on_change_stream_model(self):
+        assert self.drone.video_thread, "Initialize video thread first"
+        print(f"Changed to Model: {self.models_choice.get()}")
+        model = self.get_and_load_model()
+        self.drone.video_thread.change_model(model)  # type: ignore
+
+    def __call__(self) -> None:
+        self.init_frames()
+        self.window.mainloop()
+
+    def on_close_window(self):
+        """Event handler for closing the GUI window
+
+        It stop the drone connection and destroyes and GUI window
+        """
+        assert self._plot_job, "Initialize GUI before closing it"
+
+        self.drone.stop()
+        self.window.after_cancel(self._plot_job)
+        self._plot_job = None
+        plt.close()
+        self.window.destroy()

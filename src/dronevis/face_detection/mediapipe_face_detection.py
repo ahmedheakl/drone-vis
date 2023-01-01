@@ -1,7 +1,7 @@
 import cv2
 import mediapipe as mp
 from dronevis.abstract import CVModel
-from dronevis.utils.image_process import write_fps
+from dronevis.utils.utils import write_fps
 import time
 import numpy as np
 from typing import Union
@@ -23,8 +23,8 @@ class FaceDetectModel(CVModel):
         """
         assert 0.0 <= confidence <= 1, "Confidence must be a score between 0 and 1"
         assert isinstance(confidence, (int, float)), "Confidence must be a number"
-        self.face_detection = mp.solutions.face_detection.FaceDetection(confidence)
-        self.mp_drawing = mp.solutions.drawing_utils
+        self.face_detection = mp.solutions.face_detection.FaceDetection(confidence) # type: ignore
+        self.mp_drawing = mp.solutions.drawing_utils                                # type: ignore
 
     def transform_img(self, img: np.ndarray) -> np.ndarray:
         """Tranform input image to be inference-ready

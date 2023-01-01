@@ -20,8 +20,15 @@ class DataFrame(Frame):
 
         self.title = title
         self.lbl_title = Label(self, text=self.title)
-        self.canvas = Canvas(self, width=70, height=65, bd = 2, bg = MAIN_COLOR, highlightthickness  = 1, 
-                            highlightbackground = MAIN_COLOR)
+        self.canvas = Canvas(
+            self,
+            width=70,
+            height=65,
+            bd=2,
+            bg=MAIN_COLOR,
+            highlightthickness=1,
+            highlightbackground=MAIN_COLOR,
+        )
         self.cpb = CircularProgressbar(self.canvas, 10, 0, 60, 50, 10)
 
         self.lbl_title.grid(row=0, column=0)

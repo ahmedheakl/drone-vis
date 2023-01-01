@@ -8,7 +8,7 @@ from typing import List
 from PIL import Image
 import time
 from dronevis.config.config import COCO_NAMES
-from dronevis.utils.image_process import write_fps
+from dronevis.utils import write_fps
 from typing import Union, Tuple
 
 

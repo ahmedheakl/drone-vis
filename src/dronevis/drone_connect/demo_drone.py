@@ -5,7 +5,7 @@ import cv2
 import random
 import time
 from typing import Callable
-from dronevis.utils.image_process import write_fps
+from dronevis.utils import write_fps
 
 
 class DemoDrone:
@@ -40,7 +40,7 @@ class DemoDrone:
         self.video_thread = None
 
     def connect(self) -> None:
-        print("Drone connected ...")
+        print("Drone connected")
         self.is_connected = True
 
     def set_callback(self, callback: Optional[Callable] = None) -> None:
@@ -56,7 +56,7 @@ class DemoDrone:
         else:
             self.nav_thread.change_callback(callback)
             self.nav_thread.start()
-            
+
     def set_config(self, activate_gps=True, activate_navdata=True):
         pass
 
@@ -64,53 +64,56 @@ class DemoDrone:
         print(navdata)
 
     def takeoff(self):
-        print("Demo Control ...")
+        print("takeoff")
 
     def land(self):
-        print("Demo Control ...")
+        print("land")
 
     def calibrate(self):
-        print("Demo Control ...")
+        print("calibrate")
 
     def forward(self):
-        print("Demo Control ...")
+        print("forward")
 
     def backward(self):
-        print("Demo Control ...")
+        print("backward")
 
     def left(self):
-        print("Demo Control ...")
+        print("left")
 
     def right(self):
-        print("Demo Control ...")
+        print("right")
 
     def up(self):
-        print("Demo Control ...")
+        print("up")
 
     def down(self):
-        print("Demo Control ...")
+        print("down")
 
     def rotate_left(self):
-        print("Demo Control ...")
+        print("rotate_left")
 
     def rotate_right(self):
-        print("Demo Control ...")
+        print("rotate_right")
 
     def hover(self):
-        print("Demo Control ...")
+        print("hover")
 
     def emergency(self):
-        print("Demo Control ...")
+        print("emergency")
 
     def stop(self):
+        self.is_connected = False
         if self.video_thread is not None:
             self.video_thread.stop()
+            self.video_thread.join()
 
         if self.nav_thread is not None:
             self.nav_thread.stop()
+            self.nav_thread.join()
 
     def reset(self):
-        print("Demo Control ...")
+        print("reset")
 
 
 class DemoVideoThread(Thread):
@@ -131,23 +134,32 @@ class DemoVideoThread(Thread):
 
     def run(self):
         cap = cv2.VideoCapture(0)
+        
+        if not cap.isOpened():
+            raise ValueError("Cannot read video stream")
+        
         prev_time = 0
-        while True:
+        while cap.isOpened():
             if not self.running:
                 break
+            
             _, frame = cap.read()
+            
             frame = self.model.predict(frame)
             cur_time = time.time()
             fps = 1 / (cur_time - prev_time)
             prev_time = cur_time
             cv2.imshow(self.frame_name, write_fps(frame, fps))
-            if cv2.waitKey(1) & 0xFF == ord("q"):
+            if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        print("Closing video stream")
+        print("Closing Video Stream ...")
         cap.release()
         cv2.destroyAllWindows()
         self.close_callback()
+        
+    def change_model(self, model):
+        self.model = model
 
     def stop(self):
         self.running = False
@@ -183,12 +195,13 @@ class DemoNavThread(Thread):
                     "vx": vx,
                     "vy": vy,
                     "vz": vz,
-                    "altitude": h
+                    "altitude": h,
                 },
             }
             assert self.callback, "Please provide a callback"
             self.callback(data)
-            time.sleep(0.2)
+            time.sleep(0.05)
 
     def stop(self):
         self.running = False
+        print("Closing Nav Thread ...")

@@ -14,3 +14,4 @@ __pycache__
 yolov5s.pt
 test.py
 dronevis-features.md
+.pytest_cache

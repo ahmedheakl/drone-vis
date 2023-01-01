@@ -1,64 +1,55 @@
-"""DRONE CLI
+"""DRONE GUI
 
 Connect to your drone and run your CV models
 
 Usage
 ------------------
     
-    $ dronevis [--options]
+    $ dronevis-gui [--options]
     
 Get data about the arguments
-    $ dronevis --help
+    $ dronevis-gui --help
     
 Or just run the following to the default
-    $ dronevis
+    $ dronevis-gui
     
     
 Version
 ------------------
- - dronevis v0.2.2
+ - dronevis-gui v0.2.1
 """
+from dronevis.utils.utils import library_ontro, gui_parse
 from termcolor import colored
 from dronevis.drone_connect import DemoDrone, Drone
-from dronevis.cli import DroneCli
+from dronevis.gui.drone_gui import DroneVisGui
 import sys
-from dronevis.utils import library_ontro
 
 def main() -> None:
     """Running CLI script and CLI main loop
     """
+   
+    args = gui_parse()
     
-    # parse user arguments
-    cli = DroneCli()
-    args = cli.parse()
-    
-    # initialize drone instance
     if args.drone == "demo":
         drone = DemoDrone()   
     else:
         drone = Drone()
     
-    # print library ontro
-    library_ontro()
-       
-       
-    # MAIN LOOP
+    gui = DroneVisGui(drone=drone)
+    library_ontro()       
     try:
-        cli(args, drone)
+        gui()
         
     except KeyboardInterrupt:
-        print("\nClosing CLI ...")
-        drone.stop()
+        print("\nClosing GUI ...")
+        gui.on_close_window()
         sys.exit()
-    
-    except NotImplementedError:
-        print(colored("Drone tests are NOT yet implemented", "yellow"))
         
     except ConnectionError:
         print(colored("Couldn't connect to the drone. Make sure you are connected to the drone network", "yellow"))
         
     except AssertionError:
-        print(colored("Please enter a valid drone instance", "yellow"))
+        print(colored("Some error occured", "yellow"))
         
     except (ValueError, AttributeError):
         print(colored("Some error occurred, please try again", "yellow"))

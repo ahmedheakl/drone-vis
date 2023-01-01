@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 import time
-from dronevis.utils.image_process import write_fps
+from dronevis.utils import write_fps
 from typing import List, Union
 
 
