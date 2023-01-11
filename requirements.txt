@@ -12,3 +12,5 @@ rich
 rich_argparse
 termcolor
 pyfiglet
+seaborn
+ipython
