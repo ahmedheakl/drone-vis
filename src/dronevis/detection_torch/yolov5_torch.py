@@ -18,11 +18,14 @@ class YOLOv5(CVModel):
     def __init__(self) -> None:
         """Initialize local path"""
         self.net = None
-        self.model_local_path = f"/home/{getpass.getuser()}/.cache/torch/hub/ultralytics_yolov5_master"
+        self.model_local_path = (
+            f"C:/Users/{getpass.getuser()}/.cache/torch/hub/ultralytics_yolov5_master"
+        )
 
     def load_model(self) -> None:
         """Load model from PyTorchHub"""
         print("Loading YOLOv5 Torch model ...")
+        print(self.model_local_path)
         if os.path.exists(self.model_local_path):
             self.net = torch.hub.load(self.model_local_path, "yolov5s", source="local")
         else:

@@ -13,7 +13,9 @@ class VideoThread(threading.Thread):
         threading (Thread): thread for video stream
     """
 
-    def __init__(self, closing_callback: Callable, ip: str = "192.168.1.1", model=None) -> None:
+    def __init__(
+        self, closing_callback: Callable, ip: str = "192.168.1.1", model=None
+    ) -> None:
         """Initialize drone instance
 
         Args:
@@ -49,12 +51,14 @@ class VideoThread(threading.Thread):
             cv2.imshow(self.frame_name, image)
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
-            
+
         print("Closing video stream")
         cap.release()
         cv2.destroyAllWindows()
         self.close_callback()
 
-        
     def stop(self):
         self.running = False
+
+    def change_model(self, model):
+        self.model = model
