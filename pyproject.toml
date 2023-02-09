@@ -14,7 +14,9 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 requires-python = ">=3.7"
-keywords = ["drones", "computer vision", "human tracking", "object recognition", "YOLO"]
+keywords = ["drone", "computer vision", "human tracking", "object recognition",
+            "YOLO", "human counting", "face detection", "mediapipe", "pytorch",
+            "sockets", "thread"]
 dynamic = ["dependencies"]
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}

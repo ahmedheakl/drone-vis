@@ -23,17 +23,19 @@ from termcolor import colored
 from dronevis.drone_connect import DemoDrone, Drone
 from dronevis.gui.drone_gui import DroneVisGui
 import sys
+from dronevis.utils import get_logger
 
 def main() -> None:
     """Running CLI script and CLI main loop
     """
    
     args = gui_parse()
+    logger = get_logger(debug=args.debug)
     
     if args.drone == "demo":
-        drone = DemoDrone()   
+        drone = DemoDrone(logger=logger)   
     else:
-        drone = Drone()
+        drone = Drone(logger=logger)
     
     gui = DroneVisGui(drone=drone)
     library_ontro()       
@@ -41,18 +43,22 @@ def main() -> None:
         gui()
         
     except KeyboardInterrupt:
-        print("\nClosing GUI ...")
+        print("")
+        logger.warning("closing GUI ...")
         gui.on_close_window()
         sys.exit()
         
     except ConnectionError:
-        print(colored("Couldn't connect to the drone. Make sure you are connected to the drone network", "yellow"))
+        logger.error("Couldn't connect to the drone. Make sure you are connected to the drone network")
+        gui.on_close_window()
         
-    except AssertionError:
-        print(colored("Some error occured", "yellow"))
+    except AssertionError as error:
+        logger.error(error)
+        gui.on_close_window()
         
-    except (ValueError, AttributeError):
-        print(colored("Some error occurred, please try again", "yellow"))
+    except (ValueError, AttributeError) as error:
+        logger.error(error)
+        gui.on_close_window()
         
         
 if __name__ == "__main__":

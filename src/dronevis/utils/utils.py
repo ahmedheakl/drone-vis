@@ -20,7 +20,7 @@ def write_fps(image: np.ndarray, fps: Union[str, int, float]) -> np.ndarray:
         np.array: processed image with fps written
     """
     assert isinstance(fps, (str, int, float)), "Please enter a valid fps value"
-    if not isinstance(fps, str):
+    if not isinstance(fps, int):
         fps = str(int(fps))
 
     cv2.putText(
@@ -37,6 +37,7 @@ def write_fps(image: np.ndarray, fps: Union[str, int, float]) -> np.ndarray:
 
 def library_ontro() -> None:
     """Print pretty output from dronevis ontro"""
+    
     print(colored(Figlet(font="big").renderText("DRONE VIS"), "green"))
     rprint("[violet]Welcome to DroneVis CLI")
     rprint(
@@ -46,7 +47,11 @@ def library_ontro() -> None:
 
 
 def gui_parse() -> argparse.Namespace:
-    
+    """Parse arguments for the GUI script
+
+    Returns:
+        argparse.Namespace: parsed arguments of user input
+    """
     parser = argparse.ArgumentParser(
         prog="DroneVisGUI",
         description="Parser arguments to run dronevis GUI",
@@ -70,12 +75,18 @@ def gui_parse() -> argparse.Namespace:
         choices=["demo", "real"],
         help="whether to use a demo drone or a real drone",        
     )
+    
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="whether to output debug info",
+    )
        
     args = parser.parse_args()
     return args
 
 def axis_config(ax) -> None:
-    """Set the axis paramets for height graph
+    """Set the axis paramets for height graph in the GUI
 
     Args:
         ax (plt.ax): matplotlib axis

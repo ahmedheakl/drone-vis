@@ -12,3 +12,4 @@ rich
 rich_argparse
 termcolor
 pyfiglet
+coloredlogs

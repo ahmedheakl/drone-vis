@@ -3,7 +3,7 @@ import cv2
 from dronevis.utils.utils import write_fps
 from typing import Callable
 import time
-from dronevis.abstract import NOOPModel
+from dronevis.abstract import CVModel
 
 
 class VideoThread(threading.Thread):
@@ -13,7 +13,12 @@ class VideoThread(threading.Thread):
         threading (Thread): thread for video stream
     """
 
-    def __init__(self, closing_callback: Callable, ip: str = "192.168.1.1", model=None) -> None:
+    def __init__(
+        self,
+        closing_callback: Callable,
+        model: CVModel,
+        ip: str = "192.168.1.1",
+    ) -> None:
         """Initialize drone instance
 
         Args:
@@ -37,24 +42,26 @@ class VideoThread(threading.Thread):
         cap = cv2.VideoCapture(self.video_index)
         if not cap.isOpened():
             print("Error while trying to read video. Please check path again")
+
         prev_time = 0
         while cap.isOpened():
             if not self.running:
                 break
+
             _, frame = cap.read()
-            image = self.model.predict(frame)
+            frame = self.model.predict(frame)
             cur_time = time.time()
             fps = 1 / (cur_time - prev_time)
             prev_time = cur_time
-            cv2.imshow(self.frame_name, image)
+            cv2.imshow(self.frame_name, write_fps(frame, fps))
+
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
-            
-        print("Closing video stream")
+
+        print("Closing video stream ...")
         cap.release()
         cv2.destroyAllWindows()
         self.close_callback()
 
-        
     def stop(self):
         self.running = False

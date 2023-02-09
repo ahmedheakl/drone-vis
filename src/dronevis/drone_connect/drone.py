@@ -6,10 +6,12 @@ import struct
 import time
 import socket
 from typing import Callable
-
+from dronevis.abstract import CVModel
+import logging
+from typing import Optional
 
 class Drone:
-    def __init__(self, ip: str = "192.168.1.1") -> None:
+    def __init__(self, ip: str = "192.168.1.1", logger: Optional[logging.Logger] = None) -> None:
         """Initialize ip and communication ports
 
         Args:
@@ -23,15 +25,22 @@ class Drone:
         self.video_thread = None
         self.com_thread = None
         self.nav_thread = None
+        
+        if logger is None:
+            logging.basicConfig(level=logging.DEBUG)
+            self.logger = logging.getLogger(__name__)
+        else:
+            self.logger = logger
 
-    def connect_video(self, callback: Callable, model) -> None:
+    def connect_video(self, callback: Callable, model: CVModel) -> None:
         """Initialize and start video thread"""
         
         if not hasattr(callback, "__call__"):
             raise TypeError("Please provide a function")
         
-        self.video_thread = VideoThread(callback, self.ip, model)
+        self.video_thread = VideoThread(callback, model, self.ip)
         self.video_thread.start()
+        self.logger.debug("Initialized video thread")       
         
     def disconnect_video(self) -> None:
         if self.video_thread is None:
@@ -39,6 +48,7 @@ class Drone:
         
         self.video_thread.stop()
         self.video_thread = None
+        self.logger.debug("Initialized video thread")   
 
     def connect(self) -> None:
         """Start communication thread to send control commands
@@ -49,7 +59,8 @@ class Drone:
         """
         if not self.check_telnet():
             raise ConnectionError(
-                "Couldn't connect to the drone. Make sure you are connected to the drone network."
+                "Couldn't connect to the drone.\
+                Make sure you are connected to the drone network."
             )
         try:
 
@@ -58,10 +69,13 @@ class Drone:
             self.com_thread.start()
             self.is_connected = True
             self.nav_thread = None
+            
         except:
             raise ConnectionError(
-                "Couldn't connect to the drone. Make sure you are connected to the drone network."
+                "Couldn't connect to the drone.\
+                Make sure you are connected to the drone network."
             )
+            
 
     def set_config(self, **args) -> bool:
         """Set a configuration onto the drone
@@ -74,6 +88,8 @@ class Drone:
         Returns:
             bool: a flag that everything went fine
         """
+        assert self.com_thread, "Please connect to the drone first"
+        
         # Check if all arguments are supported config
         for c in args.keys():
             print(c)
@@ -276,7 +292,7 @@ class Drone:
 
     def stop(self):
         """Stop the drone"""
-        
+        self.is_connected = False
         if self.com_thread is not None:
             self.land()
             time.sleep(1)
@@ -284,6 +300,13 @@ class Drone:
             
         if self.nav_thread is not None:
             self.nav_thread.stop()
+            self.nav_thread.join()
+            
+        if self.video_thread is not None:
+            self.video_thread.stop()
+            self.video_thread.join()
+            
+        
 
     def set_callback(self, callback=None):
         "Set the callback function"

@@ -5,7 +5,7 @@ from dronevis.gui.image_bw_button import ImageBWButton
 from dronevis.gui.main_button import MainButton
 import matplotlib.pyplot as plt
 from dronevis.gui.navdata_frame import DataFrame
-from typing import Union
+from typing import Union, Optional
 from dronevis.abstract import NOOPModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from dronevis.face_detection import FaceDetectModel
@@ -18,7 +18,7 @@ from dronevis.utils import axis_config
 class DroneVisGui:
     def __init__(
         self,
-        drone: Union[Drone, DemoDrone, None] = None,
+        drone: Optional[Union[Drone, DemoDrone]] = None,
     ) -> None:
         """Contruct a GUI window
 
@@ -28,6 +28,7 @@ class DroneVisGui:
         """
         self.window = Tk()
         self.drone = drone if drone else DemoDrone()
+        self.logger = self.drone.logger
         self.models = {
             "none": NOOPModel,
             "face": FaceDetectModel,
@@ -39,6 +40,7 @@ class DroneVisGui:
         }
 
         ################# Configurations #######################
+        self.logger.debug("initializing root window ...")
         self.window.protocol("WM_DELETE_WINDOW", self.on_close_window)
         self.window.geometry("1000x580")
         s = Style()
@@ -492,8 +494,8 @@ class DroneVisGui:
         if self.drone.video_thread is not None:
             self.on_change_stream_model()
             return
-
-        print(f"Current Model: {self.models_choice.get()}")
+        
+        self.logger.info(f"current Model: {self.models_choice.get()}")
         self.is_stream = True
         model = self.get_and_load_model()
         close_stream_callback = lambda: None
@@ -515,13 +517,17 @@ class DroneVisGui:
         return model
 
     def on_change_stream_model(self):
-        assert self.drone.video_thread, "Initialize video thread first"
-        print(f"Changed to Model: {self.models_choice.get()}")
+        if self.drone.video_thread is None:
+            self.logger.error("video thread called before initialized")
+            raise ValueError("initialize video thread first")
+
+        self.logger.info(f"Changed to Model: {self.models_choice.get()}")
         model = self.get_and_load_model()
         self.drone.video_thread.change_model(model)  # type: ignore
 
     def __call__(self) -> None:
         self.init_frames()
+        self.logger.debug("main frames initialized")
         self.window.mainloop()
 
     def on_close_window(self):
@@ -529,10 +535,13 @@ class DroneVisGui:
 
         It stop the drone connection and destroyes and GUI window
         """
-        assert self._plot_job, "Initialize GUI before closing it"
+        if self._plot_job is None:
+            self.logger.critical("GUI closed before initialized")
+            raise AssertionError("initialize GUI before closing it")
 
         self.drone.stop()
         self.window.after_cancel(self._plot_job)
         self._plot_job = None
         plt.close()
         self.window.destroy()
+        self.logger.info("GUI closed")

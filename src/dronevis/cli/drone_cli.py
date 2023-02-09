@@ -8,6 +8,7 @@ from dronevis.drone_connect import Drone, DemoDrone
 from typing import Union, Callable, Dict
 from rich import print as rprint
 from rich.console import Console
+import logging
 
 
 class DroneCli:
@@ -47,6 +48,11 @@ class DroneCli:
             choices=["demo", "real"],
             help="whether to use a demo drone or a real drone",
         )
+        parser.add_argument(
+            "--debug",
+            action="store_true",
+            help="whether to output debug info",
+        )
 
         args = parser.parse_args()
         return args
@@ -57,7 +63,7 @@ class DroneCli:
         with a red X.
         """
         table = Table()
-        
+
         table.add_column("Control ID", style="cyan", no_wrap=True)
         table.add_column("Task", style="magenta")
         table.add_column("Status", justify="right", style="green")
@@ -154,7 +160,7 @@ class DroneCli:
 
         # get console instance for pretty output
         console = Console()
-        console.print("Connecting to your drone ...", style="bold black on black")
+        console.print("Connecting to your drone ...", style="bold black on yellow")
 
         # connect to drone
         drone.connect()
