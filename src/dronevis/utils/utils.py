@@ -1,13 +1,16 @@
-import cv2
-import numpy as np
+"""Utilities for dronevis library including image processing and parser"""
 from typing import Union
+import argparse
 from pyfiglet import Figlet
 from rich import print as rprint
 from termcolor import colored
-import argparse
 from rich_argparse import RichHelpFormatter
-from dronevis.gui.configs import *
+import cv2
+import numpy as np
+
+import dronevis.gui.configs as cfg
 from dronevis import __version__
+
 
 def write_fps(image: np.ndarray, fps: Union[str, int, float]) -> np.ndarray:
     """Write fps on input image
@@ -37,11 +40,12 @@ def write_fps(image: np.ndarray, fps: Union[str, int, float]) -> np.ndarray:
 
 def library_ontro() -> None:
     """Print pretty output from dronevis ontro"""
-    
+
     print(colored(Figlet(font="big").renderText("DRONE VIS"), "green"))
     rprint("[violet]Welcome to DroneVis CLI")
     rprint(
-        "DroneVis is a full-compatible library for [green]controlling your drone [white]and\nrunning your favourite [green]computer vision algorithms in real-time[white]"
+        "DroneVis is a full-compatible library for [green]controlling your drone [white]and"
+        + "\nrunning your favourite [green]computer vision algorithms in real-time[white]"
     )
     print("----------------------------------------------------------")
 
@@ -58,14 +62,11 @@ def gui_parse() -> argparse.Namespace:
         epilog="Enjoy the drone experience! \N{slightly smiling face}",
         formatter_class=RichHelpFormatter,
     )
-    
+
     parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version=f"Version: {__version__}"
+        "-v", "--version", action="version", version=f"Version: {__version__}"
     )
-    
+
     parser.add_argument(
         "-d",
         "--drone",
@@ -73,39 +74,37 @@ def gui_parse() -> argparse.Namespace:
         default="demo",
         dest="drone",
         choices=["demo", "real"],
-        help="whether to use a demo drone or a real drone",        
+        help="whether to use a demo drone or a real drone",
     )
-    
+
     parser.add_argument(
         "--debug",
         action="store_true",
         help="whether to output debug info",
     )
-       
+
     args = parser.parse_args()
     return args
 
-def axis_config(ax) -> None:
+
+def axis_config(axis) -> None:
     """Set the axis paramets for height graph in the GUI
 
     Args:
         ax (plt.ax): matplotlib axis
     """
-    ax.legend(["height"])
-    ax.set_xlabel("Time")
-    ax.set_ylabel("Height")
-    ax.yaxis.label.set_color(WHITE_COLOR)
-    ax.xaxis.label.set_color(WHITE_COLOR)
-    ax.title.set_color(WHITE_COLOR)
-    ax.spines["bottom"].set_color(WHITE_COLOR)
-    ax.spines["top"].set_color(WHITE_COLOR)
-    ax.spines["right"].set_color(WHITE_COLOR)
-    ax.spines["left"].set_color(WHITE_COLOR)
-    ax.tick_params(axis="x", colors=WHITE_COLOR)
-    ax.tick_params(axis="y", colors=WHITE_COLOR)
-    ax.set_facecolor(MAIN_COLOR)
-    ax.set_ylim([0, GUI_Y_LIMIT])
-    ax.set_xlim([0, GUI_X_LIMIT])
-
-
-    
+    axis.legend(["height"])
+    axis.set_xlabel("Time")
+    axis.set_ylabel("Height")
+    axis.yaxis.label.set_color(cfg.WHITE_COLOR)
+    axis.xaxis.label.set_color(cfg.WHITE_COLOR)
+    axis.title.set_color(cfg.WHITE_COLOR)
+    axis.spines["bottom"].set_color(cfg.WHITE_COLOR)
+    axis.spines["top"].set_color(cfg.WHITE_COLOR)
+    axis.spines["right"].set_color(cfg.WHITE_COLOR)
+    axis.spines["left"].set_color(cfg.WHITE_COLOR)
+    axis.tick_params(axis="x", colors=cfg.WHITE_COLOR)
+    axis.tick_params(axis="y", colors=cfg.WHITE_COLOR)
+    axis.set_facecolor(cfg.MAIN_COLOR)
+    axis.set_ylim([0, cfg.GUI_Y_LIMIT])
+    axis.set_xlim([0, cfg.GUI_X_LIMIT])

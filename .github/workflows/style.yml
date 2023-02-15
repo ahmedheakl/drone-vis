@@ -28,7 +28,7 @@ jobs:
           pip install -e .
       - name: Lint with Pylint
         run: |
-          pylint . --ignore-missing-imports |& tee pylint.log
+          pylint src/dronevis/ |& tee pylint.log
       - name: Style checking with mypy
         run: |
           mypy . --ignore-missing-imports |& tee mypy.log

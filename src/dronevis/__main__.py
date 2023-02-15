@@ -4,26 +4,30 @@ Connect to your drone and run your CV models
 
 Usage
 ------------------
-    
     $ dronevis [--options]
-    
+
 Get data about the arguments
     $ dronevis --help
-    
+
 Or just run the following to the default
     $ dronevis
-    
-    
+
 Version
 ------------------
  - dronevis v0.2.2
 """
+from typing import Union
+import sys
+import logging
 
 from dronevis.drone_connect import DemoDrone, Drone
 from dronevis.cli import DroneCli
-import sys
-from dronevis.utils import library_ontro
-from dronevis.utils import get_logger
+from dronevis.utils.utils import library_ontro
+from dronevis.utils.logger import init_logger
+
+# get logger
+init_logger()
+_LOG = logging.getLogger(__name__)
 
 
 def main() -> None:
@@ -33,13 +37,11 @@ def main() -> None:
     cli = DroneCli()
     args = cli.parse()
 
-    logger = get_logger(debug=args.debug)
-
     # initialize drone instance
     if args.drone == "demo":
-        drone = DemoDrone(logger=logger)
+        drone: Union[Drone, DemoDrone] = DemoDrone()
     else:
-        drone = Drone(logger=logger)
+        drone = Drone()
 
     # print library ontro
     library_ontro()
@@ -50,19 +52,20 @@ def main() -> None:
 
     except KeyboardInterrupt:
         print("")
-        logger.warning("keyinterrupt: closing CLI ...")
+        _LOG.warning("keyinterrupt: closing CLI ...")
         drone.stop()
         sys.exit()
 
     except NotImplementedError:
-        logger.error("drone tests are NOT yet implemented")
+        _LOG.error("drone tests are NOT yet implemented")
 
     except ConnectionError:
-        logger.error("couldn't connect to the drone")
-        logger.error("make sure you are connected to the drone network")
-        
+        _LOG.error("couldn't connect to the drone")
+        _LOG.error("make sure you are connected to the drone network")
+
     except (ValueError, AssertionError) as error:
-        logger.error(error)
+        _LOG.error(error)
+
 
 if __name__ == "__main__":
     main()

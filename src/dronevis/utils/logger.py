@@ -1,10 +1,10 @@
+"""Logger helper functions"""
 import logging
 import os
 import coloredlogs
-import sys
 
 
-def get_logger(debug: bool = False) -> logging.Logger:
+def init_logger(debug: bool = False) -> None:
     """Initialize logger with desired configs
 
     Args:
@@ -15,7 +15,6 @@ def get_logger(debug: bool = False) -> logging.Logger:
     """
     level = logging.DEBUG if debug else logging.INFO
     logs_dir = os.path.join(os.path.expanduser("~"), ".logs")
-    logger = logging.getLogger("mainlogger")
 
     if not os.path.exists(logs_dir):
         os.mkdir(logs_dir)
@@ -25,13 +24,6 @@ def get_logger(debug: bool = False) -> logging.Logger:
 
     # initialize file handler
     f_handler = logging.FileHandler(filename=logs_path, mode="w")
-    c_handler = logging.StreamHandler(sys.stdout)
-    
-    c_handler.setLevel(level)
-    c_format = logging.Formatter("%(asctime)s - %(message)s")
-    c_handler.setFormatter(c_format)
-
-    # set configs for file handler
     f_handler.setLevel(logging.DEBUG)
     f_format = logging.Formatter(
         "%(asctime)s - %(filename)s - %(levelname)s - %(message)s"
@@ -39,14 +31,11 @@ def get_logger(debug: bool = False) -> logging.Logger:
     f_handler.setFormatter(f_format)
 
     # set handlers
-    logger.addHandler(f_handler)
-    logger.addHandler(c_handler)
+    logging.basicConfig(handlers=[f_handler])
 
     # initialize colored logs
-    
+
     coloredlogs.install(
         fmt="%(asctime)s - %(message)s",
-        logger=logger,
+        level=level,
     )
-
-    return logger

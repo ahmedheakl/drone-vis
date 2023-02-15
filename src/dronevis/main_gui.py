@@ -4,65 +4,69 @@ Connect to your drone and run your CV models
 
 Usage
 ------------------
-    
+
     $ dronevis-gui [--options]
-    
+
 Get data about the arguments
     $ dronevis-gui --help
-    
+
 Or just run the following to the default
     $ dronevis-gui
-    
-    
+
 Version
 ------------------
  - dronevis-gui v0.2.1
 """
+import logging
+import sys
+from typing import Union
+
 from dronevis.utils.utils import library_ontro, gui_parse
-from termcolor import colored
 from dronevis.drone_connect import DemoDrone, Drone
 from dronevis.gui.drone_gui import DroneVisGui
-import sys
-from dronevis.utils import get_logger
+from dronevis.utils.logger import init_logger
+
+
+# get logger
+init_logger(debug=True)
+_LOG = logging.getLogger(__name__)
+
 
 def main() -> None:
-    """Running CLI script and CLI main loop
-    """
-   
+    """Running CLI script and CLI main loop"""
+
     args = gui_parse()
-    logger = get_logger(debug=args.debug)
-    
+
     if args.drone == "demo":
-        drone = DemoDrone(logger=logger)   
+        drone: Union[DemoDrone, Drone] = DemoDrone()
     else:
-        drone = Drone(logger=logger)
-    
+        drone = Drone()
+
     gui = DroneVisGui(drone=drone)
-    library_ontro()       
+    library_ontro()
     try:
         gui()
-        
+
     except KeyboardInterrupt:
         print("")
-        logger.warning("closing GUI ...")
+        _LOG.warning("closing GUI ...")
         gui.on_close_window()
         sys.exit()
-        
+
     except ConnectionError:
-        logger.error("Couldn't connect to the drone. Make sure you are connected to the drone network")
+        _LOG.error(
+            "Couldn't connect to the drone. Make sure you are connected to the drone network"
+        )
         gui.on_close_window()
-        
+
     except AssertionError as error:
-        logger.error(error)
+        _LOG.error(error)
         gui.on_close_window()
-        
+
     except (ValueError, AttributeError) as error:
-        logger.error(error)
+        _LOG.error(error)
         gui.on_close_window()
-        
-        
+
+
 if __name__ == "__main__":
     main()
-         
-
-

@@ -1,10 +1,12 @@
+"""Implementation for face detection from mediapipe"""
+from typing import Union
+import time
 import cv2
 import mediapipe as mp
+import numpy as np
+
 from dronevis.abstract import CVModel
 from dronevis.utils.utils import write_fps
-import time
-import numpy as np
-from typing import Union
 
 
 class FaceDetectModel(CVModel):
@@ -18,15 +20,16 @@ class FaceDetectModel(CVModel):
         """Construct model instance
 
         Args:
-            confidence (float, optional): threshold for detection, **input is a probability [0, 1]**.
+            confidence (float, optional): threshold for detection,
+            **input is a probability [0, 1]**.
             Defaults to 0.5.
         """
         assert 0.0 <= confidence <= 1, "Confidence must be a score between 0 and 1"
         assert isinstance(confidence, (int, float)), "Confidence must be a number"
-        self.face_detection = mp.solutions.face_detection.FaceDetection(confidence) # type: ignore
-        self.mp_drawing = mp.solutions.drawing_utils                                # type: ignore
+        self.face_detection = mp.solutions.face_detection.FaceDetection(confidence)  # type: ignore
+        self.mp_drawing = mp.solutions.drawing_utils  # type: ignore
 
-    def transform_img(self, img: np.ndarray) -> np.ndarray:
+    def transform_img(self, image: np.ndarray) -> np.ndarray:
         """Tranform input image to be inference-ready
         Transformations is basically swapping ``BGR`` channels
         to ``RGB`` channels.
@@ -37,13 +40,9 @@ class FaceDetectModel(CVModel):
         Returns:
             np.array: transformed image into ``RGB`` channels style
         """
-        return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    def load_model(self):
-        """Load model *(no loading needed, all done in the constructor)*"""
-        pass
-
-    def predict(self, img: np.ndarray) -> np.ndarray:
+    def predict(self, image: np.ndarray) -> np.ndarray:
         """Run model inference on input image and output face detection
         keypoints.
 
@@ -53,11 +52,11 @@ class FaceDetectModel(CVModel):
         Returns:
             np.array: output image with keypoints drawn
         """
-        image = self.transform_img(img)
-        results = self.face_detection.process(image)
+        img = self.transform_img(image)
+        results = self.face_detection.process(img)
         if results.detections:
             for detection in results.detections:
-                self.mp_drawing.draw_detection(img, detection)
+                self.mp_drawing.draw_detection(image, detection)
 
         return img
 
@@ -69,11 +68,12 @@ class FaceDetectModel(CVModel):
         """Run webcam (or any video streaming device) with face detection module
 
         Args:
-            video_index (Union[int, str], optional): index of video device. can be an ``IP`` or ``video_path``. Defaults to 0.
+            video_index (Union[int, str], optional): index of video device. can be an ``IP``
+            or ``video_path``. Defaults to 0.
             window_name (str, optional): name of opencv window. Defaults to "Face Detection".
         """
         cap = cv2.VideoCapture(video_index)
-        prev_time = 0
+        prev_time = 0.0
         while True:
             _, frame = cap.read()
             cur_time = time.time()
