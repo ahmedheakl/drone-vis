@@ -1,81 +1,96 @@
+"""Implementation for real drone control"""
+from typing import Callable, Optional, List
+import logging
+import struct
+import time
+import socket
+
+from dronevis.abstract import CVModel
+from dronevis.abstract.base_drone import BaseDrone
 from dronevis.drone_connect.video import VideoThread
 from dronevis.drone_connect.command import Command
 from dronevis.drone_connect.navdata import Navdata
 from dronevis.config import config
-import struct
-import time
-import socket
-from typing import Callable
-from dronevis.abstract import CVModel
-import logging
-from typing import Optional
 
-class Drone:
-    def __init__(self, ip: str = "192.168.1.1", logger: Optional[logging.Logger] = None) -> None:
+_LOG = logging.getLogger(__name__)
+
+
+class Drone(BaseDrone):
+    """Drone implementation for connecting, controlling, retrieving video
+    stream from the drone using sockets"""
+
+    command_port = 5556
+    data_port = 5554
+
+    def __init__(self, ip_address: str = "192.168.1.1") -> None:
         """Initialize ip and communication ports
 
         Args:
-            ip (str, optional): IP of the drone. Defaults to "192.168.1.1".
-            model (CVModel, optional): computer vision model. Defaults to None.
+            ip_address (str, optional): IP of the drone. Defaults to "192.168.1.1".
         """
-        self.command_port = 5556
-        self.data_port = 5554
-        self.ip = ip
+        super().__init__(ip_address)
         self.is_connected = False
-        self.video_thread = None
-        self.com_thread = None
-        self.nav_thread = None
-        
-        if logger is None:
-            logging.basicConfig(level=logging.DEBUG)
-            self.logger = logging.getLogger(__name__)
-        else:
-            self.logger = logger
+        self.video_thread: Optional[VideoThread] = None
+        self.com_thread: Optional[Command] = None
+        self.nav_thread: Optional[Navdata] = None
+        self.com: Optional[Callable[[str], bool]] = None
 
     def connect_video(self, callback: Callable, model: CVModel) -> None:
-        """Initialize and start video thread"""
-        
-        if not hasattr(callback, "__call__"):
-            raise TypeError("Please provide a function")
-        
-        self.video_thread = VideoThread(callback, model, self.ip)
+        """Initialize and start video thread
+
+        Args:
+            callback (Callable): Callback to be invoked after closing the video thread
+            model (CVModel): Computer vision to run over the video stream
+
+        Raises:
+            TypeError: Provided callback should be callable
+        """
+
+        super().connect_video(callback=callback, model=model)
+
+        self.video_thread = VideoThread(callback, model, self.ip_address)
         self.video_thread.start()
-        self.logger.debug("Initialized video thread")       
-        
+        _LOG.debug("Initialized video thread")
+
     def disconnect_video(self) -> None:
+        """Disconnect video stream"""
         if self.video_thread is None:
-            raise ValueError("Video is not initialized")
-        
+            _LOG.warning("Video thread is not initialized")
+            return
+
         self.video_thread.stop()
         self.video_thread = None
-        self.logger.debug("Initialized video thread")   
+        _LOG.debug("Disconnected video thread")
 
     def connect(self) -> None:
         """Start communication thread to send control commands
 
         Raises:
-            ConnectionError: lost connection to drone
-            ConnectionError: cannot send commands to drone
+            ConnectionError: Lost connection to drone
+            ConnectionError: Cannot send commands to drone
         """
-        if not self.check_telnet():
-            raise ConnectionError(
-                "Couldn't connect to the drone.\
-                Make sure you are connected to the drone network."
+        if not self._check_telnet():
+            err_message = (
+                "Couldn't connect to the drone."
+                + "Make sure you are connected to the drone network."
             )
+            _LOG.critical(err_message)
+            raise ConnectionError(err_message)
         try:
 
-            self.com_thread = Command(self.ip)
-            self.c = self.com_thread.command  # Alias
+            self.com_thread = Command(self.ip_address)
+            self.com = self.com_thread.command  # Alias
             self.com_thread.start()
             self.is_connected = True
             self.nav_thread = None
-            
-        except:
-            raise ConnectionError(
-                "Couldn't connect to the drone.\
-                Make sure you are connected to the drone network."
+
+        except Exception as exc:
+            err_message = (
+                "Couldn't connect to the drone."
+                + "Make sure you are connected to the drone network."
             )
-            
+            _LOG.critical(err_message)
+            raise ConnectionError(err_message) from exc
 
     def set_config(self, **args) -> bool:
         """Set a configuration onto the drone
@@ -89,22 +104,22 @@ class Drone:
             bool: a flag that everything went fine
         """
         assert self.com_thread, "Please connect to the drone first"
-        
+
         # Check if all arguments are supported config
-        for c in args.keys():
-            print(c)
-            if c.lower() not in config.SUPPORTED_CONFIG.keys():
-                raise AttributeError(
-                    "The configuration key " + str(c) + " can't be found!"
-                )
+        for key_arg, _ in args.items():
+            _LOG.debug(key_arg)
+            if key_arg.lower() not in list(config.SUPPORTED_CONFIG.keys()):
+                err_message = f"The configuration key {key_arg} can't be found!"
+                _LOG.critical(err_message)
+                raise AttributeError(err_message)
         # Then set each config
-        at_commands = []
-        for c in args.keys():
-            at_commands = at_commands + config.SUPPORTED_CONFIG[c.lower()](
-                args[c.lower()]
+        at_commands: List[str] = []
+        for key_arg, _ in args.items():
+            at_commands = at_commands + config.SUPPORTED_CONFIG[key_arg.lower()](
+                args[key_arg.lower()]
             )
-        for at in at_commands:
-            self.com_thread.configure(at[0], at[1])
+        for at_command in at_commands:
+            self.com_thread.configure(at_command[0], at_command[1])
         return True
 
     def list_config(self) -> list:
@@ -121,9 +136,10 @@ class Drone:
         Returns:
             bool: a flag for valid execution
         """
-        return self.c(
+        assert self.com, "Please connect to the drone first"
+        return self.com(
             "AT*REF=#ID#,"
-            + str(self.bin2dec("00010001010101000000001000000000"))
+            + str(self._bin2dec("00010001010101000000001000000000"))
             + "\r"
         )
 
@@ -133,9 +149,10 @@ class Drone:
         Returns:
             bool: a flag for valid execution
         """
-        return self.c(
+        assert self.com, "Please connect to the drone first"
+        return self.com(
             "AT*REF=#ID#,"
-            + str(self.bin2dec("00010001010101000000000000000000"))
+            + str(self._bin2dec("00010001010101000000000000000000"))
             + "\r"
         )
 
@@ -145,7 +162,8 @@ class Drone:
         Returns:
             bool: a flag for valid execution
         """
-        return self.c("AT*FTRIM=#ID#\r")
+        assert self.com, "Please connect to the drone first"
+        return self.com("AT*FTRIM=#ID#\r")
 
     def forward(self, speed: float = 0.2) -> bool:
         """Make the drone go forward, speed is between 0 and 1
@@ -237,10 +255,10 @@ class Drone:
 
     def navigate(
         self,
-        left_right: float = 0,
-        front_back: float = 0,
-        up_down: float = 0,
-        angle_change: float = 0,
+        left_right: float = 0.0,
+        front_back: float = 0.0,
+        up_down: float = 0.0,
+        angle_change: float = 0.0,
     ) -> bool:
         """Command the drone, all the arguments are between -1 and 1
 
@@ -253,19 +271,21 @@ class Drone:
         Returns:
             bool: a flag for valid execution
         """
-        lr = self.float2dec(left_right)
-        fb = self.float2dec(front_back)
-        ud = self.float2dec(up_down)
-        ac = self.float2dec(angle_change)
-        return self.c(
+        left_right_dec = self._float2dec(left_right)
+        forward_back_dec = self._float2dec(front_back)
+        up_down_dec = self._float2dec(up_down)
+        angle_change_dec = self._float2dec(angle_change)
+
+        assert self.com, "Please connect to the drone first"
+        return self.com(
             "AT*PCMD=#ID#,1,"
-            + str(lr)
+            + str(left_right_dec)
             + ","
-            + str(fb)
+            + str(forward_back_dec)
             + ","
-            + str(ud)
+            + str(up_down_dec)
             + ","
-            + str(ac)
+            + str(angle_change_dec)
             + "\r"
         )
 
@@ -275,7 +295,8 @@ class Drone:
         Returns:
             bool: a flag for valid execution
         """
-        return self.c("AT*PCMD=#ID#,0,0,0,0,0\r")
+        assert self.com, "Please connect to the drone first"
+        return self.com("AT*PCMD=#ID#,0,0,0,0,0\r")
 
     def emergency(self) -> bool:
         """Enter in emergency mode
@@ -284,40 +305,41 @@ class Drone:
            str: a flag for valid execution
         """
         # Release all lock to be sure command is issued
-        return self.c(
+        assert self.com, "Please connect to the drone first"
+        return self.com(
             "AT*REF=#ID#,"
-            + str(self.bin2dec("00010001010101000000000100000000"))
+            + str(self._bin2dec("00010001010101000000000100000000"))
             + "\r"
         )
 
-    def stop(self):
+    def stop(self) -> None:
         """Stop the drone"""
         self.is_connected = False
         if self.com_thread is not None:
             self.land()
             time.sleep(1)
             self.com_thread.stop()
-            
+
         if self.nav_thread is not None:
             self.nav_thread.stop()
             self.nav_thread.join()
-            
+
         if self.video_thread is not None:
             self.video_thread.stop()
             self.video_thread.join()
-            
-        
 
     def set_callback(self, callback=None):
         "Set the callback function"
         # Check if the argument is a function
-        if callback == None:
-            callback = self.print_navdata
-            
+        if callback is None:
+            callback = self._print_navdata
+
         if not hasattr(callback, "__call__"):
-            raise TypeError("Need a function")
-        
-        if self.nav_thread == None:
+            err_message = "Callaback provided should be a function"
+            _LOG.critical(err_message)
+            raise TypeError(err_message)
+
+        if self.nav_thread is None:
             # Initialize the navdata thread and navdata
             self.nav_thread = Navdata(self.com_thread, callback)
             # self.set_config(activate_navdata=True)
@@ -327,7 +349,13 @@ class Drone:
             self.nav_thread.change_callback(callback)
             self.nav_thread.start()
 
-    def print_navdata(self, data):
+    def _print_navdata(self, data: dict) -> None:
+        """Print navigation data to console
+        Should be invoked as a callback
+
+        Args:
+            data (dict): Navigation data to be printed
+        """
         print(data)
 
     def reset(self) -> bool:
@@ -342,7 +370,7 @@ class Drone:
         # Then normal state
         return self.land()
 
-    def bin2dec(self, bin: str) -> int:
+    def _bin2dec(self, binay_str: str) -> int:
         """Convert a binary number to an int
 
         Args:
@@ -351,9 +379,9 @@ class Drone:
         Returns:
             int: value of the result integer
         """
-        return int(bin, 2)
+        return int(binay_str, 2)
 
-    def float2dec(self, my_float: float) -> int:
+    def _float2dec(self, my_float: float) -> int:
         """Convert a python float to an int
 
         Args:
@@ -364,18 +392,18 @@ class Drone:
         """
         return int(struct.unpack("=l", struct.pack("f", float(my_float)))[0])
 
-    def check_telnet(self) -> bool:
+    def _check_telnet(self) -> bool:
         """Check if we can connect to telnet
 
         Returns:
             bool: flag whether there is a valid connection
         """
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         connection_port = 23
         try:
-            sock.connect((self.ip, connection_port))
-        except:
+            sock.connect((self.ip_address, connection_port))
+        except ConnectionError as _:
+            _LOG.critical("No drone connection")
             return False
-        else:
-            sock.close()
-            return True
+        sock.close()
+        return True

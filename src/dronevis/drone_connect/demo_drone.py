@@ -4,24 +4,21 @@ import logging
 import random
 import time
 from threading import Thread
-from inspect import getmro
 import cv2
 
 from dronevis.utils.utils import write_fps
 from dronevis.abstract import CVModel
+from dronevis.abstract.base_drone import BaseDrone
 
 _LOG = logging.getLogger(__name__)
 
 
-class DemoDrone:
+class DemoDrone(BaseDrone):
     """Demo class for running ``demo GUI``."""
 
-    def __init__(
-        self,
-        ip_address: str = "192.168.1.1",
-    ) -> None:
+    def __init__(self, ip_address: str = "192.168.1.1") -> None:
         """Construct demo object"""
-
+        super().__init__(ip_address)
         self.is_connected = False
         self.nav_thread: Optional[DemoNavThread] = None
         self.video_thread: Optional[DemoVideoThread] = None
@@ -40,15 +37,7 @@ class DemoDrone:
             interface
         """
 
-        if not hasattr(callable, "__call__"):
-            err_message = "Please provide a function as a callback"
-            _LOG.error(err_message)
-            raise TypeError(err_message)
-
-        if CVModel not in getmro(type(model)):
-            err_message = "Model provided is not an instance of ``CVModel``"
-            _LOG.error(err_message)
-            raise TypeError(err_message)
+        super().connect_video(callback, model)
 
         self.video_thread = DemoVideoThread(callback, model)
         self.video_thread.start()
@@ -105,7 +94,9 @@ class DemoDrone:
             _LOG.debug("Changed callback")
 
     def set_config(
-        self, activate_gps: bool = True, activate_navdata: bool = True
+        self,
+        activate_gps: bool = True,
+        activate_navdata: bool = True,
     ) -> None:
         """Setter for configurations (gps, navdata)
 
@@ -123,57 +114,70 @@ class DemoDrone:
         """
         print(navdata)
 
-    def takeoff(self) -> None:
+    def takeoff(self) -> bool:
         """Simulate taking off"""
         _LOG.info("Takeoff")
+        return True
 
-    def land(self) -> None:
+    def land(self) -> bool:
         """Simulate landing"""
         _LOG.info("Land")
+        return True
 
-    def calibrate(self) -> None:
+    def calibrate(self) -> bool:
         """Simulate caliberation"""
         _LOG.info("Calibrate")
+        return True
 
-    def forward(self) -> None:
+    def forward(self) -> bool:
         """Simulate forward movement"""
         _LOG.info("Forward")
+        return True
 
-    def backward(self) -> None:
+    def backward(self) -> bool:
         """Simulate backward movement"""
         _LOG.info("Backward")
+        return True
 
-    def left(self) -> None:
+    def left(self) -> bool:
         """Simulate left movement"""
         _LOG.info("Left")
+        return True
 
-    def right(self) -> None:
+    def right(self) -> bool:
         """Simulate right movement"""
         _LOG.info("Right")
+        return True
 
-    def up(self) -> None:
+    def up(self) -> bool:
         """Simulate up movement"""
         _LOG.info("Up")
+        return True
 
-    def down(self) -> None:
+    def down(self) -> bool:
         """Simulate down movement"""
         _LOG.info("Down")
+        return True
 
-    def rotate_left(self) -> None:
+    def rotate_left(self) -> bool:
         """Simulate left rotation"""
         _LOG.info("Rotating left")
+        return True
 
-    def rotate_right(self) -> None:
+    def rotate_right(self) -> bool:
         """Simulate right rotation"""
         _LOG.info("Rotating right")
+        return True
 
-    def hover(self) -> None:
+    def hover(self) -> bool:
         """Simulate hover movement"""
         _LOG.info("Hover")
+        return True
 
-    def emergency(self) -> None:
+    def emergency(self) -> bool:
         """Simulate emergency"""
         _LOG.info("Emergency")
+        return True
 
     def stop(self):
         """Simulate stopping"""

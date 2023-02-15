@@ -156,7 +156,7 @@ class Command(threading.Thread):
         return False
 
     # Internal functions
-    def _ack_command(self) -> bool:
+    def ack_command(self) -> bool:
         """Call this function when the command is acknowledge
 
         Returns:
@@ -165,7 +165,7 @@ class Command(threading.Thread):
         self.thread_attr.ack = True
         return True
 
-    def _activate_navdata(self, activate: bool = True) -> None:
+    def activate_navdata(self, activate: bool = True) -> None:
         """Call this function when navdata are enabled
 
         Args:
