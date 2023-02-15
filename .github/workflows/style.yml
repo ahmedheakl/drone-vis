@@ -28,10 +28,10 @@ jobs:
           pip install -e .
       - name: Lint with Pylint
         run: |
-          pylint . --ignore-missing-imports |& pylint.log
+          pylint . --ignore-missing-imports |& tee pylint.log
       - name: Style checking with mypy
         run: |
-          mypy . --ignore-missing-imports |& mypy.log
+          mypy . --ignore-missing-imports |& tee mypy.log
       - name: Publish results
         uses: test-summary/action@v2
         with:
