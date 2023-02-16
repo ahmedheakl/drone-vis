@@ -16,7 +16,6 @@ Version
 ------------------
  - dronevis v0.2.2
 """
-from typing import Union
 import sys
 import logging
 
@@ -39,7 +38,7 @@ def main() -> None:
 
     # initialize drone instance
     if args.drone == "demo":
-        drone: Union[Drone, DemoDrone] = DemoDrone()
+        drone = DemoDrone()
     else:
         drone = Drone()
 

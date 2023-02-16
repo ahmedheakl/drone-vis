@@ -53,6 +53,8 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+.mypy_cache
+.benchmarks
 
 # Translations
 *.mo
@@ -66,12 +68,6 @@ src/dronevis/human_counting
 docs/build
 build
 src/dronevis.egg-info
-src/dronevis/__pycache__
-src/dronevis/object_detection_models/__pycache__
-src/dronevis/drone_connect/__pycache__
-src/dronevis/abstract/__pycache__
-**/__pycache__
-__pycache__
 yolov5s.pt
 test.py
 dronevis-features.md
