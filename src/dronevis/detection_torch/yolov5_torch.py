@@ -4,7 +4,7 @@ import getpass
 import cv2
 from dronevis.abstract import CVModel
 import time
-from dronevis.utils import write_fps
+from dronevis.utils.utils import write_fps
 import numpy as np
 from typing import Union
 
@@ -18,7 +18,9 @@ class YOLOv5(CVModel):
     def __init__(self) -> None:
         """Initialize local path"""
         self.net = None
-        self.model_local_path = f"/home/{getpass.getuser()}/.cache/torch/hub/ultralytics_yolov5_master"
+        self.model_local_path = (
+            f"/home/{getpass.getuser()}/.cache/torch/hub/ultralytics_yolov5_master"
+        )
 
     def load_model(self) -> None:
         """Load model from PyTorchHub"""

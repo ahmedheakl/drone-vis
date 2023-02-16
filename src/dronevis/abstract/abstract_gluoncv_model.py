@@ -1,12 +1,17 @@
+"""Interface for models implemented with GluonCV"""
 from abc import abstractmethod
-from gluoncv import utils, model_zoo
-from dronevis.abstract.abstract_model import CVModel
+from typing import List, Union
+import time
+import logging
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
-import time
-from dronevis.utils import write_fps
-from typing import List, Union
+from gluoncv import utils, model_zoo
+
+from dronevis.utils.utils import write_fps
+from dronevis.abstract.abstract_model import CVModel
+
+_LOG = logging.getLogger(__name__)
 
 
 class GluonCVModel(CVModel):
@@ -27,12 +32,12 @@ class GluonCVModel(CVModel):
         """
         self.short_size = short_size
         self.net = None
-        self.class_IDs = None
+        self.class_ids = None
         self.scores = None
         self.bounding_boxes = None
         self.model_name = model_name
 
-    def load_model(self, model_path: str) -> None:
+    def load_model(self, model_path: str = "ssd_512_mobilenet1.0_voc_int8") -> None:
         """Load the model from model zoo.
         Run ``get_model_options`` to get model options.
 
@@ -41,7 +46,7 @@ class GluonCVModel(CVModel):
         """
         self.net = model_zoo.get_model(model_path, pretrained=True)
 
-    def predict(self, img: np.ndarray, img_data=None) -> np.ndarray:
+    def predict(self, image: np.ndarray, img_data=None) -> np.ndarray:
         """Generate predictions along with a labelled img
 
         Args:
@@ -51,15 +56,17 @@ class GluonCVModel(CVModel):
         Returns:
             numpy.ndarray: output image with boxes drawn around detected objects
         """
-        # fmt: off
-        assert self.net, "You need to load the model first. Please run load_model method."
 
-        self.class_IDs, self.scores, self.bounding_boxes = self.net(img_data)
+        assert (
+            self.net
+        ), "You need to load the model first. Please run load_model method."
+
+        self.class_ids, self.scores, self.bounding_boxes = self.net(img_data)
         labelled_img = utils.viz.cv_plot_bbox(
-            img,
+            image,
             self.bounding_boxes[0],
             self.scores[0],
-            self.class_IDs[0],
+            self.class_ids[0],
             class_names=self.net.classes,
         )
         return labelled_img
@@ -74,30 +81,48 @@ class GluonCVModel(CVModel):
         Args:
             img (numpy.ndarray): input_image
         """
-        assert self.net, "You need to load the model first. Please run load_model method."
+        assert (
+            self.net
+        ), "You need to load the model first. Please run load_model method."
 
-        # fmt: off
-        assert self.bounding_boxes is not None, "You need to inference the model first. Run predict func."
-        assert self.scores is not None, "You need to inference the model first. Run predict func."
-        assert self.class_IDs is not None, "You need to inference the model first. Run predict func."
-        
+        assert (
+            self.bounding_boxes is not None
+        ), "You need to inference the model first. Run predict func."
+        assert (
+            self.scores is not None
+        ), "You need to inference the model first. Run predict func."
+        assert (
+            self.class_ids is not None
+        ), "You need to inference the model first. Run predict func."
+
         utils.viz.plot_bbox(
             img,
             self.bounding_boxes[0],
             self.scores[0],
-            self.class_IDs[0],
+            self.class_ids[0],
             class_names=self.net.classes,
         )
-        
+
         plt.show()
 
     @abstractmethod
-    def transform_img(self, img) -> np.ndarray:
-        pass
+    def transform_img(self, image: np.ndarray) -> np.ndarray:
+        """Run transformations on input image
+
+        Args:
+            image (np.ndarray): Input image as array
+
+        Returns:
+            np.ndarray: Image after transformation
+        """
 
     @abstractmethod
-    def load_and_transform_img(self, img_path):
-        pass
+    def load_and_transform_img(self, img_path: str):
+        """Load image from disk and run transformation
+
+        Args:
+            img_path (str): Relative/absolute image path on disk
+        """
 
     def add_bounding_box(self, img: np.ndarray) -> np.ndarray:
         """Add bouding boxes along with their scores to input image
@@ -108,17 +133,25 @@ class GluonCVModel(CVModel):
         Returns:
             numpy.ndarray: labelled image
         """
-        # fmt: off
-        assert self.net, "You need to load the model first. Please run load_model method."
-        assert self.bounding_boxes is not None, "You need to inference the model first. Run predict func."
-        assert self.scores is not None, "You need to inference the model first. Run predict func."
-        assert self.class_IDs is not None, "You need to inference the model first. Run predict func."
-        
+
+        assert (
+            self.net
+        ), "You need to load the model first. Please run load_model method."
+        assert (
+            self.bounding_boxes is not None
+        ), "You need to inference the model first. Run predict func."
+        assert (
+            self.scores is not None
+        ), "You need to inference the model first. Run predict func."
+        assert (
+            self.class_ids is not None
+        ), "You need to inference the model first. Run predict func."
+
         return utils.viz.cv_plot_bbox(
             img,
             self.bounding_boxes[0],
             self.scores[0],
-            self.class_IDs[0],
+            self.class_ids[0],
             class_names=self.net.classes,
         )
 
@@ -138,7 +171,7 @@ class GluonCVModel(CVModel):
     def detect_webcam(
         self,
         video_index: Union[str, int] = 0,
-        window_name: str = "Cam Detection"
+        window_name: str = "Cam Detection",
     ) -> None:
         """Detecting objects with a webcam using current model
         *(to quit running this function press 'q')*
@@ -150,13 +183,13 @@ class GluonCVModel(CVModel):
 
         cap = cv2.VideoCapture(video_index)
         if not cap.isOpened():
-            print("Error while trying to read video. Please check path again")
+            _LOG.warning("Error while trying to read video. Please check path again")
 
         while cap.isOpened():
             _, frame = cap.read()
             start_time = time.time()
-            x, img = self.transform_img(frame)
-            image = self.predict(img, x)
+            image_frames, img = self.transform_img(frame)
+            image = self.predict(img, image_frames)
             end_time = time.time()
             fps = 1 / (end_time - start_time)
             wait_time = max(1, int(fps / 4))

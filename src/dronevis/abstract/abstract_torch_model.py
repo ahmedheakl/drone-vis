@@ -1,15 +1,16 @@
-from abc import abstractmethod
-from dronevis.abstract.abstract_model import CVModel
+"""Interface for models implemented with PyTorch"""
+from typing import Union, Tuple, List, Optional
+import time
 import numpy as np
 import torch
+import torchvision
 from torchvision.transforms.functional import to_pil_image
 import cv2
-from typing import List
 from PIL import Image
-import time
+
 from dronevis.config.config import COCO_NAMES
-from dronevis.utils import write_fps
-from typing import Union, Tuple
+from dronevis.abstract.abstract_model import CVModel
+from dronevis.utils.utils import write_fps
 
 
 class TorchDetectionModel(CVModel):
@@ -17,27 +18,31 @@ class TorchDetectionModel(CVModel):
     To use the abstract class just inherit it, and override the abstract method.
     """
 
+    coco_names = COCO_NAMES
+    colors = np.random.uniform(0, 255, size=(len(COCO_NAMES), 3))
+
     def __init__(self) -> None:
         """Construct torch models, and detect device for inference (cuda or cpu).
 
-        Torch detection models are assumed to be trained on `COCO dataset <https://cocodataset.org/>`_.
-        In addition, torch can detect if you have an available GPU. The property ``device``, contains the device
-        that will be used for inference. You can change the device by changing the ``device`` property.
+        Torch detection models are assumed to be trained on
+        `COCO dataset <https://cocodataset.org/>`_. In addition, torch can detect if
+        you have an available GPU. The property ``device``, contains the device that
+        will be used for inference. You can change the device by changing the ``device`` property.
         """
-        self.coco_names = COCO_NAMES
 
-        self.COLORS = np.random.uniform(0, 255, size=(len(self.coco_names), 3))  # type: ignore
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.transform = None
-        self.net = None
+        self.transform: Optional[torchvision.transforms.Compose] = None
+        self.net: Optional[torch.nn.Module] = None
+        self.pred_classes: Optional[List[np.ndarray]] = None
+        self.pred_scores: Optional[np.ndarray] = None
+        self.pred_bboxes: Optional[np.ndarray] = None
+        self.boxes: Optional[np.ndarray] = None
 
-    @abstractmethod
-    def load_model(self):
-        pass
+        self.load_model()
 
     def predict(
         self,
-        input_image: np.ndarray,
+        image: np.ndarray,
         detection_threshold: float = 0.7,
     ) -> np.ndarray:
         """Predict all classes in an image using torch model
@@ -49,29 +54,39 @@ class TorchDetectionModel(CVModel):
         Returns:
             numpy.ndarray: output image with boxes drawn
         """
-        assert self.net, "Model not initialized! You need to load the model first. Please run `load_model`."
-        assert detection_threshold >= 0.0 and detection_threshold <= 1.0, "Threshold must be a float between 0 and 1."
-        assert self.transform, "Model not initialized. You need to load the model first. Please run `load_model`."
+        assert (
+            self.net
+        ), "Model not initialized! You need to load the model first. Please run `load_model`."
+        assert (
+            0.0 <= detection_threshold <= 1.0
+        ), "Threshold must be a float between 0 and 1."
+        assert (
+            self.transform
+        ), "Model not initialized. You need to load the model first. Please run `load_model`."
 
-        image = input_image
+        input_image = image
         with torch.no_grad():
-            image = self.transform_img(image).to(self.device)
-            image = image.unsqueeze(0)  # add a batch dimension
-            outputs = self.net(image)[0]  # get outputs array
-            self.pred_classes = [self.coco_names[i] for i in outputs["labels"].cpu().numpy()]
-            self.pred_scores = outputs["scores"].detach().cpu().numpy()
-            self.pred_bboxes = outputs["boxes"].detach().cpu().numpy()
-            self.boxes = self.pred_bboxes[self.pred_scores >= detection_threshold].astype(np.int32)
+            transformed_image = self.transform_img(input_image).to(self.device)
+            transformed_image = transformed_image.unsqueeze(0)  # add a batch dimension
+            outputs = self.net(transformed_image)[0]  # get outputs array
+            self.pred_classes = [
+                self.coco_names[i] for i in outputs["labels"].cpu().numpy()
+            ]
+            pred_scores = outputs["scores"].detach().cpu().numpy()
+            pred_bboxes = outputs["boxes"].detach().cpu().numpy()
+            boxes = pred_bboxes[pred_scores >= detection_threshold].astype(np.int32)
 
         image = self.draw_boxes(
-            self.boxes,
+            boxes,
             self.pred_classes,
             outputs["labels"],
-            input_image,
+            image,
         )
+        self.boxes = boxes
+        self.pred_scores = pred_scores
         return image
 
-    def transform_img(self, img: np.ndarray) -> torch.Tensor:
+    def transform_img(self, image: np.ndarray) -> torch.Tensor:
         """Transform image to tensor
 
         Args:
@@ -80,15 +95,15 @@ class TorchDetectionModel(CVModel):
         Returns:
             torch.Tensor: tensor img
         """
-        assert self.transform is not None, "Model not initialized. You need to load the model first. Please run `load_model`."
-        return self.transform(to_pil_image(img)).to(self.device)
+        assert (
+            self.transform is not None
+        ), "Model not initialized. You need to load the model first. Please run `load_model`."
+        pil_image = to_pil_image(image)
+        transformed_image = self.transform(pil_image).to(self.device)
+        return transformed_image
 
     def draw_boxes(
-        self,
-        boxes: np.ndarray,
-        classes: List,
-        labels: torch.Tensor,
-        image: np.ndarray
+        self, boxes: np.ndarray, classes: List, labels: torch.Tensor, image: np.ndarray
     ) -> np.ndarray:
         """Draw boxes for the predicted classes in an image using torch model
 
@@ -99,7 +114,8 @@ class TorchDetectionModel(CVModel):
             image(numpy.ndarray): an image to draw boxes on.
 
         Returns:
-            numpy.ndarray: cv2 image after drawing boxes of the predicted classes on it with their labels
+            numpy.ndarray: cv2 image after drawing boxes of the predicted classes on
+            it with their labels
         """
         image = cv2.cvtColor(np.asarray(image), cv2.COLOR_BGR2RGB)
         for i, box in enumerate(boxes):
@@ -109,7 +125,7 @@ class TorchDetectionModel(CVModel):
                 pt1=(int(box[0]), int(box[1])),
                 pt2=(int(box[2]), int(box[3])),
                 color=color,
-                thickness=2
+                thickness=2,
             )
             cv2.putText(
                 img=image,
@@ -151,14 +167,15 @@ class TorchDetectionModel(CVModel):
         The stream is retrieved and decoded using `opencv library <https://opencv.org/>`_.
 
         Args:
-            video_index (int, optional): device index used to retrieve video stream, it can be an index or an IP. Defaults to 0.
+            video_index (int, optional): device index used to retrieve video stream, it
+            can be an index or an IP. Defaults to 0.
             window_name (str, optional): name of video stream window. Defaults to "Cam Detection".
         """
 
         cap = cv2.VideoCapture(video_index)
         if not cap.isOpened():
             print("Error while trying to read video. Please check path again")
-        prev_time = 0
+        prev_time = 0.0
         while cap.isOpened():
             _, frame = cap.read()
             with torch.no_grad():
@@ -182,7 +199,8 @@ class TorchDetectionModel(CVModel):
             frame (numpy.ndarray): input frame
 
         Returns:
-            Tuple[numpy.ndarray, float, fps]: image with detection results and wait time between frames
+            Tuple[numpy.ndarray, float, fps]: image with detection results and wait
+            time between frames
         """
         start_time = time.time()
         with torch.no_grad():
