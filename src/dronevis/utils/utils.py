@@ -5,6 +5,8 @@ from pyfiglet import Figlet
 from rich import print as rprint
 from termcolor import colored
 import argparse
+import os
+import os.path
 from rich_argparse import RichHelpFormatter
 from dronevis.gui.configs import *
 from dronevis import __version__
@@ -95,6 +97,25 @@ def axis_config(ax) -> None:
     ax.set_facecolor(MAIN_COLOR)
     ax.set_ylim([0, GUI_Y_LIMIT])
     ax.set_xlim([0, GUI_X_LIMIT])
+
+def find (file_name)-> str:
+    """Searches for a file in the directory and all it's parents
+
+    Args:
+        file_name: string of the name of the file
+    """
+    cur_dir = os.getcwd() 
+    while True:
+        file_list = os.listdir(cur_dir)
+        parent_dir = os.path.dirname(cur_dir)
+        if file_name in file_list:
+            return os.path.join(cur_dir,file_name)
+            break
+        else:
+            if cur_dir == parent_dir: #if dir is root dir
+                return None
+            else:
+                cur_dir = parent_dir
 
 
     
