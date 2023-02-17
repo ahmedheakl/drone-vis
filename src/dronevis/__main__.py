@@ -20,9 +20,10 @@ import sys
 import logging
 
 from dronevis.drone_connect import DemoDrone, Drone
-from dronevis.cli import DroneCli
+from dronevis.cli.drone_cli import DroneCli
 from dronevis.utils.utils import library_ontro
 from dronevis.utils.logger import init_logger
+from dronevis.abstract.base_drone import BaseDrone
 
 # get logger
 init_logger()
@@ -38,7 +39,7 @@ def main() -> None:
 
     # initialize drone instance
     if args.drone == "demo":
-        drone = DemoDrone()
+        drone: BaseDrone = DemoDrone()
     else:
         drone = Drone()
 

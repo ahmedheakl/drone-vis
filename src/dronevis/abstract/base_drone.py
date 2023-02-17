@@ -58,7 +58,7 @@ class BaseDrone:
         """Caliberate"""
         return True
 
-    def foward(self) -> bool:
+    def forward(self) -> bool:
         """Forward"""
         return True
 

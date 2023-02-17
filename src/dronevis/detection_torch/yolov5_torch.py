@@ -1,12 +1,14 @@
-import torch
-import os
-import getpass
-import cv2
-from dronevis.abstract import CVModel
-import time
-from dronevis.utils.utils import write_fps
-import numpy as np
+"""Implementation of CVModel for YOLOv5 used for object detection"""
 from typing import Union
+import os
+import time
+import getpass
+import torch
+import cv2
+import numpy as np
+
+from dronevis.utils.utils import write_fps
+from dronevis.abstract import CVModel
 
 
 class YOLOv5(CVModel):
@@ -15,20 +17,27 @@ class YOLOv5(CVModel):
     For more details see `YOLOv5 <https://pytorch.org/hub/ultralytics_yolov5>`_.
     """
 
+    local_name = "ultralytics_yolov5_master"
+    remote_name = "ultralytics/yolov5"
+    model_local_path = f"/home/{getpass.getuser()}/.cache/torch/hub/{local_name}"
+    model_source = "local"
+    model_name = "yolov5s"
+
     def __init__(self) -> None:
         """Initialize local path"""
         self.net = None
-        self.model_local_path = (
-            f"/home/{getpass.getuser()}/.cache/torch/hub/ultralytics_yolov5_master"
-        )
 
     def load_model(self) -> None:
         """Load model from PyTorchHub"""
         print("Loading YOLOv5 Torch model ...")
         if os.path.exists(self.model_local_path):
-            self.net = torch.hub.load(self.model_local_path, "yolov5s", source="local")
+            self.net = torch.hub.load(
+                self.model_local_path,
+                model=self.model_name,
+                source=self.model_source,
+            )
         else:
-            self.net = torch.hub.load("ultralytics/yolov5", "yolov5s")
+            self.net = torch.hub.load(self.remote_name, self.model_name)
 
     def transform_img(self, image: np.ndarray) -> np.ndarray:
         """Idle transformation.
@@ -70,11 +79,12 @@ class YOLOv5(CVModel):
         The stream is retrieved and decoded using `opencv library <https://opencv.org/>`_.
 
         Args:
-            video_index (Union[str, int], optional): index of video stream device. Defaults to 0 (webcam).
+            video_index (Union[str, int], optional): index of video stream device.
+            Defaults to 0 (webcam).
             window_name (str, optional): name of cv2 window. Defaults to "Cam Detection".
         """
         cap: cv2.VideoCapture = cv2.VideoCapture(video_index)
-        prev_time = 0
+        prev_time = 0.0
         while True:
             _, frame = cap.read()
 

@@ -1,14 +1,19 @@
+"""implementation for dronevis CLI"""
 import argparse
+import logging
+from typing import Union, Callable, Dict
+import sys
 from rich_argparse import RichHelpFormatter
-from dronevis import __version__
 from rich.console import Console
 from rich.table import Table
-import sys
-from dronevis.drone_connect import Drone, DemoDrone
-from typing import Union, Callable, Dict
 from rich import print as rprint
-from rich.console import Console
-import logging
+
+from dronevis import __version__
+from dronevis.drone_connect import Drone, DemoDrone
+from dronevis.abstract.base_drone import BaseDrone
+
+
+_LOG = logging.getLogger(__name__)
 
 
 class DroneCli:
@@ -100,20 +105,17 @@ class DroneCli:
         """
         raise NotImplementedError("Not implemented yet")
 
-    def index_to_control(self, drone: Union[Drone, DemoDrone]) -> Dict[str, Callable]:
+    def index_to_control(self, drone: BaseDrone) -> Dict[str, Callable]:
         """Get a list a with keys as commands index and values
         as commands methods
 
         Args:
-            drone (Union[Drone, DemoDrone]): drone instance
+            drone (BaseDrone): drone instance
 
         Returns:
             Dict[str, Callable]: a dictionary mapping from index to control methods
         """
-        assert drone, "You provided a Null instance of the drone"
-        assert isinstance(
-            drone, (Drone, DemoDrone)
-        ), "Please provide a valid drone instance"
+        assert isinstance(drone, BaseDrone), "Please provide a valid drone instance"
 
         def cli_exit():
             drone.stop()
@@ -170,13 +172,14 @@ class DroneCli:
             while True:
                 self.print_available_control()
                 rprint(
-                    "Please [yellow]choose a control id [white]from the table.\n[green]To exit press 'q'"
+                    "Please [yellow]choose a control id [white]from the table.\n"
+                    + "[green]To exit press 'q'"
                 )
 
                 # loop till the user provides a valid input
                 while True:
                     index = input("> ")
-                    if index not in available_commands.keys():
+                    if index not in available_commands:
                         rprint("[red]Please a valid control id or press 'q' to exit")
                         continue
                     break
