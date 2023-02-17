@@ -38,8 +38,6 @@ class TorchDetectionModel(CVModel):
         self.pred_bboxes: Optional[np.ndarray] = None
         self.boxes: Optional[np.ndarray] = None
 
-        self.load_model()
-
     def predict(
         self,
         image: np.ndarray,
