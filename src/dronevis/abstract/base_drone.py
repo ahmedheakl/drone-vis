@@ -1,9 +1,10 @@
 """Inteface for drone classes"""
-from typing import Callable
+from typing import Callable, Optional
 import logging
 from inspect import getmro
 
 from dronevis.abstract import CVModel
+from dronevis.abstract.base_video_thread import BaseVideoThread
 
 _LOG = logging.getLogger(__name__)
 
@@ -13,6 +14,8 @@ class BaseDrone:
 
     def __init__(self, ip_address: str = "192.168.1.1") -> None:
         self.ip_address = ip_address
+        self.is_connected = False
+        self.video_thread: Optional[BaseVideoThread] = None
 
     def connect_video(self, callback: Callable, model: CVModel) -> None:
         """Initialize and start video thread
@@ -54,8 +57,8 @@ class BaseDrone:
         """Land"""
         return True
 
-    def caliberate(self) -> bool:
-        """Caliberate"""
+    def calibrate(self) -> bool:
+        """Calibrate"""
         return True
 
     def forward(self) -> bool:
@@ -104,3 +107,13 @@ class BaseDrone:
     def reset(self) -> bool:
         """Reset"""
         return True
+
+    def set_config(
+        self,
+        activate_gps: bool = True,
+        activate_navdata: bool = True,
+    ) -> None:
+        """Setter for activating data retrival"""
+
+    def set_callback(self, callback: Callable) -> None:
+        """Callback setter for navigation data handling"""

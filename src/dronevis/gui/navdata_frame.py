@@ -1,10 +1,14 @@
+"""Tkinter frame implmentation for viewing navigation data"""
 from tkinter import Canvas
 from tkinter.ttk import Label, Frame
+
 from dronevis.gui.configs import MAIN_COLOR
 from dronevis.gui.circular_progressbar import CircularProgressbar
 
 
 class DataFrame(Frame):
+    """Implementation of Frame for view navigation data"""
+
     def __init__(self, master: Frame, title: str, *args, **kw) -> None:
         """Contruct a data frame designed for ploting navdata in progressbar style
 
@@ -12,7 +16,7 @@ class DataFrame(Frame):
             master (tkinter.ttk.Frame): master frame
             title (str): title to be displayed on top of progressbar
         """
-        super(DataFrame, self).__init__(master, *args, **kw)
+        super().__init__(master, *args, **kw)
 
         self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=3)
@@ -29,7 +33,12 @@ class DataFrame(Frame):
             highlightthickness=1,
             highlightbackground=MAIN_COLOR,
         )
-        self.cpb = CircularProgressbar(self.canvas, 10, 0, 60, 50, 10)
+        self.cpb = CircularProgressbar(
+            self.canvas,
+            bottom_coord=(10, 0),
+            top_coord=(60, 50),
+            width=10,
+        )
 
         self.lbl_title.grid(row=0, column=0)
         self.canvas.grid(row=1, column=0)

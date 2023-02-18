@@ -1,8 +1,12 @@
 """Utilties for decoding packets resposible for navigation data"""
+from typing import Dict, Union
+import logging
 import struct
 
+_LOG = logging.getLogger(__name__)
 
-def _drone_status_decode(packet):
+
+def _drone_status_decode(packet) -> Dict[str, bool]:
     "Decode the block which contains Drone Status"
     # NavData packet has been splited let's go decode it
     drone_state = {}  # It's in block[0]'s second 32bits int = block[0][1]
@@ -39,11 +43,13 @@ def _drone_status_decode(packet):
     return drone_state
 
 
-def _navdata_demo_decode(packet):
+def _navdata_demo_decode(packet) -> Dict[str, float]:
     "Decode the navdata_demo which is data about the flight"
     navdata_demo = {}
     if packet[0] != 0:
-        raise IOError("Packet isn't navdata-demo packet")
+        err_message = "Packet isn't navdata-demo packet"
+        _LOG.critical(err_message)
+        raise IOError(err_message)
     navdata_demo["ctrl_state"] = struct.unpack_from("=I", packet[2], 0)[0]
     navdata_demo["battery_percentage"] = struct.unpack_from("=I", packet[2], 4)[0]
     navdata_demo["theta"] = int(struct.unpack_from("=f", packet[2], 8)[0] / 1000)
@@ -56,10 +62,12 @@ def _navdata_demo_decode(packet):
     return navdata_demo
 
 
-def _vision_detect_decode(packet):
+def _vision_detect_decode(packet) -> Dict[str, int]:
     "Decode the vision detection packet, packet is (id=16, size, data)"
     if packet[0] != 16:
-        raise IOError("Packet is not vision-detect packet")
+        err_message = "Packet isn't vision-demo packet"
+        _LOG.critical(err_message)
+        raise IOError(err_message)
     # Have to check if there isn't tag and size first
     vision_detect = {}
     vision_detect["nb_detected"] = struct.unpack_from("=I", packet[2][0:20])[0]
@@ -71,7 +79,7 @@ def _vision_detect_decode(packet):
     return vision_detect
 
 
-def _gps_decode(packet):
+def _gps_decode(packet) -> Dict[str, Union[float, bool]]:
     "Decode data about the GPS"
     gps_info = {}
     if packet[0] != 27:
@@ -87,7 +95,7 @@ def _gps_decode(packet):
     return gps_info
 
 
-def navdata_decode(packet):
+def navdata_decode(packet) -> Dict[str, Dict[str, bool]]:
     "Split then decodes the navdata packet gathered from UDP 5554"
     position = 0
     offset = 0

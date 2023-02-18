@@ -1,24 +1,43 @@
+"""GUI implmentation"""
+from typing import Optional
 from tkinter import Tk, StringVar, HORIZONTAL, LEFT
 from tkinter.ttk import Style, Frame, Label, Progressbar, OptionMenu
-from dronevis.gui.configs import *
-from dronevis.gui.image_bw_button import ImageBWButton
-from dronevis.gui.main_button import MainButton
+import logging
 import matplotlib.pyplot as plt
-from dronevis.gui.navdata_frame import DataFrame
-from typing import Union, Optional
-from dronevis.abstract import NOOPModel
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
 from dronevis.face_detection import FaceDetectModel
 from dronevis.detection_torch import FasterRCNN, YOLOv5
 from dronevis.pose import PoseSegEstimation
-from dronevis.drone_connect import Drone, DemoDrone
-from dronevis.utils import axis_config
+from dronevis.drone_connect import DemoDrone
+from dronevis.abstract.base_drone import BaseDrone
+from dronevis.utils.utils import axis_config
+from dronevis.abstract.noop_model import NOOPModel
+
+from dronevis.gui import configs as cfg
+from dronevis.gui.image_bw_button import ImageBWButton
+from dronevis.gui.main_button import MainButton
+from dronevis.gui.navdata_frame import DataFrame
+
+_LOG = logging.getLogger(__name__)
 
 
 class DroneVisGui:
+    """Implementation for the library GUI using Tkinter"""
+
+    models = {
+        "none": NOOPModel,
+        "face": FaceDetectModel,
+        "yolov5": YOLOv5,
+        "faster r-cnn": FasterRCNN,
+        "pose": PoseSegEstimation,
+        "seg": PoseSegEstimation,
+        "pose+seg": PoseSegEstimation,
+    }
+
     def __init__(
         self,
-        drone: Optional[Union[Drone, DemoDrone]] = None,
+        drone: Optional[BaseDrone] = None,
     ) -> None:
         """Contruct a GUI window
 
@@ -28,40 +47,29 @@ class DroneVisGui:
         """
         self.window = Tk()
         self.drone = drone if drone else DemoDrone()
-        self.logger = self.drone.logger
-        self.models = {
-            "none": NOOPModel,
-            "face": FaceDetectModel,
-            "yolov5": YOLOv5,
-            "faster r-cnn": FasterRCNN,
-            "pose": PoseSegEstimation,
-            "seg": PoseSegEstimation,
-            "pose+seg": PoseSegEstimation,
-        }
 
         ################# Configurations #######################
-        self.logger.debug("initializing root window ...")
+        _LOG.debug("Initializing root window ...")
         self.window.protocol("WM_DELETE_WINDOW", self.on_close_window)
         self.window.geometry("1000x580")
-        s = Style()
-        s.theme_use("clam")
-        s.configure(".", font=MAIN_FONT, background=MAIN_COLOR, foreground=WHITE_COLOR)
-        s.configure("MainFrame.TFrame", relief="solid", borderwidth=1)
-        s.configure(
+        window_style = Style()
+        window_style.theme_use("clam")
+        window_style.configure(
+            ".",
+            font=cfg.MAIN_FONT,
+            background=cfg.MAIN_COLOR,
+            foreground=cfg.WHITE_COLOR,
+        )
+        window_style.configure("MainFrame.TFrame", relief="solid", borderwidth=1)
+        window_style.configure(
             "Custom.Horizontal.TProgressbar",
-            troughcolor=WHITE_COLOR,
-            background=GREEN_COLOR,
+            troughcolor=cfg.WHITE_COLOR,
+            background=cfg.GREEN_COLOR,
         )
         self.window.title("Drone Vision")
         self.window.rowconfigure(0, weight=1)
         self.window.columnconfigure(0, minsize=600, weight=1)
         self.window.columnconfigure(1, minsize=330, weight=1)
-
-        # Constants
-        self.INDEX_STEP = 0.2
-        self.MAX_VELOCITY = 2.0  # m/s
-        self.MILLI_TO_METER_FACTOR = 1 / 1000.0
-        self.MAX_ANGLE = 360.0
 
         # attributes initializations
         self.ax = None
@@ -69,42 +77,40 @@ class DroneVisGui:
         self.is_stream = False
         self.data = [0]
         self.index = [0]
-        self.mid_point = int((GUI_X_LIMIT / self.INDEX_STEP) // 2)
+        self.mid_point = int((cfg.GUI_X_LIMIT / cfg.INDEX_STEP) // 2)
 
-    def handle_navdata(self):
+    def handle_navdata(self) -> None:
         """Handle incomming navdata and convert them to suitable format"""
         if self.navdata is None:
             return
 
         navdata = self.navdata
 
-        ### battery handling ###
-        # battery comes in percentage format
+        # Battery comes in percentage format
         battery_percentage = int(navdata["navdata_demo"]["battery_percentage"])
         self.pb_battery["value"] = battery_percentage
         self.lbl_battery_percentage["text"] = f"{battery_percentage}%"
 
         ### velocity handling ###
         # velocity comes in mm/s format
-        to_angle = lambda x, mx: (x / mx) * self.MAX_ANGLE
-        vx = navdata["navdata_demo"]["vx"] * self.MILLI_TO_METER_FACTOR
+        vx = navdata["navdata_demo"]["vx"] * cfg.MILLI_TO_METER_FACTOR
         vx_text = f"{abs(vx):0.2f} m\\s"
-        self.frm_nav_vx.cpb.change(to_angle(abs(vx), self.MAX_VELOCITY), vx_text)
+        self.frm_nav_vx.cpb.change(to_angle(abs(vx), cfg.MAX_VELOCITY), vx_text)
 
-        vy = navdata["navdata_demo"]["vy"] * self.MILLI_TO_METER_FACTOR
+        vy = navdata["navdata_demo"]["vy"] * cfg.MILLI_TO_METER_FACTOR
         vy_text = f"{abs(vy):0.2f} m\\s"
-        self.frm_nav_vy.cpb.change(to_angle(abs(vy), self.MAX_VELOCITY), vy_text)
+        self.frm_nav_vy.cpb.change(to_angle(abs(vy), cfg.MAX_VELOCITY), vy_text)
 
-        vz = navdata["navdata_demo"]["vz"] * self.MILLI_TO_METER_FACTOR
+        vz = navdata["navdata_demo"]["vz"] * cfg.MILLI_TO_METER_FACTOR
         vz_text = f"{abs(vz):0.2f} m\\s"
-        self.frm_nav_vz.cpb.change(to_angle(abs(vz), self.MAX_VELOCITY), vz_text)
+        self.frm_nav_vz.cpb.change(to_angle(abs(vz), cfg.MAX_VELOCITY), vz_text)
 
         ### elevation handling ###
         # elevation comes in mm format
-        h = int(navdata["navdata_demo"]["altitude"] * self.MILLI_TO_METER_FACTOR)
+        h = int(navdata["navdata_demo"]["altitude"] * cfg.MILLI_TO_METER_FACTOR)
         self.data.append(h)
         last_index = self.index[-1]
-        self.index.append(last_index + self.INDEX_STEP)  # type: ignore
+        self.index.append(last_index + cfg.INDEX_STEP)  # type: ignore
 
     def on_plot(self) -> None:
         """Handles heights points and graph them"""
@@ -119,7 +125,7 @@ class DroneVisGui:
             figure3 = plt.figure(figsize=(5, 4), dpi=90)
 
             # set background color to MAIN COLOR
-            figure3.set_facecolor(MAIN_COLOR)
+            figure3.set_facecolor(cfg.MAIN_COLOR)
 
             # create a subplot instance stored in self.ax
             self.ax = figure3.add_subplot(111)
@@ -188,7 +194,9 @@ class DroneVisGui:
 
         ######################## Battary Data ###################################
         frm_battary = Frame(frm_info, style="MainFrame.TFrame")
-        lbl_battary = Label(frm_battary, text="Battery Percentage", font=HEADER_FONT)
+        lbl_battary = Label(
+            frm_battary, text="Battery Percentage", font=cfg.HEADER_FONT
+        )
         frm_progress = Frame(frm_battary)
         self.pb_battery = Progressbar(
             frm_progress,
@@ -232,7 +240,7 @@ class DroneVisGui:
         ######################## Basic Control ##################################
         frm_basic_control = Frame(master=frm_right, style="MainFrame.TFrame")
         lbl_basic_control = Label(
-            frm_basic_control, text="Basic Control", font=HEADER_FONT
+            frm_basic_control, text="Basic Control", font=cfg.HEADER_FONT
         )
 
         btn_forward = ImageBWButton(
@@ -240,7 +248,7 @@ class DroneVisGui:
             title="FORWARD",
             message="Move the drone forward",
             img="forward.png",
-            size=VERTICAL_ARROW_SIZE,
+            size=cfg.VERTICAL_ARROW_SIZE,
             command=self.drone.forward,
         )
         btn_backward = ImageBWButton(
@@ -248,7 +256,7 @@ class DroneVisGui:
             title="BACKWARD",
             message="Move the drone Backword",
             img="backward.png",
-            size=VERTICAL_ARROW_SIZE,
+            size=cfg.VERTICAL_ARROW_SIZE,
             command=self.drone.backward,
         )
         btn_right = ImageBWButton(
@@ -256,7 +264,7 @@ class DroneVisGui:
             title="RIGHT",
             message="Move the drone to the right",
             img="right.png",
-            size=HORIZONTAL_ARROW_SIZE,
+            size=cfg.HORIZONTAL_ARROW_SIZE,
             command=self.drone.right,
         )
         btn_left = ImageBWButton(
@@ -264,7 +272,7 @@ class DroneVisGui:
             title="LFET",
             message="Move the drone to the left",
             img="left.png",
-            size=HORIZONTAL_ARROW_SIZE,
+            size=cfg.HORIZONTAL_ARROW_SIZE,
             command=self.drone.left,
         )
         btn_rotate_l = ImageBWButton(
@@ -288,7 +296,7 @@ class DroneVisGui:
             title="UPWARD",
             message="Move the drone up",
             img="up.png",
-            size=VERTICAL_ARROW_SIZE,
+            size=cfg.VERTICAL_ARROW_SIZE,
             command=self.drone.up,
         )
         btn_down = ImageBWButton(
@@ -296,7 +304,7 @@ class DroneVisGui:
             title="DOWN",
             message="Move the drone down",
             img="down.png",
-            size=VERTICAL_ARROW_SIZE,
+            size=cfg.VERTICAL_ARROW_SIZE,
             command=self.drone.down,
         )
 
@@ -317,7 +325,7 @@ class DroneVisGui:
         lbl_special_control = Label(
             frm_special_control,
             text="Special Control",
-            font=HEADER_FONT,
+            font=cfg.HEADER_FONT,
         )
         btn_take_off = MainButton(
             frm_special_control,
@@ -350,7 +358,7 @@ class DroneVisGui:
         ######################## Reset Control #################################
         frm_reset_control = Frame(frm_right, style="MainFrame.TFrame")
         lbl_reset_control = Label(
-            frm_reset_control, text="Reset Control", font=HEADER_FONT
+            frm_reset_control, text="Reset Control", font=cfg.HEADER_FONT
         )
         btn_reset = MainButton(
             frm_reset_control,
@@ -378,7 +386,7 @@ class DroneVisGui:
         ######################## Vision Control ##################################
         frm_vision_control = Frame(master=frm_left, style="MainFrame.TFrame")
         lbl_vision_control = Label(
-            frm_vision_control, text="Vision Control", font=HEADER_FONT
+            frm_vision_control, text="Vision Control", font=cfg.HEADER_FONT
         )
         btn_record_video = MainButton(
             master=frm_vision_control,
@@ -459,7 +467,7 @@ class DroneVisGui:
         frm_left.grid(row=0, column=0, sticky="nsew")
         frm_right.grid(row=0, column=1, sticky="nsew")
 
-    def on_drone_connect(self, e):
+    def on_drone_connect(self, _):
         """Event handler for drone connection
 
         Args:
@@ -470,10 +478,10 @@ class DroneVisGui:
 
         # change connect button color
         self.btn_connect["text"] = "Connected"
-        self.btn_connect["background"] = GREEN_COLOR
-        self.btn_connect["foreground"] = WHITE_COLOR
-        self.btn_connect["activebackground"] = RED_COLOR
-        self.btn_connect["activeforeground"] = WHITE_COLOR
+        self.btn_connect["background"] = cfg.GREEN_COLOR
+        self.btn_connect["foreground"] = cfg.WHITE_COLOR
+        self.btn_connect["activebackground"] = cfg.RED_COLOR
+        self.btn_connect["activeforeground"] = cfg.WHITE_COLOR
 
         # set navdata handler as callback
         self.drone.set_callback(self.on_navdata)
@@ -494,15 +502,16 @@ class DroneVisGui:
         if self.drone.video_thread is not None:
             self.on_change_stream_model()
             return
-        
-        self.logger.info(f"current Model: {self.models_choice.get()}")
+
+        _LOG.info("Current Model: %s", self.models_choice.get())
         self.is_stream = True
         model = self.get_and_load_model()
-        close_stream_callback = lambda: None
+        close_stream_callback = idle
         self.drone.connect_video(close_stream_callback, model)
         self.btn_video_stream["text"] = "change"
 
     def get_and_load_model(self):
+        """Retrieve chosen model and load its weights"""
         model_class = self.models[self.models_choice.get()]
         if self.models_choice.get() == "seg":
             model = model_class(is_seg=True)  # type: ignore
@@ -516,18 +525,20 @@ class DroneVisGui:
         model.load_model()
         return model
 
-    def on_change_stream_model(self):
+    def on_change_stream_model(self) -> None:
+        """Handler for changing the inference model"""
         if self.drone.video_thread is None:
-            self.logger.error("video thread called before initialized")
-            raise ValueError("initialize video thread first")
+            err_message = "Video thread called before initialized"
+            _LOG.error(err_message)
+            raise ValueError(err_message)
 
-        self.logger.info(f"Changed to Model: {self.models_choice.get()}")
+        _LOG.info("Current Model: %s", self.models_choice.get())
         model = self.get_and_load_model()
         self.drone.video_thread.change_model(model)  # type: ignore
 
     def __call__(self) -> None:
         self.init_frames()
-        self.logger.debug("main frames initialized")
+        _LOG.debug("Main frames initialized")
         self.window.mainloop()
 
     def on_close_window(self):
@@ -536,12 +547,23 @@ class DroneVisGui:
         It stop the drone connection and destroyes and GUI window
         """
         if self._plot_job is None:
-            self.logger.critical("GUI closed before initialized")
-            raise AssertionError("initialize GUI before closing it")
+            err_message = "GUI closed before initialized"
+            _LOG.critical(err_message)
+            raise AssertionError(err_message)
 
         self.drone.stop()
         self.window.after_cancel(self._plot_job)
         self._plot_job = None
         plt.close()
         self.window.destroy()
-        self.logger.info("GUI closed")
+        _LOG.info("GUI closed")
+
+
+def idle() -> None:
+    """Idle function"""
+
+
+def to_angle(value: float, max_value: float) -> float:
+    """Convert a value ration to an angle"""
+    angle = (value / max_value) * cfg.MAX_ANGLE
+    return angle

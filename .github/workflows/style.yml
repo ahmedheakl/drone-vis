@@ -35,6 +35,4 @@ jobs:
       - name: Publish results
         uses: test-summary/action@v2
         with:
-          paths: |
-            ./pylint.log
-            ./mypy.log
+          paths: ./pylint.log

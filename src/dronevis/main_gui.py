@@ -19,10 +19,10 @@ Version
 """
 import logging
 import sys
-from typing import Union
 
 from dronevis.utils.utils import library_ontro, gui_parse
 from dronevis.drone_connect import DemoDrone, Drone
+from dronevis.abstract.base_drone import BaseDrone
 from dronevis.gui.drone_gui import DroneVisGui
 from dronevis.utils.logger import init_logger
 
@@ -38,7 +38,7 @@ def main() -> None:
     args = gui_parse()
 
     if args.drone == "demo":
-        drone: Union[DemoDrone, Drone] = DemoDrone()
+        drone: BaseDrone = DemoDrone()
     else:
         drone = Drone()
 
@@ -49,21 +49,11 @@ def main() -> None:
 
     except KeyboardInterrupt:
         print("")
-        _LOG.warning("closing GUI ...")
+        _LOG.warning("Closing GUI ...")
         gui.on_close_window()
         sys.exit()
 
-    except ConnectionError:
-        _LOG.error(
-            "Couldn't connect to the drone. Make sure you are connected to the drone network"
-        )
-        gui.on_close_window()
-
-    except AssertionError as error:
-        _LOG.error(error)
-        gui.on_close_window()
-
-    except (ValueError, AttributeError) as error:
+    except (ConnectionError, AssertionError, ValueError, AttributeError) as error:
         _LOG.error(error)
         gui.on_close_window()
 

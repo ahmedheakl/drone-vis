@@ -1,13 +1,17 @@
-from tkinter import Button, messagebox, Event
-import dronevis
+"""Implementation of a tkinter button with black/white varying image"""
+from typing import Tuple
 import os
 import inspect
-from dronevis.gui.configs import WHITE_COLOR, MAIN_COLOR
+from tkinter import Button, messagebox
 from PIL import Image, ImageTk, ImageOps
-from typing import Tuple
+
+import dronevis
+from dronevis.gui.configs import WHITE_COLOR, MAIN_COLOR
 
 
 class ImageBWButton(Button):
+    """Image button with alternating black/white image"""
+
     def __init__(
         self,
         master,
@@ -19,12 +23,12 @@ class ImageBWButton(Button):
         **kw,
     ) -> None:
         """Initialize image button
-        The button deals with two images ``passive`` and ``active``. 
-        Each image is used in case of hover/no-hover. 
-        
-        The active image is an __inverted__ version of the passive. 
-        
-        Image path is defaulted to be in the assets folder. 
+        The button deals with two images ``passive`` and ``active``.
+        Each image is used in case of hover/no-hover.
+
+        The active image is an __inverted__ version of the passive.
+
+        Image path is defaulted to be in the assets folder.
 
         Args:
             master (tkiner.widget): master widget
@@ -34,7 +38,7 @@ class ImageBWButton(Button):
             size (Tuple[int, ...]): size for image to be resized
             is_inverted (bool): whether to invert the colors
         """
-        super(ImageBWButton, self).__init__(master, *args, **kw)
+        super().__init__(master, *args, **kw)
         self["background"] = MAIN_COLOR
         self["activebackground"] = WHITE_COLOR
         package_path = os.path.dirname(inspect.getfile(dronevis))
@@ -45,7 +49,7 @@ class ImageBWButton(Button):
         self.passive_img = ImageTk.PhotoImage(passive_img)
         self.active_img = ImageTk.PhotoImage(active_img)
         self["image"] = self.passive_img
-        
+
         self.message = message
         self.title = title
 
@@ -53,7 +57,7 @@ class ImageBWButton(Button):
         self.bind("<Enter>", self.on_enter)
         self.bind("<Leave>", self.on_leave)
 
-    def on_info(self, e: Event) -> None:
+    def on_info(self, _) -> None:
         """Show information about the button
 
         Args:
@@ -61,19 +65,18 @@ class ImageBWButton(Button):
         """
         messagebox.showinfo(title=self.title, message=self.message)
 
-    def on_enter(self, e: Event) -> None:
+    def on_enter(self, _) -> None:
         """Event handler for entering hover
 
         Args:
             e (tkinter.Event): event information
         """
         self["image"] = self.active_img
-        
-    def on_leave(self, e: Event) -> None:
+
+    def on_leave(self, _) -> None:
         """Event handler for leaving hover
 
         Args:
             e (tkinter.Event): Event handler for hover
         """
         self["image"] = self.passive_img
-

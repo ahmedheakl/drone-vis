@@ -2,6 +2,7 @@
 from typing import Union
 import os
 import time
+import logging
 import getpass
 import torch
 import cv2
@@ -9,6 +10,8 @@ import numpy as np
 
 from dronevis.utils.utils import write_fps
 from dronevis.abstract import CVModel
+
+_LOG = logging.getLogger(__name__)
 
 
 class YOLOv5(CVModel):
@@ -29,7 +32,7 @@ class YOLOv5(CVModel):
 
     def load_model(self) -> None:
         """Load model from PyTorchHub"""
-        print("Loading YOLOv5 Torch model ...")
+        _LOG.info("Loading YOLOv5 Torch model ...")
         if os.path.exists(self.model_local_path):
             self.net = torch.hub.load(
                 self.model_local_path,
@@ -38,6 +41,7 @@ class YOLOv5(CVModel):
             )
         else:
             self.net = torch.hub.load(self.remote_name, self.model_name)
+        _LOG.info("Loaded YOLOv5 Torch model")
 
     def transform_img(self, image: np.ndarray) -> np.ndarray:
         """Idle transformation.

@@ -1,7 +1,7 @@
 """implementation for dronevis CLI"""
 import argparse
 import logging
-from typing import Union, Callable, Dict
+from typing import Callable, Dict
 import sys
 from rich_argparse import RichHelpFormatter
 from rich.console import Console
@@ -9,7 +9,6 @@ from rich.table import Table
 from rich import print as rprint
 
 from dronevis import __version__
-from dronevis.drone_connect import Drone, DemoDrone
 from dronevis.abstract.base_drone import BaseDrone
 
 
@@ -144,18 +143,20 @@ class DroneCli:
     def __call__(
         self,
         args: argparse.Namespace,
-        drone: Union[Drone, DemoDrone],
+        drone: BaseDrone,
     ) -> None:
         """Main loop for drone connection and control
 
         Args:
             args (argparse.NameSpace): args from user input
-            drone (Union[Drone, DemoDrone]): drone instance
+            drone (BaseDrone): drone instance
 
         Raises:
             NotImplementedError: drone testing is not implemented
         """
-        assert isinstance(drone, (Drone, DemoDrone))
+        assert isinstance(
+            drone, BaseDrone
+        ), "Provided drone must implement the base drone interface"
 
         # get commands
         available_commands = self.index_to_control(drone)

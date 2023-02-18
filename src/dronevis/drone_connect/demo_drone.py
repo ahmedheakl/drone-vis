@@ -1,14 +1,13 @@
 """Implementation for demo drone for testing purposes"""
-from typing import Optional, Union, Callable
+from typing import Optional, Callable
 import logging
 import random
 import time
 from threading import Thread
-import cv2
 
-from dronevis.utils.utils import write_fps
 from dronevis.abstract import CVModel
 from dronevis.abstract.base_drone import BaseDrone
+from dronevis.abstract.base_video_thread import BaseVideoThread
 
 _LOG = logging.getLogger(__name__)
 
@@ -19,7 +18,6 @@ class DemoDrone(BaseDrone):
     def __init__(self, ip_address: str = "192.168.1.1") -> None:
         """Construct demo object"""
         super().__init__(ip_address)
-        self.is_connected = False
         self.nav_thread: Optional[DemoNavThread] = None
         self.video_thread: Optional[DemoVideoThread] = None
         self.ip_address = ip_address
@@ -77,7 +75,7 @@ class DemoDrone(BaseDrone):
             TypeError: Provided callback should be a function or None.
         """
         if callback is None:
-            callback = self.print_navdata
+            callback = self._print_navdata
 
         if not hasattr(callable, "__call__"):
             err_message = "Please provide a function as a callback or None."
@@ -105,7 +103,7 @@ class DemoDrone(BaseDrone):
             activate_navdata (bool, optional): Flag for starting navdata. Defaults to True.
         """
 
-    def print_navdata(self, navdata: dict) -> None:
+    def _print_navdata(self, navdata: dict) -> None:
         """Trivial function for prining Navdata
         Should be used as a callback.
 
@@ -199,64 +197,17 @@ class DemoDrone(BaseDrone):
         _LOG.info("Reseting")
 
 
-class DemoVideoThread(Thread):
-    """Demo for video thread"""
+class DemoVideoThread(BaseVideoThread):
+    """Demo for video thread implementing `BaseVideoThread` interface"""
 
     def __init__(
         self,
-        close_callback: Callable,
+        closing_callback: Callable,
         model: CVModel,
-        video_index: Union[str, int] = 0,
-        frame_name: str = "Demo Video Capture",
+        ip_address: str = "192.168.1.1",
     ) -> None:
-
-        super().__init__()
-        self.close_callback = close_callback
-        self.model = model
-        self.frame_name = frame_name
-        self.video_index = video_index
-        self.running = True
-
-    def run(self):
-        """Run video stream
-        This method is invoked by the internal method of
-        `threading.Thread` under the name `start`.
-
-        To start this thread, call `DemoVideoThread(...).start()`
-        """
-        cap = cv2.VideoCapture(0)
-
-        if not cap.isOpened():
-            _LOG.warning("Error while trying to read video. Please check path again")
-
-        prev_time = 0
-        while cap.isOpened():
-            if not self.running:
-                break
-
-            _, frame = cap.read()
-
-            frame = self.model.predict(frame)
-            cur_time = time.time()
-            fps = 1 / (cur_time - prev_time)
-            prev_time = cur_time
-            cv2.imshow(self.frame_name, write_fps(frame, fps))
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
-
-        _LOG.debug("Closing Video Stream ...")
-        cap.release()
-        cv2.destroyAllWindows()
-        self.close_callback()
-
-    def change_model(self, model: CVModel):
-        """Change computer vision model running on the video stream"""
-        self.model = model
-        _LOG.debug("model for video thread changed")
-
-    def stop(self):
-        """Stop the running thread"""
-        self.running = False
+        super().__init__(closing_callback, model, ip_address)
+        self.frame = "Demo Video Capture"
 
 
 class DemoNavThread(Thread):

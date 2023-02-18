@@ -29,7 +29,6 @@ class Drone(BaseDrone):
             ip_address (str, optional): IP of the drone. Defaults to "192.168.1.1".
         """
         super().__init__(ip_address)
-        self.is_connected = False
         self.video_thread: Optional[VideoThread] = None
         self.com_thread: Optional[Command] = None
         self.nav_thread: Optional[Navdata] = None
@@ -106,15 +105,15 @@ class Drone(BaseDrone):
         assert self.com_thread, "Please connect to the drone first"
 
         # Check if all arguments are supported config
-        for key_arg, _ in args.items():
+        for key_arg in args:
             _LOG.debug(key_arg)
-            if key_arg.lower() not in list(config.SUPPORTED_CONFIG.keys()):
+            if key_arg.lower() not in list(config.SUPPORTED_CONFIG):
                 err_message = f"The configuration key {key_arg} can't be found!"
                 _LOG.critical(err_message)
                 raise AttributeError(err_message)
         # Then set each config
         at_commands: List[str] = []
-        for key_arg, _ in args.items():
+        for key_arg in args:
             at_commands = at_commands + config.SUPPORTED_CONFIG[key_arg.lower()](
                 args[key_arg.lower()]
             )
@@ -340,6 +339,7 @@ class Drone(BaseDrone):
             raise TypeError(err_message)
 
         if self.nav_thread is None:
+            assert self.com_thread, "Communication thread should be initialized first"
             # Initialize the navdata thread and navdata
             self.nav_thread = Navdata(self.com_thread, callback)
             # self.set_config(activate_navdata=True)

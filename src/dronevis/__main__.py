@@ -52,16 +52,16 @@ def main() -> None:
 
     except KeyboardInterrupt:
         print("")
-        _LOG.warning("keyinterrupt: closing CLI ...")
+        _LOG.warning("Keyinterrupt: closing CLI ...")
         drone.stop()
         sys.exit()
 
     except NotImplementedError:
-        _LOG.error("drone tests are NOT yet implemented")
+        _LOG.error("Drone tests are NOT yet implemented")
 
     except ConnectionError:
-        _LOG.error("couldn't connect to the drone")
-        _LOG.error("make sure you are connected to the drone network")
+        _LOG.error("Couldn't connect to the drone")
+        _LOG.error("Make sure you are connected to the drone network")
 
     except (ValueError, AssertionError) as error:
         _LOG.error(error)

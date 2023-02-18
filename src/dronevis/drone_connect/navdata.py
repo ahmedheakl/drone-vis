@@ -5,7 +5,7 @@ import socket
 import time
 import logging
 
-from dronevis.drone_connect.nav_data_decode import navdata_decode
+from dronevis.drone_connect.navdata_decode import navdata_decode
 from dronevis.drone_connect.command import Command
 
 _LOG = logging.getLogger(__name__)

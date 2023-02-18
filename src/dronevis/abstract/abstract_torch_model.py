@@ -1,6 +1,7 @@
 """Interface for models implemented with PyTorch"""
 from typing import Union, Tuple, List, Optional
 import time
+import logging
 import numpy as np
 import torch
 import torchvision
@@ -11,6 +12,8 @@ from PIL import Image
 from dronevis.config.config import COCO_NAMES
 from dronevis.abstract.abstract_model import CVModel
 from dronevis.utils.utils import write_fps
+
+_LOG = logging.getLogger(__name__)
 
 
 class TorchDetectionModel(CVModel):
@@ -117,7 +120,7 @@ class TorchDetectionModel(CVModel):
         """
         image = cv2.cvtColor(np.asarray(image), cv2.COLOR_BGR2RGB)
         for i, box in enumerate(boxes):
-            color = self.COLORS[labels[i]]  # type: ignore
+            color = self.colors[labels[i]]
             cv2.rectangle(
                 img=image,
                 pt1=(int(box[0]), int(box[1])),
@@ -172,7 +175,7 @@ class TorchDetectionModel(CVModel):
 
         cap = cv2.VideoCapture(video_index)
         if not cap.isOpened():
-            print("Error while trying to read video. Please check path again")
+            _LOG.warning("Error while trying to read video. Please check path again")
         prev_time = 0.0
         while cap.isOpened():
             _, frame = cap.read()

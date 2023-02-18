@@ -1,3 +1,4 @@
+"""Configurations for dronevis GUI"""
 # colors
 MAIN_COLOR = "#01112a"
 LIGHT_MAIN_COLOR = "#04327a"
@@ -21,3 +22,8 @@ HORIZONTAL_ARROW_SIZE = (30, 28)
 GUI_X_LIMIT = 20
 GUI_Y_LIMIT = 50
 
+# Miscellaneous
+INDEX_STEP = 0.2
+MAX_VELOCITY = 2.0  # m/s
+MILLI_TO_METER_FACTOR = 1 / 1000.0
+MAX_ANGLE = 360.0
