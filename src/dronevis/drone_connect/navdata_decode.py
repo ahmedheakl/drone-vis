@@ -104,7 +104,7 @@ def navdata_decode(packet) -> Dict[str, Dict[str, bool]]:
     offset += struct.calcsize("=IIII")
     i = 1
 
-    while 1:
+    while True:
         try:
             block.append([])
             block[i] = list(

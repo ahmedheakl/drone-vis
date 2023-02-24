@@ -67,7 +67,7 @@ class TorchDetectionModel(CVModel):
 
         input_image = image
         with torch.no_grad():
-            transformed_image = self.transform_img(input_image).to(self.device)
+            transformed_image = self.transform_img(image).to(self.device)
             transformed_image = transformed_image.unsqueeze(0)  # add a batch dimension
             outputs = self.net(transformed_image)[0]  # get outputs array
             self.pred_classes = [
@@ -77,15 +77,15 @@ class TorchDetectionModel(CVModel):
             pred_bboxes = outputs["boxes"].detach().cpu().numpy()
             boxes = pred_bboxes[pred_scores >= detection_threshold].astype(np.int32)
 
-        image = self.draw_boxes(
+        drawn_image = self.draw_boxes(
             boxes,
             self.pred_classes,
             outputs["labels"],
-            image,
+            input_image,
         )
         self.boxes = boxes
         self.pred_scores = pred_scores
-        return image
+        return drawn_image
 
     def transform_img(self, image: np.ndarray) -> torch.Tensor:
         """Transform image to tensor
