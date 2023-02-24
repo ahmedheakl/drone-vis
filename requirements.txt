@@ -13,3 +13,4 @@ rich_argparse
 termcolor
 pyfiglet
 coloredlogs
+deep-sort-realtime
