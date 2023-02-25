@@ -9,9 +9,9 @@ from torchvision.transforms.functional import to_pil_image
 import cv2
 from PIL import Image
 
-from dronevis.config.config import COCO_NAMES
+from dronevis.config.general import COCO_NAMES
 from dronevis.abstract.abstract_model import CVModel
-from dronevis.utils.utils import write_fps
+from dronevis.utils.general import write_fps
 
 _LOG = logging.getLogger(__name__)
 

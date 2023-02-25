@@ -6,7 +6,7 @@ import mediapipe as mp
 import numpy as np
 import cv2
 
-from dronevis.utils.utils import write_fps
+from dronevis.utils.general import write_fps
 from dronevis.abstract import CVModel
 
 

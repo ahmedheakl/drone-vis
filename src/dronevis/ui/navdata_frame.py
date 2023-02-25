@@ -2,10 +2,11 @@
 from tkinter import Canvas
 from tkinter.ttk import Label, Frame
 
-from dronevis.gui.configs import MAIN_COLOR
-from dronevis.gui.circular_progressbar import CircularProgressbar
+from dronevis.config.gui import MAIN_COLOR
+from dronevis.ui.circular_progressbar import CircularProgressbar
 
 
+# pylint: disable=too-many-ancestors
 class DataFrame(Frame):
     """Implementation of Frame for view navigation data"""
 

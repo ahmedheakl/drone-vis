@@ -1,7 +1,7 @@
 """Implementation for tkinter button as the main button"""
 from tkinter import Button, messagebox
 
-from dronevis.gui.configs import WHITE_COLOR, MAIN_COLOR, MAIN_FONT
+from dronevis.config.gui import WHITE_COLOR, MAIN_COLOR, MAIN_FONT
 
 
 class MainButton(Button):

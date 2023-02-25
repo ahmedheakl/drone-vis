@@ -2,7 +2,7 @@
 from typing import Tuple
 from tkinter import Canvas
 
-from dronevis.gui.configs import GREEN_COLOR
+from dronevis.config.gui import GREEN_COLOR
 
 
 class CircularProgressbar:

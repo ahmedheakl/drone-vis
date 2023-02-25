@@ -8,7 +8,7 @@ import numpy as np
 import cv2
 from gluoncv import utils, model_zoo
 
-from dronevis.utils.utils import write_fps
+from dronevis.utils.general import write_fps
 from dronevis.abstract.abstract_model import CVModel
 
 _LOG = logging.getLogger(__name__)

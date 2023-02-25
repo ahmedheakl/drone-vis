@@ -20,15 +20,12 @@ Version
 import logging
 import sys
 
-from dronevis.utils.utils import library_ontro, gui_parse
+from dronevis.utils.general import library_ontro, gui_parse, init_logger
 from dronevis.drone_connect import DemoDrone, Drone
 from dronevis.abstract.base_drone import BaseDrone
-from dronevis.gui.drone_gui import DroneVisGui
-from dronevis.utils.logger import init_logger
+from dronevis.ui.drone_gui import DroneVisGui
 
 
-# get logger
-init_logger(debug=True)
 _LOG = logging.getLogger(__name__)
 
 
@@ -36,6 +33,7 @@ def main() -> None:
     """Running CLI script and CLI main loop"""
 
     args = gui_parse()
+    init_logger(level=args.logger_level)
 
     if args.drone == "demo":
         drone: BaseDrone = DemoDrone()

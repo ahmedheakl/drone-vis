@@ -6,7 +6,7 @@ import time
 import cv2
 
 from dronevis.abstract.abstract_model import CVModel
-from dronevis.utils.utils import write_fps
+from dronevis.utils.general import write_fps
 
 _LOG = logging.getLogger(__name__)
 

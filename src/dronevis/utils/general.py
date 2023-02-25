@@ -1,5 +1,6 @@
 """Utilities for dronevis library including image processing and parser"""
 from typing import Union
+import logging
 import os
 import argparse
 from pyfiglet import Figlet
@@ -8,9 +9,10 @@ from termcolor import colored
 from rich_argparse import RichHelpFormatter
 import cv2
 import numpy as np
+import coloredlogs
 
-import dronevis.gui.configs as cfg
 from dronevis import __version__
+import dronevis.config.gui as cfg
 
 
 def write_fps(image: np.ndarray, fps: Union[str, int, float]) -> np.ndarray:
@@ -77,11 +79,13 @@ def gui_parse() -> argparse.Namespace:
         choices=["demo", "real"],
         help="whether to use a demo drone or a real drone",
     )
-
     parser.add_argument(
-        "--debug",
-        action="store_true",
-        help="whether to output debug info",
+        "--log-level",
+        dest="logger_level",
+        type=str,
+        choices=["debug", "info", "warning", "error", "critical"],
+        default="info",
+        help="Level for logger",
     )
 
     args = parser.parse_args()
@@ -123,3 +127,52 @@ def find(file_name: str) -> str:
             return ""
 
         cur_dir = parent_dir
+
+
+def init_logger(level: Union[int, str] = logging.INFO) -> None:
+    """Initialize logger with desired configs
+
+    Args:
+        debug (bool, optional): Whether to output debug info to the console. Defaults to False.
+
+    Returns:
+        logging.Logger: Logger instance with desired configs
+    """
+    to_log_level = {
+        "debug": logging.DEBUG,
+        "info": logging.INFO,
+        "warning": logging.WARNING,
+        "error": logging.ERROR,
+        "critical": logging.CRITICAL,
+    }
+
+    if isinstance(level, str):
+        assert level in to_log_level, "Invalid level name"
+        log_level = to_log_level[level]
+    else:
+        log_level = level
+
+    logs_dir = os.path.join(os.path.expanduser("~"), ".logs")
+
+    if not os.path.exists(logs_dir):
+        os.mkdir(logs_dir)
+
+    filename = "dronevis.log"
+    logs_path = os.path.join(logs_dir, filename)
+
+    # initialize file handler
+    f_handler = logging.FileHandler(filename=logs_path, mode="w")
+    f_handler.setLevel(logging.DEBUG)
+    f_format = logging.Formatter(
+        "%(asctime)s - %(filename)s - %(levelname)s - %(message)s"
+    )
+    f_handler.setFormatter(f_format)
+
+    # set handlers
+    logging.basicConfig(handlers=[f_handler])
+
+    # initialize colored logs
+    coloredlogs.install(
+        fmt="%(asctime)s - %(message)s",
+        level=log_level,
+    )

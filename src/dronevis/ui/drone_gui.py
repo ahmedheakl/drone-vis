@@ -6,18 +6,16 @@ import logging
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from dronevis.face_detection import FaceDetectModel
-from dronevis.detection_torch import FasterRCNN, YOLOv5
-from dronevis.pose import PoseSegEstimation
+from dronevis.models import FaceDetectModel, FasterRCNN, YOLOv5, PoseSegEstimation
 from dronevis.drone_connect import DemoDrone
 from dronevis.abstract.base_drone import BaseDrone
-from dronevis.utils.utils import axis_config
+from dronevis.utils.general import axis_config
 from dronevis.abstract.noop_model import NOOPModel
 
-from dronevis.gui import configs as cfg
-from dronevis.gui.image_bw_button import ImageBWButton
-from dronevis.gui.main_button import MainButton
-from dronevis.gui.navdata_frame import DataFrame
+from dronevis.config import gui as cfg
+from dronevis.ui.image_bw_button import ImageBWButton
+from dronevis.ui.main_button import MainButton
+from dronevis.ui.navdata_frame import DataFrame
 
 _LOG = logging.getLogger(__name__)
 

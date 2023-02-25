@@ -6,7 +6,7 @@ import mediapipe as mp
 import numpy as np
 
 from dronevis.abstract import CVModel
-from dronevis.utils.utils import write_fps
+from dronevis.utils.general import write_fps
 
 
 class FaceDetectModel(CVModel):

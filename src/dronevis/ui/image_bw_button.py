@@ -1,51 +1,52 @@
-"""Implementation of button with image"""
-from tkinter import Button, messagebox
+"""Implementation of a tkinter button with black/white varying image"""
 from typing import Tuple
 import os
 import inspect
-from PIL import Image, ImageTk
+from tkinter import Button, messagebox
+from PIL import Image, ImageTk, ImageOps
 
 import dronevis
-from dronevis.gui.configs import MAIN_COLOR, WHITE_COLOR
+from dronevis.config.gui import WHITE_COLOR, MAIN_COLOR
 
 
-class ImageButton(Button):
-    """Tkinter button with image in the background"""
+class ImageBWButton(Button):
+    """Image button with alternating black/white image"""
 
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         master,
         title: str,
         message: str,
-        passive_img_path: str,
-        active_img_path: str,
+        img: str,
         size: Tuple[int, ...],
         *args,
         **kw,
     ) -> None:
+        """Initialize image button
+        The button deals with two images ``passive`` and ``active``.
+        Each image is used in case of hover/no-hover.
+
+        The active image is an __inverted__ version of the passive.
+
+        Image path is defaulted to be in the assets folder.
+
+        Args:
+            master (tkiner.widget): master widget
+            title (str): title of info box
+            message (str): message to be displayed in info box
+            img (str): image path
+            size (Tuple[int, ...]): size for image to be resized
+            is_inverted (bool): whether to invert the colors
+        """
         super().__init__(master, *args, **kw)
-
-        self.title = title
-        self.message = message
-
         self["background"] = MAIN_COLOR
         self["activebackground"] = WHITE_COLOR
-
-        # get path of library is site-packages
         package_path = os.path.dirname(inspect.getfile(dronevis))
-
-        # get path of images
-        passive_img_path = f"{package_path}/assets/{passive_img_path}"
-        active_img_path = f"{package_path}/assets/{active_img_path}"
-
-        # load images
+        passive_img_path = f"{package_path}/assets/{img}"
         passive_img = Image.open(passive_img_path)
-        active_img = Image.open(active_img_path)
-
-        # resize images
         passive_img = passive_img.resize(size, Image.Resampling.HAMMING)
-        active_img = active_img.resize(size, Image.Resampling.HAMMING)
-
+        active_img = ImageOps.invert(passive_img.convert("1"))
         self.passive_img = ImageTk.PhotoImage(passive_img)
         self.active_img = ImageTk.PhotoImage(active_img)
         self["image"] = self.passive_img

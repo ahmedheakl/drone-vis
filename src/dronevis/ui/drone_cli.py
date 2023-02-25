@@ -53,9 +53,12 @@ class DroneCli:
             help="whether to use a demo drone or a real drone",
         )
         parser.add_argument(
-            "--debug",
-            action="store_true",
-            help="whether to output debug info",
+            "--log-level",
+            dest="logger_level",
+            type=str,
+            choices=["debug", "info", "warning", "error", "critical"],
+            default="info",
+            help="Level for logger",
         )
 
         args = parser.parse_args()

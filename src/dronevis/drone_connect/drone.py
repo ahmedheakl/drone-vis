@@ -10,7 +10,7 @@ from dronevis.abstract.base_drone import BaseDrone
 from dronevis.drone_connect.video import VideoThread
 from dronevis.drone_connect.command import Command
 from dronevis.drone_connect.navdata import Navdata
-from dronevis.config import config
+from dronevis.config import general as cfg
 
 _LOG = logging.getLogger(__name__)
 
@@ -107,14 +107,14 @@ class Drone(BaseDrone):
         # Check if all arguments are supported config
         for key_arg in kwargs:
             _LOG.debug(key_arg)
-            if key_arg.lower() not in list(config.SUPPORTED_CONFIG):
+            if key_arg.lower() not in list(cfg.SUPPORTED_CONFIG):
                 err_message = f"The configuration key {key_arg} can't be found!"
                 _LOG.critical(err_message)
                 raise AttributeError(err_message)
         # Then set each config
         at_commands: List[str] = []
         for key_arg in kwargs:
-            at_commands = at_commands + config.SUPPORTED_CONFIG[key_arg.lower()](
+            at_commands = at_commands + cfg.SUPPORTED_CONFIG[key_arg.lower()](
                 kwargs[key_arg.lower()]
             )
         for at_command in at_commands:
@@ -127,7 +127,7 @@ class Drone(BaseDrone):
         Returns:
             list: list of configurations
         """
-        return list(config.SUPPORTED_CONFIG.keys())
+        return list(cfg.SUPPORTED_CONFIG.keys())
 
     def takeoff(self) -> bool:
         """Take Off

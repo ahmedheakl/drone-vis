@@ -110,6 +110,7 @@ class BaseDrone:
 
     def set_config(self, **kwargs: bool) -> bool:
         """Setter for activating data retrival"""
+        _ = kwargs
         return True
 
     def set_callback(self, callback: Callable) -> None:

@@ -8,7 +8,7 @@ import torch
 import cv2
 import numpy as np
 
-from dronevis.utils.utils import write_fps
+from dronevis.utils.general import write_fps
 from dronevis.abstract import CVModel
 
 _LOG = logging.getLogger(__name__)

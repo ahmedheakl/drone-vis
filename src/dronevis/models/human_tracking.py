@@ -1,14 +1,15 @@
 """Implementation for human tracking model"""
 from typing import Union
+import logging
 import wget
 import cv2
 import numpy as np
 from deep_sort_realtime.deepsort_tracker import DeepSort
 
 
-from dronevis.utils.utils import find
+from dronevis.utils.general import find
 from dronevis.abstract.abstract_torch_model import CVModel
-from dronevis.config.config import COCO_NAMES_v4
+from dronevis.config.general import COCO_NAMES_v4
 
 
 # Those are the links to download the model weights if the user
@@ -20,6 +21,7 @@ COMMON_LINK = (
 )
 WEIGHTS_LINK = COMMON_LINK + WEIGHTS_PATH
 CONFIG_LINK = COMMON_LINK + CONFIG_PATH
+_LOG = logging.getLogger(__name__)
 
 
 class HumanTracking(CVModel):
@@ -53,15 +55,15 @@ class HumanTracking(CVModel):
         """
         yolo_cfg_path = find(CONFIG_PATH)
         if yolo_cfg_path.strip() == "":
-            print("Downloading Faster YOLO v4 configuration...")
+            _LOG.info("Downloading Faster YOLO v4 configuration...")
             yolo_cfg_path = wget.download(CONFIG_LINK)
             print("")
 
         yolo_weights_path = find(WEIGHTS_PATH)
         if yolo_weights_path.strip() == "":
-            print("Downloading Faster YOLO v4 weights...")
+            _LOG.info("Downloading Faster YOLO v4 weights...")
             yolo_weights_path = wget.download(WEIGHTS_LINK)
-        print("Loading Faster YOLO v4 model ...")
+        _LOG.info("Loading Faster YOLO v4 model ...")
         self.model = cv2.dnn.readNet(yolo_cfg_path, yolo_weights_path)
         self.tracker = DeepSort()
 
