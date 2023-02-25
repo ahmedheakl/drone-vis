@@ -203,4 +203,3 @@ COCO_NAMES_v4 = [
     "hair drier",
     "toothbrush",
 ]
-

@@ -122,8 +122,8 @@ class DroneCli:
 
         available_commands = {
             "q": cli_exit,
-            "1": drone.up,
-            "2": drone.down,
+            "1": drone.upward,
+            "2": drone.downward,
             "3": drone.right,
             "4": drone.left,
             "5": drone.forward,

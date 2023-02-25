@@ -297,7 +297,7 @@ class DroneVisGui:
             message="Move the drone up",
             img="up.png",
             size=cfg.VERTICAL_ARROW_SIZE,
-            command=self.drone.up,
+            command=self.drone.upward,
         )
         btn_down = ImageBWButton(
             frm_basic_control,
@@ -305,7 +305,7 @@ class DroneVisGui:
             message="Move the drone down",
             img="down.png",
             size=cfg.VERTICAL_ARROW_SIZE,
-            command=self.drone.down,
+            command=self.drone.downward,
         )
 
         self.btn_connect = MainButton(

@@ -1,5 +1,5 @@
 """Utilties for decoding packets resposible for navigation data"""
-from typing import Dict, Union
+from typing import Dict, Union, Any
 import logging
 import struct
 
@@ -95,22 +95,22 @@ def _gps_decode(packet) -> Dict[str, Union[float, bool]]:
     return gps_info
 
 
-def navdata_decode(packet) -> Dict[str, Dict[str, bool]]:
+def navdata_decode(packet) -> Dict[str, Dict[str, Any]]:
     "Split then decodes the navdata packet gathered from UDP 5554"
     position = 0
     offset = 0
     block = []
-    block.append(struct.unpack_from("=IIII", packet, position))
+    block.append(list(struct.unpack_from("=IIII", packet, position)))
     offset += struct.calcsize("=IIII")
     i = 1
 
     while True:
         try:
-            block.append([])
-            block[i] = list(
+            current_block = list(
                 struct.unpack_from("=HH", packet, offset)
             )  # Separate Option ID & Size of option int
             offset += struct.calcsize("=HH")
+            block.append(current_block)
         except struct.error:
             break
         block[i].append(
@@ -124,12 +124,10 @@ def navdata_decode(packet) -> Dict[str, Dict[str, bool]]:
 
     # Decode the drone state
     drone_state = _drone_status_decode(block[0][1])
-    vision_detect = None
-    navdata_demo = None
-    gps_info = None
+    vision_detect = {}
+    navdata_demo = {}
+    gps_info = {}
 
-    # For each option
-    unsupported_option = []
     for i in range(1, len(block)):
         if block[i] != []:
             # Vision detection option
@@ -144,14 +142,10 @@ def navdata_decode(packet) -> Dict[str, Dict[str, bool]]:
             # Checksum option
             elif block[i][0] == 65535:
                 pass
-            # Else we don't know
-            else:
-                unsupported_option.append((block[i][0], block[i][1]))
 
-    navdata = {}
+    navdata: Dict[str, Dict[str, Any]] = {}
     navdata["drone_state"] = drone_state
     navdata["vision_detect"] = vision_detect
     navdata["navdata_demo"] = navdata_demo
     navdata["gps_info"] = gps_info
-    navdata["unsupported_option"] = unsupported_option
     return navdata

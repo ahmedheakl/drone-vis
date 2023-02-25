@@ -91,17 +91,14 @@ class DemoDrone(BaseDrone):
             self.nav_thread.start()
             _LOG.debug("Changed callback")
 
-    def set_config(
-        self,
-        activate_gps: bool = True,
-        activate_navdata: bool = True,
-    ) -> None:
+    def set_config(self, **kwargs) -> bool:
         """Setter for configurations (gps, navdata)
 
         Args:
             activate_gps (bool, optional): Flag for starting gps. Defaults to True.
             activate_navdata (bool, optional): Flag for starting navdata. Defaults to True.
         """
+        return True
 
     def _print_navdata(self, navdata: dict) -> None:
         """Trivial function for prining Navdata
@@ -147,12 +144,12 @@ class DemoDrone(BaseDrone):
         _LOG.info("Right")
         return True
 
-    def up(self) -> bool:
+    def upward(self) -> bool:
         """Simulate up movement"""
         _LOG.info("Up")
         return True
 
-    def down(self) -> bool:
+    def downward(self) -> bool:
         """Simulate down movement"""
         _LOG.info("Down")
         return True

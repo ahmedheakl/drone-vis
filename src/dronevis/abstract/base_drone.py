@@ -77,11 +77,11 @@ class BaseDrone:
         """Right Move"""
         return True
 
-    def up(self) -> bool:
+    def upward(self) -> bool:
         """Upward"""
         return True
 
-    def down(self) -> bool:
+    def downward(self) -> bool:
         """Downward"""
         return True
 
@@ -108,12 +108,9 @@ class BaseDrone:
         """Reset"""
         return True
 
-    def set_config(
-        self,
-        activate_gps: bool = True,
-        activate_navdata: bool = True,
-    ) -> None:
+    def set_config(self, **kwargs: bool) -> bool:
         """Setter for activating data retrival"""
+        return True
 
     def set_callback(self, callback: Callable) -> None:
         """Callback setter for navigation data handling"""

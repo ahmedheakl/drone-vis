@@ -91,7 +91,7 @@ class Drone(BaseDrone):
             _LOG.critical(err_message)
             raise ConnectionError(err_message) from exc
 
-    def set_config(self, **args) -> bool:
+    def set_config(self, **kwargs: bool) -> bool:
         """Set a configuration onto the drone
 
         See possibles arguments with ```list_config```
@@ -105,7 +105,7 @@ class Drone(BaseDrone):
         assert self.com_thread, "Please connect to the drone first"
 
         # Check if all arguments are supported config
-        for key_arg in args:
+        for key_arg in kwargs:
             _LOG.debug(key_arg)
             if key_arg.lower() not in list(config.SUPPORTED_CONFIG):
                 err_message = f"The configuration key {key_arg} can't be found!"
@@ -113,9 +113,9 @@ class Drone(BaseDrone):
                 raise AttributeError(err_message)
         # Then set each config
         at_commands: List[str] = []
-        for key_arg in args:
+        for key_arg in kwargs:
             at_commands = at_commands + config.SUPPORTED_CONFIG[key_arg.lower()](
-                args[key_arg.lower()]
+                kwargs[key_arg.lower()]
             )
         for at_command in at_commands:
             self.com_thread.configure(at_command[0], at_command[1])
@@ -197,7 +197,7 @@ class Drone(BaseDrone):
         """
         return self.navigate(left_right=-speed)
 
-    def up(self, speed: float = 0.2) -> bool:
+    def upward(self, speed: float = 0.2) -> bool:
         """Make the drone rise in the air, speed is between 0 and 1
 
         Args:
@@ -208,7 +208,7 @@ class Drone(BaseDrone):
         """
         return self.navigate(up_down=speed)
 
-    def down(self, speed: float = 0.2) -> bool:
+    def downward(self, speed: float = 0.2) -> bool:
         """Make the drone descend, speed is between 0 and 1
 
         Args:

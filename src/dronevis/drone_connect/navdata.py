@@ -1,5 +1,5 @@
 """Implementation for navigation data thread"""
-from typing import Callable
+from typing import Callable, Any, Dict
 import threading
 import socket
 import time
@@ -16,7 +16,11 @@ class Navdata(threading.Thread):
     data_port = 5554
     pocket_size = 1024 * 10
 
-    def __init__(self, communication: Command, callback: Callable) -> None:
+    def __init__(
+        self,
+        communication: Command,
+        callback: Callable[[Dict[str, Dict[str, Any]]], None],
+    ) -> None:
         "Create the navdata handler thread"
         super().__init__()
         self.running = True
@@ -58,11 +62,11 @@ class Navdata(threading.Thread):
                 except socket.error:
                     time.sleep(0.05)
                 else:
-                    rep = navdata_decode(rep)
-                    if rep["drone_state"]["command_ack"] == 1:
+                    decoded_rep = navdata_decode(rep)
+                    if decoded_rep["drone_state"]["command_ack"] == 1:
                         self.com.ack_command()
-                    assert self.callback, "Please set a callback"
-                    self.callback(rep)
+                    assert self.callback is None, "Please set a callback"
+                    self.callback(decoded_rep)
 
                 time.sleep(0.05)
         self.com.activate_navdata(activate=False)  # Tell com thread that we are out
