@@ -1,7 +1,7 @@
 """Testing pose estimation module"""
 import pytest
 
-from dronevis.pose import PoseSegEstimation
+from dronevis.models import PoseSegEstimation
 
 
 def test_multiple_return_type() -> None:

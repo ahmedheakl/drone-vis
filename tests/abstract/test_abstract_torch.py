@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 
 from dronevis.abstract.abstract_torch_model import TorchDetectionModel
-from dronevis.detection_torch import SSD
+from dronevis.models import SSD
 
 
 @pytest.fixture
