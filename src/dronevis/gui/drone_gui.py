@@ -534,7 +534,7 @@ class DroneVisGui:
 
         _LOG.info("Current Model: %s", self.models_choice.get())
         model = self.get_and_load_model()
-        self.drone.video_thread.change_model(model)  # type: ignore
+        self.drone.video_thread.change_model(model)
 
     def __call__(self) -> None:
         self.init_frames()

@@ -29,18 +29,12 @@ class FaceDetectModel(CVModel):
         self.face_detection = mp.solutions.face_detection.FaceDetection(confidence)  # type: ignore
         self.mp_drawing = mp.solutions.drawing_utils  # type: ignore
 
+    def load_model(self) -> None:
+        """Load model from memory"""
+
     def transform_img(self, image: np.ndarray) -> np.ndarray:
-        """Tranform input image to be inference-ready
-        Transformations is basically swapping ``BGR`` channels
-        to ``RGB`` channels.
-
-        Args:
-            img (np.array): input image to be tranformed
-
-        Returns:
-            np.array: transformed image into ``RGB`` channels style
-        """
-        return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        """Idle transformation of the image"""
+        return image
 
     def predict(self, image: np.ndarray) -> np.ndarray:
         """Run model inference on input image and output face detection
@@ -52,13 +46,12 @@ class FaceDetectModel(CVModel):
         Returns:
             np.array: output image with keypoints drawn
         """
-        img = self.transform_img(image)
-        results = self.face_detection.process(img)
+        results = self.face_detection.process(image)
         if results.detections:
             for detection in results.detections:
                 self.mp_drawing.draw_detection(image, detection)
 
-        return img
+        return image
 
     def detect_webcam(
         self,

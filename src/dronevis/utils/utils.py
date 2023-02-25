@@ -1,5 +1,6 @@
 """Utilities for dronevis library including image processing and parser"""
 from typing import Union
+import os
 import argparse
 from pyfiglet import Figlet
 from rich import print as rprint
@@ -108,3 +109,17 @@ def axis_config(axis) -> None:
     axis.set_facecolor(cfg.MAIN_COLOR)
     axis.set_ylim([0, cfg.GUI_Y_LIMIT])
     axis.set_xlim([0, cfg.GUI_X_LIMIT])
+
+
+def find(file_name: str) -> str:
+    """Searches for a file in the directory and all its parents"""
+    cur_dir = os.getcwd()
+    while True:
+        file_list = os.listdir(cur_dir)
+        parent_dir = os.path.dirname(cur_dir)
+        if file_name in file_list:
+            return os.path.join(cur_dir, file_name)
+        if cur_dir == parent_dir:  # if dir is root dir
+            return ""
+
+        cur_dir = parent_dir

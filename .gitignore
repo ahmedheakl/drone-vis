@@ -68,7 +68,9 @@ src/dronevis/human_counting
 docs/build
 build
 src/dronevis.egg-info
-yolov5s.pt
+*.pt
 test.py
 dronevis-features.md
 .pytest_cache
+*.weights
+*.cfg
