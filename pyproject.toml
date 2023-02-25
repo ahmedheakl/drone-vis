@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dronevis"
-version = "0.2.2"
+version = "1.0.0"
 description = "Full compatible drone library to automate computer vision algorithms on parrot drones."
 readme = "README.md"
 authors = [{ name = "Ahmed Heakl", email = "ahmed.heakl@ejust.edu.eg" }]
@@ -35,7 +35,7 @@ dependencies = {file = ["requirements.txt"]}
 
 
 [tool.bumpver]
-current_version = "0.2.2"
+current_version = "1.0.0"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message  = "bump version {old_version} -> {new_version}"
 

@@ -14,7 +14,7 @@ Or just run the following to the default
 
 Version
 ------------------
- - dronevis v0.2.2
+ - dronevis v1.0.0
 """
 import sys
 import logging
