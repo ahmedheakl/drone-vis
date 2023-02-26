@@ -1,5 +1,5 @@
 """Retrieve video stream from the drone and run object detection on the obtained stream"""
-from dronevis.detection_torch import FasterRCNN
+from dronevis.models import FasterRCNN
 
 PROTOCOL = "tcp"
 VIDEO_PORT = 5555

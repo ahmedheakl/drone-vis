@@ -2,4 +2,4 @@ Pose Estimation and Human Segmentation
 ======================================
 
 
-.. autoclass:: dronevis.pose.PoseSegEstimation
+.. autoclass:: dronevis.models.PoseSegEstimation

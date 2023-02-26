@@ -6,4 +6,4 @@ For more details refer to the paper `Faster Region-based CNN (R-CNN) <https://ar
 Faster R-CNN Torch
 ------------------
 
-.. autoclass:: dronevis.detection_torch.faster_rcnn_torch.FasterRCNN
+.. autoclass:: dronevis.models.FasterRCNN

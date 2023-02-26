@@ -1,5 +1,5 @@
 """Pose estimation via user camera"""
-from dronevis.pose import PoseSegEstimation
+from dronevis.models import PoseSegEstimation
 
 model = PoseSegEstimation()
 model.load_model()

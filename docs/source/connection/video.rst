@@ -22,4 +22,4 @@ Refer to the `official documentation <https://www.parrot.com/en/support/document
 Command Class
 -------------
 
-.. autoclass:: Video
+.. autoclass:: VideoThread

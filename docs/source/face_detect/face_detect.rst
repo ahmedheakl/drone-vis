@@ -7,7 +7,7 @@ Example:
 
 .. code-block:: python
 
-    from dronevis.face_detection import FaceDetectModel
+    from dronevis.models import FaceDetectModel
     
     model = FaceDetectModel()    # create model instance
     model.load_model()           # load model weights 
@@ -18,4 +18,4 @@ Face Detection Class
 --------------------
 
 
-.. autoclass:: dronevis.face_detection.FaceDetectModel
+.. autoclass:: dronevis.models.FaceDetectModel
