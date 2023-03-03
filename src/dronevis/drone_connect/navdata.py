@@ -1,32 +1,37 @@
-from dronevis.drone_connect import nav_data_decode
+"""Implementation for navigation data thread"""
+from typing import Callable, Any, Dict
 import threading
 import socket
 import time
-from typing import Callable
+import logging
 
-DATA_PORT = 5554
-MAX_PACKET_SIZE = 1024 * 10
+from dronevis.drone_connect.navdata_decode import navdata_decode
+from dronevis.drone_connect.command import Command
+
+_LOG = logging.getLogger(__name__)
 
 
 class Navdata(threading.Thread):
     "Manage the incoming data"
+    data_port = 5554
+    pocket_size = 1024 * 10
 
-    def __init__(self, communication, callback=None) -> None:
+    def __init__(
+        self,
+        communication: Command,
+        callback: Callable[[Dict[str, Dict[str, Any]]], None],
+    ) -> None:
         "Create the navdata handler thread"
+        super().__init__()
         self.running = True
-        self.port = DATA_PORT
-        self.size = MAX_PACKET_SIZE
         self.com = communication
-        self.ip = self.com.ip
+        self.ip_address = self.com.thread_attr.ip_address
         self.callback = callback
-        self.f = nav_data_decode.navdata_decode
-        self.last_drone_status = None
         self.socket_lock = threading.Lock()
         # Initialize the server
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind(("0.0.0.0".encode(), self.port))
+        self.sock.bind(("0.0.0.0".encode(), self.data_port))
         self.sock.setblocking(False)
-        threading.Thread.__init__(self)
 
     def change_callback(self, new_callback: Callable) -> bool:
         """Change the callback function
@@ -39,33 +44,32 @@ class Navdata(threading.Thread):
         """
         # Check if the argument is a function
         if not hasattr(new_callback, "__call__"):
+            _LOG.warning("Provided callback should be callable")
             return False
         self.callback = new_callback
         return True
 
     def run(self) -> None:
-        "Start the data handler"
-        self.com._activate_navdata(activate=True)  # Tell com thread that we are here
+        """Start the data handler"""
+        self.com.activate_navdata(activate=True)  # Tell com thread that we are here
         # Initialize the drone to send the data
-        self.sock.sendto("\x01\x00\x00\x00".encode(), (self.ip, self.port))
+        self.sock.sendto("\x01\x00\x00\x00".encode(), (self.ip_address, self.data_port))
         time.sleep(0.05)
         while self.running:
-            self.socket_lock.acquire()
-            try:
-                rep, client = self.sock.recvfrom(self.size)
-            except socket.error:
-                time.sleep(0.05)
-            else:
-                rep = self.f(rep)
-                self.last_navdata = rep
-                if rep["drone_state"]["command_ack"] == 1:
-                    self.com._ack_command()
-                assert self.callback, "Please set a callback"
-                self.callback(rep)
+            with self.socket_lock:
+                try:
+                    rep, _ = self.sock.recvfrom(self.pocket_size)
+                except socket.error:
+                    time.sleep(0.05)
+                else:
+                    decoded_rep = navdata_decode(rep)
+                    if decoded_rep["drone_state"]["command_ack"] == 1:
+                        self.com.ack_command()
+                    assert self.callback is None, "Please set a callback"
+                    self.callback(decoded_rep)
 
-            time.sleep(0.05)
-            self.socket_lock.release()
-        self.com._activate_navdata(activate=False)  # Tell com thread that we are out
+                time.sleep(0.05)
+        self.com.activate_navdata(activate=False)  # Tell com thread that we are out
         self.sock.close()
 
     def reconnect(self) -> bool:
@@ -74,7 +78,7 @@ class Navdata(threading.Thread):
         Returns:
             bool: flag for valid command communication
         """
-        self.sock.sendto("\x01\x00\x00\x00".encode(), (self.ip, self.port))
+        self.sock.sendto("\x01\x00\x00\x00".encode(), (self.ip_address, self.data_port))
         return True
 
     def stop(self) -> None:

@@ -29,20 +29,18 @@ Structure
 
 The GUI is shipped as a class ``DroneVisGui``. 
 
-.. autoclass:: dronevis.gui.main.DroneVisGui
+.. autoclass:: dronevis.ui.drone_gui.DroneVisGui
 
 
 Some parts are shipped as their own custom modules such as buttons and progress bars, which 
 are then integrated later to build the GUI.
 
 
-.. autoclass:: dronevis.gui.main_button.MainButton
+.. autoclass:: dronevis.ui.main_button.MainButton
 
-.. autoclass:: dronevis.gui.image_button.ImageButton
+.. autoclass:: dronevis.ui.image_bw_button.ImageBWButton
 
-.. autoclass:: dronevis.gui.image_bw_button.ImageBWButton
-
-.. autoclass:: dronevis.gui.circular_progressbar.CircularProgressbar
+.. autoclass:: dronevis.ui.circular_progressbar.CircularProgressbar
 
 Run GUI from Code 
 -----------------
@@ -51,7 +49,7 @@ If you are not a terminal fan, you can your python script to the GUI:
 
 .. code-block:: python
 
-    from dronevis.gui.main import DroneVisGui
+    from dronevis.ui.drone_gui import DroneVisGui
 
     gui = DroneVisGui()     # create GUI instance 
     gui.window.mainloop()   # start GUI main loop

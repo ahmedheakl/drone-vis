@@ -74,7 +74,6 @@ Main Features
    detection/detect_algo
    detection/ssd
    detection/yolo
-   detection/centernet
    detection/fasterrcnn
 
 .. toctree::

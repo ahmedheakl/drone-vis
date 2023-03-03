@@ -5,11 +5,13 @@ matplotlib>=3.5.3
 numpy
 opencv_python>=4.6.0.66
 Pillow>=9.3.0
-torch>=1.13.0
+torch>=1.13.1
 torchvision>=0.14.0
 mediapipe>=0.8.0 
 rich 
 rich_argparse
 termcolor
 pyfiglet
+coloredlogs
 deep-sort-realtime
+wget

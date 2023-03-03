@@ -1,60 +1,30 @@
+"""Implementation of video thread for drone stream retrieval"""
 import threading
-import cv2
-from dronevis.utils.utils import write_fps
 from typing import Callable
-import time
-from dronevis.abstract import NOOPModel
+
+from dronevis.abstract import CVModel
+from dronevis.abstract.base_video_thread import BaseVideoThread
 
 
-class VideoThread(threading.Thread):
-    """Connect video stream from drone
+class VideoThread(BaseVideoThread):
+    """Implementation of `BaseVideoInterface` for real drone"""
 
-    Args:
-        threading (Thread): thread for video stream
-    """
+    video_port = 5555
+    protocol = "tcp"
 
-    def __init__(self, closing_callback: Callable, ip: str = "192.168.1.1", model=None) -> None:
+    def __init__(
+        self,
+        closing_callback: Callable,
+        model: CVModel,
+        ip_address: str = "192.168.1.1",
+    ) -> None:
         """Initialize drone instance
 
         Args:
-            ip (str, optional): ip of the drone. Defaults to "192.168.1.1".
+            closing_callback (Callable): Callback to be invoked after closing thread
+            model (CVModel): Computer vision model to run inference on the video stream
+            ip_address (str, optional): IP address of the drone. Defaults to "192.168.1.1".
         """
-        super(VideoThread, self).__init__()
-        self.callback = closing_callback
-        self.ip = ip
-        self.video_port = 5555
+        super().__init__(closing_callback, model, ip_address)
         self.socket_lock = threading.Lock()
-        self.protocol = "tcp"
-        self.video_index = f"{self.protocol}://{self.ip}:{self.video_port}"
-        self.frame_name = "Video Capture"
-        self.running = True
-        self.model = model
-        self.close_callback = closing_callback
-
-    def run(self) -> None:
-        """Create video stream and view frames"""
-
-        cap = cv2.VideoCapture(self.video_index)
-        if not cap.isOpened():
-            print("Error while trying to read video. Please check path again")
-        prev_time = 0
-        while cap.isOpened():
-            if not self.running:
-                break
-            _, frame = cap.read()
-            image = self.model.predict(frame)
-            cur_time = time.time()
-            fps = 1 / (cur_time - prev_time)
-            prev_time = cur_time
-            cv2.imshow(self.frame_name, image)
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break
-            
-        print("Closing video stream")
-        cap.release()
-        cv2.destroyAllWindows()
-        self.close_callback()
-
-        
-    def stop(self):
-        self.running = False
+        self.video_index = f"{self.protocol}://{ip_address}:{self.video_port}"

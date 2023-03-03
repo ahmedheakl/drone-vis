@@ -1,3 +1,66 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+*.cpp
+*.html
+*.log
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+.mypy_cache
+.benchmarks
+
+# Translations
+*.mo
+*.pot
+
+# Customs
 .vscode
 types.txt
 dist
@@ -5,13 +68,10 @@ src/dronevis/human_counting
 docs/build
 build
 src/dronevis.egg-info
-src/dronevis/__pycache__
-src/dronevis/object_detection_models/__pycache__
-src/dronevis/drone_connect/__pycache__
-src/dronevis/abstract/__pycache__
-**/__pycache__
-__pycache__
-yolov5s.pt
+*.pt
 test.py
 dronevis-features.md
 .pytest_cache
+*.weights
+*.cfg
+

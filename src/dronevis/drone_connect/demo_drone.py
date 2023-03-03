@@ -1,207 +1,279 @@
-from typing import Optional, Union
-from dronevis.abstract import CVModel
-from threading import Thread
-import cv2
+"""Implementation for demo drone for testing purposes"""
+from typing import Optional, Callable
+import logging
 import random
 import time
-from typing import Callable
-from dronevis.utils import write_fps
+from threading import Thread
+
+from dronevis.abstract import CVModel
+from dronevis.abstract.base_drone import BaseDrone
+from dronevis.abstract.base_video_thread import BaseVideoThread
+
+_LOG = logging.getLogger(__name__)
 
 
-class DemoDrone:
+class DemoDrone(BaseDrone):
     """Demo class for running ``demo GUI``."""
 
-    def __init__(
-        self,
-        ip: str = "192.168.1.1",
-    ) -> None:
+    def __init__(self, ip_address: str = "192.168.1.1") -> None:
         """Construct demo object"""
-
-        self.is_connected = False
-        self.nav_thread = None
-        self.video_thread = None
+        super().__init__(ip_address)
+        self.nav_thread: Optional[DemoNavThread] = None
+        self.video_thread: Optional[DemoVideoThread] = None
+        self.ip_address = ip_address
 
     def connect_video(self, callback: Callable, model: CVModel) -> None:
+        """Retrieve video stream by connecting to the video port
 
-        if not hasattr(callable, "__call__"):
-            raise TypeError("Need a function")
+        Args:
+            callback (Callable): Callback after closing the video thread
+            model (CVModel): Computer vision model to run on the video stream
 
-            # if not isinstance(model, CVModel):
-            #     raise TypeError("Please provide a model of type ``CVModel``")
+        Raises:
+            TypeError: `callback` must be a callable
+            TypeError: The computer vision provided should implement the `CVModel`
+            interface
+        """
+
+        super().connect_video(callback, model)
+
         self.video_thread = DemoVideoThread(callback, model)
         self.video_thread.start()
 
     def disconnect_video(self):
+        """Disconnect video stream, and close the correspoding
+        thread
+
+        Raises:
+            ValueError: Cannot close a stream that is not openned in the
+            first place
+        """
         if self.video_thread is None:
-            raise ValueError("Video is not initialized")
+            err_message = "Video stream is not initialized"
+            _LOG.error(err_message)
+            raise ValueError(err_message)
 
         self.video_thread.stop()
         time.sleep(0.2)
         self.video_thread = None
+        _LOG.debug("Video thread stopped")
 
     def connect(self) -> None:
-        print("Drone connected")
+        """Connect to drone
+        Note that it is an idle method in this case
+        """
+        _LOG.info("drone connected")
         self.is_connected = True
 
     def set_callback(self, callback: Optional[Callable] = None) -> None:
-        if callback == None:
-            callback = self.print_navdata
+        """Setter for callback
 
-        if not hasattr(callback, "__call__"):
-            raise TypeError("Need a function")
+        Args:
+            callback (Optional[Callable], optional): Callback function to be set. Defaults to None.
 
-        if self.nav_thread == None:
+        Raises:
+            TypeError: Provided callback should be a function or None.
+        """
+        if callback is None:
+            callback = self._print_navdata
+
+        if not hasattr(callable, "__call__"):
+            err_message = "Please provide a function as a callback or None."
+            _LOG.error(err_message)
+            raise TypeError(err_message)
+
+        if self.nav_thread is None:
             self.nav_thread = DemoNavThread(callback)
             self.nav_thread.start()
+            _LOG.debug("Nav thread started")
         else:
             self.nav_thread.change_callback(callback)
             self.nav_thread.start()
+            _LOG.debug("Changed callback")
 
-    def set_config(self, activate_gps=True, activate_navdata=True):
-        pass
+    def set_config(self, **kwargs) -> bool:
+        """Setter for configurations (gps, navdata)
 
-    def print_navdata(self, navdata: dict) -> None:
+        Args:
+            activate_gps (bool, optional): Flag for starting gps. Defaults to True.
+            activate_navdata (bool, optional): Flag for starting navdata. Defaults to True.
+        """
+        return True
+
+    def _print_navdata(self, navdata: dict) -> None:
+        """Trivial function for prining Navdata
+        Should be used as a callback.
+
+        Args:
+            navdata (dict): Navigation data to be printed
+        """
         print(navdata)
 
-    def takeoff(self):
-        print("takeoff")
+    def takeoff(self) -> bool:
+        """Simulate taking off"""
+        _LOG.info("Takeoff")
+        return True
 
-    def land(self):
-        print("land")
+    def land(self) -> bool:
+        """Simulate landing"""
+        _LOG.info("Land")
+        return True
 
-    def calibrate(self):
-        print("calibrate")
+    def calibrate(self) -> bool:
+        """Simulate caliberation"""
+        _LOG.info("Calibrate")
+        return True
 
-    def forward(self):
-        print("forward")
+    def forward(self) -> bool:
+        """Simulate forward movement"""
+        _LOG.info("Forward")
+        return True
 
-    def backward(self):
-        print("backward")
+    def backward(self) -> bool:
+        """Simulate backward movement"""
+        _LOG.info("Backward")
+        return True
 
-    def left(self):
-        print("left")
+    def left(self) -> bool:
+        """Simulate left movement"""
+        _LOG.info("Left")
+        return True
 
-    def right(self):
-        print("right")
+    def right(self) -> bool:
+        """Simulate right movement"""
+        _LOG.info("Right")
+        return True
 
-    def up(self):
-        print("up")
+    def upward(self) -> bool:
+        """Simulate up movement"""
+        _LOG.info("Up")
+        return True
 
-    def down(self):
-        print("down")
+    def downward(self) -> bool:
+        """Simulate down movement"""
+        _LOG.info("Down")
+        return True
 
-    def rotate_left(self):
-        print("rotate_left")
+    def rotate_left(self) -> bool:
+        """Simulate left rotation"""
+        _LOG.info("Rotating left")
+        return True
 
-    def rotate_right(self):
-        print("rotate_right")
+    def rotate_right(self) -> bool:
+        """Simulate right rotation"""
+        _LOG.info("Rotating right")
+        return True
 
-    def hover(self):
-        print("hover")
+    def hover(self) -> bool:
+        """Simulate hover movement"""
+        _LOG.info("Hover")
+        return True
 
-    def emergency(self):
-        print("emergency")
+    def emergency(self) -> bool:
+        """Simulate emergency"""
+        _LOG.info("Emergency")
+        return True
 
     def stop(self):
+        """Simulate stopping"""
         self.is_connected = False
         if self.video_thread is not None:
             self.video_thread.stop()
             self.video_thread.join()
+            _LOG.debug("Video thread stopped")
 
         if self.nav_thread is not None:
             self.nav_thread.stop()
             self.nav_thread.join()
+            _LOG.debug("Nav thread stopped")
+
+        _LOG.warning("Drone disconnected")
 
     def reset(self):
-        print("reset")
+        """Simulate resting"""
+        _LOG.info("Reseting")
 
 
-class DemoVideoThread(Thread):
+class DemoVideoThread(BaseVideoThread):
+    """Demo for video thread implementing `BaseVideoThread` interface"""
+
     def __init__(
         self,
-        close_callback: Callable,
+        closing_callback: Callable,
         model: CVModel,
-        video_index: Union[str, int] = 0,
-        frame_name: str = "Demo Video Capture",
+        ip_address: str = "192.168.1.1",
     ) -> None:
-
-        super(DemoVideoThread, self).__init__()
-        self.close_callback = close_callback
-        self.model = model
-        self.frame_name = frame_name
-        self.video_index = video_index
-        self.running = True
-
-    def run(self):
-        cap = cv2.VideoCapture(0)
-        
-        if not cap.isOpened():
-            raise ValueError("Cannot read video stream")
-        
-        prev_time = 0
-        while cap.isOpened():
-            if not self.running:
-                break
-            
-            _, frame = cap.read()
-            
-            frame = self.model.predict(frame)
-            cur_time = time.time()
-            fps = 1 / (cur_time - prev_time)
-            prev_time = cur_time
-            cv2.imshow(self.frame_name, write_fps(frame, fps))
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-        print("Closing Video Stream ...")
-        cap.release()
-        cv2.destroyAllWindows()
-        self.close_callback()
-        
-    def change_model(self, model):
-        self.model = model
-
-    def stop(self):
-        self.running = False
+        super().__init__(closing_callback, model, ip_address)
+        self.frame = "Demo Video Capture"
 
 
 class DemoNavThread(Thread):
-    def __init__(self, callback=None):
-        super(DemoNavThread, self).__init__()
+    """Demo for navigation data thread"""
+
+    def __init__(
+        self,
+        callback: Callable,
+    ):
+        super().__init__()
         self.callback = callback
         self.running = True
 
-    def change_callback(self, new_callback: Callable) -> bool:
+    def change_callback(self, new_callback: Callable):
+        """Setter for changing/setting callback for handling navdata
+
+        Args:
+            new_callback (Callable): New callback to be set
+
+        Raises:
+            TypeError: Callback provided should be a callable
+        """
+
         if not hasattr(new_callback, "__call__"):
-            return False
+            err_message = "Please provide a function for callback"
+            _LOG.error(err_message)
+            raise TypeError(err_message)
 
         self.callback = new_callback
-        return True
+
+        _LOG.debug("Nav thread callback changed")
 
     def run(self):
-        vx, vy, vz, h = [0.0] * 4
+        """Run navigation data thread"""
+        velocity_x, velocity_y, velocity_z, height = [0.0] * 4
         battery = random.randint(0, 100)
         while self.running:
-
-            mov_avg = lambda old, new: old * 0.9 + new * 0.1
-            vx = mov_avg(vx, random.uniform(0, 2000))
-            vy = mov_avg(vy, random.uniform(0, 2000))
-            vz = mov_avg(vz, random.uniform(0, 2000))
-            h = mov_avg(h, random.uniform(0, 50000))
+            velocity_x = self.moving_averge(velocity_x, random.uniform(0, 2000))
+            velocity_y = self.moving_averge(velocity_y, random.uniform(0, 2000))
+            velocity_z = self.moving_averge(velocity_z, random.uniform(0, 2000))
+            height = self.moving_averge(height, random.uniform(0, 50000))
 
             data = {
                 "navdata_demo": {
                     "battery_percentage": battery,
-                    "vx": vx,
-                    "vy": vy,
-                    "vz": vz,
-                    "altitude": h,
+                    "vx": velocity_x,
+                    "vy": velocity_y,
+                    "vz": velocity_z,
+                    "altitude": height,
                 },
             }
-            assert self.callback, "Please provide a callback"
             self.callback(data)
             time.sleep(0.05)
 
+        _LOG.debug("closing nav thread ...")
+
+    def moving_averge(self, old_value: float, new_value: float) -> float:
+        """Get the next value for a moving average
+
+        Args:
+            old_value (float): Old consistent value
+            new_value (float): New reading
+
+        Returns:
+            float: Next value in the graph
+        """
+        next_value: float = old_value * 0.9 + new_value * 0.1
+        return next_value
+
     def stop(self):
+        """Stop the running thread"""
         self.running = False
-        print("Closing Nav Thread ...")

@@ -1,1 +1,0 @@
-from dronevis.cli.drone_cli import DroneCli

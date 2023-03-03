@@ -1,2 +1,2 @@
-
-__version__ = "0.2.2"
+"""Initializing file containing the version only"""
+__version__ = "1.0.0"

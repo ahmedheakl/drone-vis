@@ -1,4 +1,5 @@
-from dronevis.face_detection import FaceDetectModel
+"""Face detection via user camera"""
+from dronevis.models import FaceDetectModel
 
 model = FaceDetectModel()
 model.load_model()

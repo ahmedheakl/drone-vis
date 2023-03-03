@@ -6,11 +6,4 @@ For more details refer to the paper `You Only Look Once (YOLO) <https://arxiv.or
 YOLOv5 Torch
 ------------
 
-.. autoclass:: dronevis.detection_torch.YOLOv5
-
-YOLO Mxnet
-----------
-
-.. autoclass:: dronevis.detection_gluoncv.YOLO
-
-
+.. autoclass:: dronevis.models.YOLOv5
