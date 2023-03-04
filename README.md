@@ -37,19 +37,25 @@
 - Logger with timestamps
 - Two UI for easier usage (GUI, CLI)
 
+Here are the drone control functionalities:
+|                   |                    |                   |                   |
+|-------------------|--------------------|-------------------|-------------------|
+| Right, Left       | Reset, Emergency   | Hover, Caliberate | Forward, Backward |
+| Up, Down          | Rotate Left/Right  | Camera Stream     | Takeoff, Land     |
 
+Here are the models implemented to provide vision for the drone:
 
-| Drone Control         | Computer Vision Models| Usage                 |   Implementation      |
-|-----------------------|-----------------------|-----------------------|-----------------------|
-| Right, Left           | Faster R-CNN          | Detection/Recognition | PyTorch               |
-| Up, Down              | CenterNet             | Detection/Recognition | MxNet                 |
-| Forward, Backward     | YOLO                  | Detection/Recognition | MxNet                 |
-| Takeoff, Land         | YOLOv5                | Detection/Recognition | PyTorch               |
-| Reset, Emergency      | SSD                   | Detection/Recognition | PyTorch               |
-| Rotate Left/Right     | CSRNet                | Crowd Counting        | PyTorch               |
-| Hover, Caliberate     | BlazeFace             | Face Detection        | MediaPipe             |
-| Camera Stream         | BlazePose             | Pose Estimation       | MediaPipe             |
-| Hand Gesture Control  | BlazePose             | Segmenation           | Mediapipe             |
+| Computer Vision Model | Usage                 |   Implementation      |
+|-----------------------|-----------------------|-----------------------|
+| Faster R-CNN          | Detection/Recognition | PyTorch               |
+| CenterNet             | Detection/Recognition | MxNet                 |
+| YOLO                  | Detection/Recognition | MxNet                 |
+| YOLOv5                | Detection/Recognition | PyTorch               |
+| SSD                   | Detection/Recognition | PyTorch               |
+| CSRNet                | Crowd Counting        | PyTorch               |
+| BlazeFace             | Face Detection        | MediaPipe             |
+| BlazePose             | Pose Estimation       | MediaPipe             |
+| BlazePose             | Segmenation           | Mediapipe             |
 
 ## How to Install 
 
