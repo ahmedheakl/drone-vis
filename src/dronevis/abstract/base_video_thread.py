@@ -4,6 +4,7 @@ from typing import Callable, Union
 import logging
 import time
 import cv2
+from inspect import getmro
 
 from dronevis.abstract.abstract_model import CVModel
 from dronevis.utils.general import write_fps
@@ -20,6 +21,16 @@ class BaseVideoThread(threading.Thread):
         model: CVModel,
         ip_address: str = "192.168.1.1",
     ):
+        if CVModel not in getmro(type(model)):
+            err_message = "Model provided is not an instance of ``CVModel``"
+            _LOG.error(err_message)
+            raise TypeError(err_message)
+
+        if not hasattr(closing_callback, "__call__"):
+            err_message = "Callback provided is not callable"
+            _LOG.critical(err_message)
+            raise TypeError(err_message)
+
         super().__init__()
         self.close_callback = closing_callback
         self.ip_address = ip_address
@@ -58,6 +69,12 @@ class BaseVideoThread(threading.Thread):
 
     def change_model(self, model: CVModel):
         """Change computer vision model running on the video stream"""
+
+        if CVModel not in getmro(type(model)):
+            err_message = "Model provided is not an instance of ``CVModel``"
+            _LOG.error(err_message)
+            raise TypeError(err_message)
+
         self.model = model
         _LOG.debug("Model for video thread changed")
 
