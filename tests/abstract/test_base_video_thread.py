@@ -1,12 +1,14 @@
 """Testing video thread base class"""
 from typing import Generator
-import pytest
 import time
+import os
+import pytest
 
 from dronevis.abstract.base_video_thread import BaseVideoThread
 from dronevis.models.mediapipe_face_detection import FaceDetectModel
 
-VIDEO_INDEX = "./test_video.avi"
+TEST_DATA_PATH = os.getenv("TEST_DATA_PATH", "")
+VIDEO_PATH = TEST_DATA_PATH + "/test_video.avi"
 
 
 @pytest.fixture(scope="session")
@@ -18,7 +20,7 @@ def vid_thread() -> Generator[BaseVideoThread, None, None]:
     model = FaceDetectModel()
     model.load_model()
     thread = BaseVideoThread(closing_callback, model)
-    thread.video_index = VIDEO_INDEX
+    thread.video_index = VIDEO_PATH
     yield thread
 
 
@@ -57,8 +59,8 @@ def test_consecutive_threads():
     closing_callback = lambda: None
     model = FaceDetectModel()
     model.load_model()
-    thread1 = BaseVideoThread(closing_callback, model, video_index=VIDEO_INDEX)
-    thread1.video_index = VIDEO_INDEX
+    thread1 = BaseVideoThread(closing_callback, model)
+    thread1.video_index = VIDEO_PATH
     thread1.show_window = False
     thread1.resume()
     time.sleep(2)
@@ -70,7 +72,7 @@ def test_consecutive_threads():
     model.load_model()
     thread2 = BaseVideoThread(closing_callback, model)
     assert thread2.running == False
-    thread2.video_index = VIDEO_INDEX
+    thread2.video_index = VIDEO_PATH
     thread2.show_window = False
     thread2.resume()
     time.sleep(2)

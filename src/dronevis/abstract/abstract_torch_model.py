@@ -19,6 +19,9 @@ _LOG = logging.getLogger(__name__)
 class TorchDetectionModel(CVModel):
     """Base class (inherits from CV abstract model) for creating custom PyTorch models.
     To use the abstract class just inherit it, and override the abstract method.
+
+    For each prediction, the model output 300 labels, and their corresponding 300 scores.
+    Labels are picked if they surpass the threshold accuracy.
     """
 
     coco_names = COCO_NAMES
@@ -36,9 +39,8 @@ class TorchDetectionModel(CVModel):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.transform: Optional[torchvision.transforms.Compose] = None
         self.net: Optional[torch.nn.Module] = None
-        self.pred_classes: Optional[List[np.ndarray]] = None
+        self.pred_classes: Optional[List[str]] = None
         self.pred_scores: Optional[np.ndarray] = None
-        self.pred_bboxes: Optional[np.ndarray] = None
         self.boxes: Optional[np.ndarray] = None
 
     def predict(
@@ -61,9 +63,6 @@ class TorchDetectionModel(CVModel):
         assert (
             0.0 <= detection_threshold <= 1.0
         ), "Threshold must be a float between 0 and 1."
-        assert (
-            self.transform
-        ), "Model not initialized. You need to load the model first. Please run `load_model`."
 
         input_image = image
         with torch.no_grad():
@@ -104,7 +103,11 @@ class TorchDetectionModel(CVModel):
         return transformed_image
 
     def draw_boxes(
-        self, boxes: np.ndarray, classes: List, labels: torch.Tensor, image: np.ndarray
+        self,
+        boxes: np.ndarray,
+        classes: List[str],
+        labels: torch.Tensor,
+        image: np.ndarray,
     ) -> np.ndarray:
         """Draw boxes for the predicted classes in an image using torch model
 
@@ -118,7 +121,7 @@ class TorchDetectionModel(CVModel):
             numpy.ndarray: cv2 image after drawing boxes of the predicted classes on
             it with their labels
         """
-        image = cv2.cvtColor(np.asarray(image), cv2.COLOR_BGR2RGB)
+        image = cv2.cvtColor(np.asarray(image, dtype=np.float32), cv2.COLOR_BGR2RGB)
         for i, box in enumerate(boxes):
             color = self.colors[labels[i]]
             cv2.rectangle(

@@ -12,12 +12,6 @@ _LOG = logging.getLogger(__name__)
 class FasterRCNN(TorchDetectionModel):
     """FasterRCNN model implementation for object detection/recognition"""
 
-    def __init__(self) -> None:
-        """Initialize faster R-CNN model"""
-        super().__init__()
-        self.weights = FasterRCNN_MobileNet_V3_Large_320_FPN_Weights.DEFAULT
-        self.transform = self.weights.transforms()
-
     def load_model(self) -> None:
         """Load model from PyTorchHub
 
@@ -26,8 +20,10 @@ class FasterRCNN(TorchDetectionModel):
             Default weights used are ``fasterrcnn_mobilenet_v3_large_320_fpn``.
         """
         _LOG.info("Loading Faster R-CNN model ...")
+        weights = FasterRCNN_MobileNet_V3_Large_320_FPN_Weights.DEFAULT
+        self.transform = weights.transforms()
         self.net = (
-            fasterrcnn_mobilenet_v3_large_320_fpn(weights=self.weights)
+            fasterrcnn_mobilenet_v3_large_320_fpn(weights=weights)
             .eval()
             .to(self.device)
         )
