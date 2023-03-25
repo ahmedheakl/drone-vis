@@ -5,6 +5,8 @@ import time
 from dronevis.abstract.base_video_thread import BaseVideoThread
 from dronevis.models.mediapipe_face_detection import FaceDetectModel
 
+VIDEO_INDEX = "./test_video.avi"
+
 
 @pytest.fixture
 def thread() -> BaseVideoThread:
@@ -13,7 +15,9 @@ def thread() -> BaseVideoThread:
     closing_callback = lambda: None
     model = FaceDetectModel()
     model.load_model()
-    return BaseVideoThread(closing_callback, model)
+    thread = BaseVideoThread(closing_callback, model)
+    thread.video_index = VIDEO_INDEX
+    return thread
 
 
 @pytest.mark.parametrize(
@@ -35,11 +39,6 @@ def test_running_is_equal_true(thread):
     """Thread attribute `running` should be set to true when
     the thread is initialized"""
     assert thread.running
-
-
-def test_stop_running(thread):
-    """Thread attribute `running` should be set to false when
-    the thread is stopped"""
     thread.stop()
     assert thread.running == False
 
@@ -51,13 +50,24 @@ def test_change_model_with_wrong_type(thread):
         thread.change_model(BaseVideoThread)
 
 
-def test_run_method_on_a_thread(thread):
-    """Make sure that the thread initialization does not
-    take more than 15 seconds"""
-    prev_time = time.time()
-    thread.start()
+def test_consecutive_threads():
+    """When openning two threads consecutively, the second one
+    should not get stuck"""
+    closing_callback = lambda: None
+    model = FaceDetectModel()
+    model.load_model()
+    thread = BaseVideoThread(closing_callback, model, video_index=VIDEO_INDEX)
+    thread.video_index = VIDEO_INDEX
+    thread.resume()
     time.sleep(2)
     thread.stop()
-    thread.join()
-    tot_time = time.time() - prev_time
-    assert tot_time < 15.0
+    time.sleep(0.1)
+
+    closing_callback = lambda: None
+    model = FaceDetectModel()
+    model.load_model()
+    thread = BaseVideoThread(closing_callback, model)
+    thread.video_index = VIDEO_INDEX
+    thread.resume()
+    time.sleep(2)
+    thread.stop()
