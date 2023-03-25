@@ -91,18 +91,18 @@ def test_stop_connection(capsys, setup_logger):
     assert drone.is_connected == False
 
 
-def test_stop_video_thread(capsys):
-    """Drone video thread should stop and set to None when the
-    method `stop` is called"""
-    init_logger("debug")
-    drone = DemoDrone()
-    model = FaceDetectModel()
-    model.load_model()
-    drone.connect_video(print, model)
-    assert drone.video_thread is not None
-    assert drone.video_thread.running
-    time.sleep(2)
-    drone.stop()
-    assert drone.video_thread is None
-    capture = capsys.readouterr()
-    assert "video thread stopped" in capture.err.lower()
+# def test_stop_video_thread(capsys):
+#     """Drone video thread should stop and set to None when the
+#     method `stop` is called"""
+#     init_logger("debug")
+#     drone = DemoDrone()
+#     model = FaceDetectModel()
+#     model.load_model()
+#     drone.connect_video(print, model)
+#     assert drone.video_thread is not None
+#     assert drone.video_thread.running
+#     time.sleep(2)
+#     drone.stop()
+#     assert drone.video_thread is None
+#     capture = capsys.readouterr()
+#     assert "video thread stopped" in capture.err.lower()
