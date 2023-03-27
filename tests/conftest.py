@@ -7,6 +7,9 @@ import requests
 import shutil
 from google_drive_downloader import GoogleDriveDownloader as gdd
 
+from dronevis.drone_connect.demo_drone import DemoVideoThread
+from dronevis.abstract.base_video_thread import BaseVideoThread
+
 URL_NAME_DICT = {
     "https://drive.google.com/file/d/1YIxL0l8S66cdKnryUCAzZpF20s_VMwoa/view?usp=sharing": "test_video.avi",
     "https://drive.google.com/file/d/1o1LQoiOQ_l6iSJ91hVXPJvqEhp1gB-vJ/view?usp=sharing": "human_photo.jpg",
@@ -52,3 +55,12 @@ def remove_donwload_video() -> Generator[None, None, None]:
     yield
     if os.path.exists(TEST_DATA_PATH):
         shutil.rmtree(TEST_DATA_PATH)
+
+    # Closing opened threads
+    for _, thread in DemoVideoThread._instances.items():
+        thread.close_thread()
+        thread.join()
+
+    for _, thread in BaseVideoThread._instances.items():
+        thread.close_thread()
+        thread.join()

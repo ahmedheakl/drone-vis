@@ -1,10 +1,15 @@
 """Testing demo drone functionality"""
 import time
+import os
 import pytest
 
 from dronevis.drone_connect import DemoDrone
+from dronevis.drone_connect.demo_drone import DemoVideoThread
 from dronevis.utils.general import init_logger
 from dronevis.models.mediapipe_face_detection import FaceDetectModel
+
+TEST_DATA_PATH = os.getenv("TEST_DATA_PATH", "")
+TEST_VIDEO = TEST_DATA_PATH + "/test_video.avi"
 
 
 @pytest.fixture
@@ -74,7 +79,7 @@ def test_drone_is_connected():
     ],
 )
 def test_control_stdout(capsys, setup_logger, control_name, control_method):
-    control_method()
+    assert control_method()
     capture = capsys.readouterr()
     assert control_name in capture.err.lower()
 
@@ -91,18 +96,40 @@ def test_stop_connection(capsys, setup_logger):
     assert drone.is_connected == False
 
 
-# def test_stop_video_thread(capsys):
-#     """Drone video thread should stop and set to None when the
-#     method `stop` is called"""
-#     init_logger("debug")
-#     drone = DemoDrone()
-#     model = FaceDetectModel()
-#     model.load_model()
-#     drone.connect_video(print, model)
-#     assert drone.video_thread is not None
-#     assert drone.video_thread.running
-#     time.sleep(2)
-#     drone.stop()
-#     assert drone.video_thread is None
-#     capture = capsys.readouterr()
-#     assert "video thread stopped" in capture.err.lower()
+def test_video_thread_should_not_close_when_disconnect_video() -> None:
+    """When disconnecting video thread, it should not fully close, i.e. `is_stopped`
+    property should be still set to False. And hence allowing other threads to be openned
+    during the execution of the program.
+    """
+    closing_callback = lambda: None
+    DemoVideoThread._instances = {}
+    model = FaceDetectModel()
+    model.load_model()
+    _ = DemoVideoThread(closing_callback, model, video_index=TEST_VIDEO)
+    drone = DemoDrone()
+    drone.connect_video(closing_callback, model)
+    assert drone.video_thread is not None
+    assert drone.video_thread.running
+
+    drone.disconnect_video()
+    assert drone.video_thread is not None
+    assert drone.video_thread.is_stopped == False
+    assert drone.video_thread.running == False
+
+
+def test_stop_video_thread(capsys):
+    """Drone video thread should stop and set to None when the
+    method `stop` is called.
+    """
+    init_logger("debug")
+    drone = DemoDrone()
+    model = FaceDetectModel()
+    model.load_model()
+    drone.connect_video(print, model)
+    assert drone.video_thread is not None
+    assert drone.video_thread.running
+    time.sleep(2)
+    drone.stop()
+    assert drone.video_thread is None
+    capture = capsys.readouterr()
+    assert "video thread stopped" in capture.err.lower()

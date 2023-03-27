@@ -1,5 +1,5 @@
 """Implementation for demo drone for testing purposes"""
-from typing import Optional, Callable
+from typing import Optional, Callable, Union
 import logging
 import random
 import time
@@ -201,8 +201,9 @@ class DemoVideoThread(BaseVideoThread):
         closing_callback: Callable,
         model: CVModel,
         ip_address: str = "192.168.1.1",
+        video_index: Union[int, str] = 0,
     ) -> None:
-        super().__init__(closing_callback, model, ip_address)
+        super().__init__(closing_callback, model, ip_address, video_index)
         self.frame = "Demo Video Capture"
 
 

@@ -34,3 +34,27 @@ def test_wrong_ip_address_format(ip_address: str):
     it should raise a value error"""
     with pytest.raises(ValueError):
         BaseDrone(ip_address)
+
+
+@pytest.mark.parametrize(
+    "control_method",
+    [
+        BaseDrone().takeoff,
+        BaseDrone().land,
+        BaseDrone().calibrate,
+        BaseDrone().forward,
+        BaseDrone().backward,
+        BaseDrone().left,
+        BaseDrone().right,
+        BaseDrone().upward,
+        BaseDrone().downward,
+        BaseDrone().rotate_left,
+        BaseDrone().rotate_right,
+        BaseDrone().hover,
+        BaseDrone().emergency,
+        BaseDrone().reset,
+        BaseDrone().set_config,
+    ],
+)
+def test_control_method_return_true(control_method):
+    assert control_method()

@@ -15,3 +15,4 @@ pyfiglet
 coloredlogs
 deep-sort-realtime
 wget
+google_drive_downloader

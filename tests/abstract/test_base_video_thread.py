@@ -6,6 +6,7 @@ import pytest
 
 from dronevis.abstract.base_video_thread import BaseVideoThread
 from dronevis.models.mediapipe_face_detection import FaceDetectModel
+from dronevis.models import SSD
 
 TEST_DATA_PATH = os.getenv("TEST_DATA_PATH", "")
 VIDEO_PATH = TEST_DATA_PATH + "/test_video.avi"
@@ -58,7 +59,7 @@ def test_initialize_thread_with_wrong_types(callback, model):
         BaseVideoThread(callback, model)
 
 
-def test_changed_model_with_wrong_type():
+def test_change_model_with_wrong_type():
     """When chaning the model for the video thread, the new model
     should be an instance of `CVModel` otherwise the video thread
     should raise an error.
@@ -72,6 +73,15 @@ def test_changed_model_with_wrong_type():
         thread.change_model(DummyTest())  # type: ignore
 
 
+def test_change_model_with_right_type():
+    closing_callback = lambda: None
+    face_detect_model = FaceDetectModel()
+    thread = BaseVideoThread(closing_callback, face_detect_model)
+    ssd_model = SSD()
+    thread.change_model(ssd_model)
+    assert thread.model == ssd_model
+
+
 def test_consecutive_threads():
     """When openning two threads consecutively, the second one
     should not get stuck.
@@ -81,7 +91,9 @@ def test_consecutive_threads():
     model.load_model()
     thread1 = BaseVideoThread(closing_callback, model)
     thread1.video_index = VIDEO_PATH
+    assert thread1.video_index == VIDEO_PATH
     thread1.show_window = False
+    assert thread1.show_window == False
     thread1.resume()
     time.sleep(2)
     thread1.stop()
