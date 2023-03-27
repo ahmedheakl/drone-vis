@@ -4,7 +4,7 @@ import os
 import pytest
 
 from dronevis.drone_connect import DemoDrone
-from dronevis.drone_connect.demo_drone import DemoVideoThread
+from dronevis.drone_connect.demo_drone import DemoVideoThread, DemoNavThread
 from dronevis.utils.general import init_logger
 from dronevis.models.mediapipe_face_detection import FaceDetectModel
 
@@ -76,6 +76,9 @@ def test_drone_is_connected():
         ("rotating left", DemoDrone().rotate_left),
         ("rotating right", DemoDrone().rotate_right),
         ("hover", DemoDrone().hover),
+        ("emergency", DemoDrone().emergency),
+        ("reseting", DemoDrone().reset),
+        ("", DemoDrone().set_config),
     ],
 )
 def test_control_stdout(capsys, setup_logger, control_name, control_method):
@@ -133,3 +136,50 @@ def test_stop_video_thread(capsys):
     assert drone.video_thread is None
     capture = capsys.readouterr()
     assert "video thread stopped" in capture.err.lower()
+
+
+def test_default_callback():
+    """If no callback is provided, the thread should have
+    its own callback, i.e. print method.
+    """
+    drone = DemoDrone()
+    drone.set_callback()
+    assert drone.nav_thread is not None
+    assert drone.nav_thread.running
+    assert drone.nav_thread.callback == drone._print_navdata
+    drone.stop()
+    del drone
+
+
+def test_set_callback():
+    """When the drone receives a callback for the nav thread,
+    it should initialized it if it wasn't initialized. It also
+    should set the provided callback as a callback for nav thread
+    """
+    drone = DemoDrone()
+    callback = lambda navdata: None
+    drone.set_callback(callback)
+    assert drone.nav_thread is not None
+    assert drone.nav_thread.callback == callback
+    assert drone.nav_thread.running
+    another_callback = lambda navdata: print(navdata)
+    drone.set_callback(another_callback)
+    assert drone.nav_thread is not None
+    assert drone.nav_thread.callback == another_callback
+    assert drone.nav_thread.running
+    drone.stop()
+    assert drone.nav_thread is None
+
+
+def test_set_non_callable_method_for_nav_thread():
+    """When the nav thread is provided with a non-callable method,
+    it should raise a type error.
+    """
+    callback = lambda navdata: None
+    thread = DemoNavThread(callback)
+    another_callback = lambda navdata: print(navdata)
+    thread.change_callback(another_callback)
+    assert thread.callback == another_callback
+    with pytest.raises(TypeError):
+        thread.change_callback("WRONG")  # type: ignore
+    thread.stop()

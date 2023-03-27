@@ -85,7 +85,6 @@ class DemoDrone(BaseDrone):
             _LOG.debug("Nav thread started")
         else:
             self.nav_thread.change_callback(callback)
-            self.nav_thread.start()
             _LOG.debug("Changed callback")
 
     def set_config(self, **kwargs) -> bool:
@@ -171,7 +170,7 @@ class DemoDrone(BaseDrone):
         _LOG.info("Emergency")
         return True
 
-    def stop(self):
+    def stop(self) -> None:
         """Simulate stopping"""
         self.is_connected = False
         if self.video_thread is not None:
@@ -188,9 +187,10 @@ class DemoDrone(BaseDrone):
 
         _LOG.warning("Drone disconnected")
 
-    def reset(self):
+    def reset(self) -> bool:
         """Simulate resting"""
         _LOG.info("Reseting")
+        return True
 
 
 class DemoVideoThread(BaseVideoThread):

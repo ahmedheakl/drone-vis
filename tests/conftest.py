@@ -23,8 +23,10 @@ TEST_DATA_PATH = os.path.join(os.getcwd(), TEST_DATA_FOLDER)
 def pytest_configure() -> None:
     """Configurations for pytest tests"""
     os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
     if not os.path.exists(TEST_DATA_PATH):
         os.mkdir(TEST_DATA_PATH)
+
     os.environ["TEST_DATA_PATH"] = TEST_DATA_PATH
     if os.path.exists(TEST_DATA_PATH) and len(os.listdir(TEST_DATA_PATH)) > 0:
         return
