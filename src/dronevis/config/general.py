@@ -23,10 +23,6 @@ SUPPORTED_CONFIG = {
 AUTONOMOUS_FLIGHT = {"gps": goto_gps_point}
 ANIMATIONS = {"flip": flip}
 ANIMATIONS_INFOS = {"flip": "(side)"}
-# Check if animations corelate
-if ANIMATIONS.keys() != ANIMATIONS_INFOS.keys():
-    raise ImportError("Animations differs")
-
 
 COCO_NAMES = [
     "__background__",

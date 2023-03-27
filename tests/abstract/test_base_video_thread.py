@@ -11,6 +11,12 @@ TEST_DATA_PATH = os.getenv("TEST_DATA_PATH", "")
 VIDEO_PATH = TEST_DATA_PATH + "/test_video.avi"
 
 
+class DummyTest:
+    """Dummy class for testing"""
+
+    pass
+
+
 @pytest.fixture(scope="session")
 def vid_thread() -> Generator[BaseVideoThread, None, None]:
     """Fixture for initializing a thread with dummy model
@@ -50,6 +56,20 @@ def test_initialize_thread_with_wrong_types(callback, model):
     BaseVideoThread._instances = {}
     with pytest.raises(TypeError):
         BaseVideoThread(callback, model)
+
+
+def test_changed_model_with_wrong_type():
+    """When chaning the model for the video thread, the new model
+    should be an instance of `CVModel` otherwise the video thread
+    should raise an error.
+    """
+    BaseVideoThread._instances = {}
+    closing_callback = lambda: None
+    model = FaceDetectModel()
+    model.load_model()
+    thread = BaseVideoThread(closing_callback, model, video_index=VIDEO_PATH)
+    with pytest.raises(TypeError):
+        thread.change_model(DummyTest())  # type: ignore
 
 
 def test_consecutive_threads():

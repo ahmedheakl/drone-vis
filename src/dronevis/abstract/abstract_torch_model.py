@@ -143,23 +143,6 @@ class TorchDetectionModel(CVModel):
             )
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    def transform_and_load_img(self, img_path: str, output_path: str) -> None:
-        """Detecting objects in a given image using torch model
-
-        *(to quit running this function press 'q')*
-
-        Args:
-            img_path (str): path of the image to load
-        """
-        image = Image.open(img_path)
-        image = np.asarray(image)
-        boxes, classes, labels = self.predict(image)
-        image = self.draw_boxes(boxes, classes, labels, image)
-        cv2.imshow("Predicted Image", image)
-        if output_path is not None:
-            cv2.imwrite(output_path, image)
-        cv2.waitKey(0)
-
     def detect_webcam(
         self,
         video_index: Union[int, str] = 0,
