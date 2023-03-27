@@ -1,5 +1,5 @@
 """Implementation for real drone control"""
-from typing import Callable, Optional, List
+from typing import Callable, Optional, List, Tuple
 import logging
 import struct
 import time
@@ -111,11 +111,10 @@ class Drone(BaseDrone):
                 _LOG.critical(err_message)
                 raise AttributeError(err_message)
         # Then set each config
-        at_commands: List[str] = []
+        at_commands: List[Tuple[str, str]] = []
         for key_arg in kwargs:
-            at_commands = at_commands + cfg.SUPPORTED_CONFIG[key_arg.lower()](
-                kwargs[key_arg.lower()]
-            )
+            config_out = cfg.SUPPORTED_CONFIG[key_arg.lower()](kwargs[key_arg.lower()])
+            at_commands.extend(config_out)
         for at_command in at_commands:
             self.com_thread.configure(at_command[0], at_command[1])
         return True

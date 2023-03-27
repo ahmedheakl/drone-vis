@@ -2,9 +2,9 @@
 import threading
 from typing import Callable, Union
 import logging
+from inspect import getmro
 import time
 import cv2
-from inspect import getmro
 
 from dronevis.abstract.abstract_model import CVModel
 from dronevis.utils.general import write_fps
@@ -13,6 +13,8 @@ _LOG = logging.getLogger(__name__)
 
 
 class Singleton(type):
+    """Signleton meteclass implementation"""
+
     _instances = {}
     _lock = threading.Lock()
 

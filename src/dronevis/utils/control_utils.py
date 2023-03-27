@@ -2,14 +2,14 @@
 from typing import List, Tuple
 
 
-def activate_navdata(activate: bool = True) -> List[Tuple[str, ...]]:
+def activate_navdata(activate: bool = True) -> List[Tuple[str, str]]:
     "Prepare the drone so he can send navdata back to us"
     if activate:
         return [("general:navdata_demo", "FALSE")]  # Activate navdata
     return [("general:navdata_demo", "TRUE")]
 
 
-def activate_gps(activate: bool = True) -> List[Tuple[str, ...]]:
+def activate_gps(activate: bool = True) -> List[Tuple[str, str]]:
     "Prepare the drone to receive GPS command"
     if activate:
         return [("control:flying_mode", "0"), ("control:autonomous_flight", "FALSE")]
