@@ -3,6 +3,7 @@ from typing import Union
 import logging
 import os
 import argparse
+
 from pyfiglet import Figlet
 from rich import print as rprint
 from termcolor import colored
@@ -10,6 +11,8 @@ from rich_argparse import RichHelpFormatter
 import cv2
 import numpy as np
 import coloredlogs
+import wget
+import torch
 
 from dronevis import __version__
 import dronevis.config.gui as cfg
@@ -176,3 +179,31 @@ def init_logger(level: Union[int, str] = logging.INFO) -> None:
         fmt="%(asctime)s - %(message)s",
         level=log_level,
     )
+
+
+def download_file(file_url: str, file_name: str) -> str:
+    """Download file from url"""
+
+    # Define the path to the .cache directory for each operating system
+    if os.name == "nt":  # Windows
+        cache_dir = os.path.join(os.environ["LOCALAPPDATA"], ".cache/dronevis")
+    elif os.name == "posix":  # Linux or Mac
+        cache_dir = os.path.join(os.environ["HOME"], ".cache/dronevis")
+    else:
+        raise OSError("Unsupported operating system")
+
+    os.makedirs(cache_dir, exist_ok=True)
+    model_weights_path = os.path.join(cache_dir, file_name)
+
+    if os.path.exists(model_weights_path):
+        return model_weights_path
+
+    wget.download(file_url, model_weights_path)
+
+    return model_weights_path
+
+
+def device() -> str:
+    """Returns the device to be used for inference"""
+    device_name = os.getenv("DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
+    return device_name

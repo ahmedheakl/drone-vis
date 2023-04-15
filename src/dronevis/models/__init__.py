@@ -5,5 +5,4 @@ from dronevis.models.mediapipe_face_detection import FaceDetectModel
 from dronevis.models.pose_mediapipe import PoseSegEstimation
 from dronevis.models.ssd_torch import SSD
 from dronevis.models.yolov5_torch import YOLOv5
-from dronevis.models.gesture_recognition import Keypoint_classifier
 from dronevis.models.gesture_recognition import GestureRecognition

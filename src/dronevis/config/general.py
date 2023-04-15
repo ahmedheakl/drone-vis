@@ -28,6 +28,23 @@ if ANIMATIONS.keys() != ANIMATIONS_INFOS.keys():
     raise ImportError("Animations differs")
 
 
+MODELS_URLS = {
+    "gesture_recognition": [
+        "https://drive.google.com/uc?export=download&id=1FTJWeavbHwmu9Vkr_M5k5mV4Lt8sWGFo",
+        "gesture_recognition.pth",
+    ],
+}
+
+GESTURES_LABELS = {
+    "Down": 0,
+    "Forward": 1,
+    "Left": 2,
+    "Right": 3,
+    "Stop": 4,
+    "Up": 5,
+}
+
+
 COCO_NAMES = [
     "__background__",
     "person",
