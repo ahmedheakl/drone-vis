@@ -16,3 +16,4 @@ coloredlogs
 deep-sort-realtime
 wget
 googledrivedownloader
+seaborn
