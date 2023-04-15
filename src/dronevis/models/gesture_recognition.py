@@ -184,7 +184,7 @@ class GestureRecognition(CVModel):
     def _calc_landmark_list(
         self,
         image: np.ndarray,
-        landmarks: mp.framework.formats.landmark_pb2.NormalizedLandmarkList,
+        landmarks,
     ) -> list:
         """Calculate the landwarks in an image
 
