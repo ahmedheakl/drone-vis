@@ -14,9 +14,7 @@ from dronevis.abstract.base_drone import BaseDrone
 from dronevis.utils.general import axis_config
 from dronevis.abstract.noop_model import NOOPModel
 from dronevis.config import gui as cfg
-from dronevis.ui.image_bw_button import ImageBWButton
-from dronevis.ui.main_button import MainButton
-from dronevis.ui.navdata_frame import DataFrame
+from dronevis.ui.gui_components import ImageBWButton, MainButton, DataFrame
 
 _LOG = logging.getLogger(__name__)
 
@@ -141,7 +139,6 @@ class DroneVisGui:
 
         # Initialize axis if not exist
         if self.opt.axis is None or self.opt.scatter is None:
-
             # Initialize a figure instance
             figure3 = plt.figure(figsize=(5, 4), dpi=90)
 
@@ -170,10 +167,8 @@ class DroneVisGui:
             axis_config(self.opt.axis)
 
         else:
-
             # if number of points exceeded the width of the graph
             if len(self.opt.index) > self.mid_point * 2:
-
                 # shifting data to left
                 first_point = self.opt.index[self.mid_point]
                 self.opt.index = self.opt.index[self.mid_point :]

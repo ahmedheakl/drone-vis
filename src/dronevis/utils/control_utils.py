@@ -113,10 +113,7 @@ def goto_gps_point(
         + str(cap)
         + ",0"
     )
-    # Let's go !
     com = []
-    # if not continuous:  com.append(("control:flying_mode","0")) # To Check
-    # if not continuous:  com.append(("control:autonomous_flight","FALSE")) # To Check
     if not continuous:
         com.append(("control:flying_camera_enable", "FALSE"))
     com.append(("control:flying_camera_mode", param1))

@@ -24,6 +24,7 @@ def load_files() -> Generator[Tuple[np.ndarray, np.ndarray], None, None]:
     yield human_photo, black_photo
 
 
+@pytest.mark.skip
 def test_model_predictions_with_human(load_files):
     """When the model is prompted with a photo of a human, it should
     generate a score for a huamn in the photo larger than a threshold

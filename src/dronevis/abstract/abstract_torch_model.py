@@ -2,12 +2,12 @@
 from typing import Union, Tuple, List, Optional
 import time
 import logging
+
 import numpy as np
 import torch
 import torchvision
 from torchvision.transforms.functional import to_pil_image
 import cv2
-from PIL import Image
 
 from dronevis.config.general import COCO_NAMES
 from dronevis.abstract.abstract_model import CVModel
