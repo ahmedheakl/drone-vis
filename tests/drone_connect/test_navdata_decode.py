@@ -1,12 +1,9 @@
 """Testing drone packet decode"""
-from typing import Dict
-from dronevis.drone_connect.navdata_decode import (
-    _drone_status_decode,
-    _navdata_demo_decode,
-)
+from dronevis.drone_connect.navdata_decode import _drone_status_decode
 
 
 def test_drone_status_decode():
+    """Test decoding drone status"""
     packet = 2
     expected_output = {
         "flying": 0,

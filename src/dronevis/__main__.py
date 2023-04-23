@@ -16,6 +16,7 @@ Version
 ------------------
  - dronevis v1.0.0
 """
+from typing import Optional, Sequence
 import sys
 import logging
 
@@ -27,12 +28,12 @@ from dronevis.abstract.base_drone import BaseDrone
 _LOG = logging.getLogger(__name__)
 
 
-def main() -> None:
+def main(arguments: Optional[Sequence[str]] = None) -> None:
     """Running CLI script and CLI main loop"""
 
     # parse user arguments
     cli = DroneCli()
-    args = cli.parse()
+    args = cli.parse(arguments)
     init_logger(level=args.logger_level)
 
     # initialize drone instance
@@ -52,7 +53,6 @@ def main() -> None:
         print("")
         _LOG.warning("Keyinterrupt: closing CLI ...")
         drone.stop()
-        sys.exit()
 
     except NotImplementedError:
         _LOG.error("Drone tests are NOT yet implemented")
@@ -62,7 +62,7 @@ def main() -> None:
         _LOG.error("Make sure you are connected to the drone network")
 
     except (ValueError, AssertionError) as error:
-        _LOG.error(error)
+        _LOG.error("An error occured: %s", error)
 
 
 if __name__ == "__main__":

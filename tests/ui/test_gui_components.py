@@ -4,7 +4,7 @@ from tkinter import Canvas, Tk
 import pytest
 
 from dronevis.ui.gui_components import CircularProgressbar, MainButton, DataFrame
-from dronevis.config.gui import MAIN_COLOR, WHITE_COLOR, MAIN_FONT
+from dronevis.config.gui import MAIN_COLOR, WHITE_COLOR
 
 
 @pytest.fixture
@@ -61,8 +61,22 @@ def test_circular_progressbar_extent(canvas):
     assert arc_extent == "0.0"
 
 
+def test_circular_progressbar_change(canvas):
+    """Test the change of the CircularProgressbar class"""
+    bottom_coord = (0, 0)
+    top_coord = (100, 100)
+    progressbar = CircularProgressbar(canvas, bottom_coord, top_coord)
+    progressbar.change(90.0, "data")
+    canvas.update()
+    arc_extent = canvas.itemcget(progressbar.arc_id, "extent")
+    arc_text = canvas.itemcget(progressbar.label_id, "text")
+    assert arc_extent == "90.0"
+    assert arc_text == "data"
+
+
 @pytest.fixture
 def main_btn():
+    """Fixture for creating a main button"""
     root = Tk()
     main_button = MainButton(root, message="Hello, world!")
     yield main_button

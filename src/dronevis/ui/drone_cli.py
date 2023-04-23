@@ -1,8 +1,9 @@
 """implementation for dronevis CLI"""
 import argparse
 import logging
-from typing import Callable, Dict
+from typing import Callable, Dict, Optional, Sequence
 import sys
+
 from rich_argparse import RichHelpFormatter
 from rich.console import Console
 from rich.table import Table
@@ -18,7 +19,7 @@ _LOG = logging.getLogger(__name__)
 class DroneCli:
     """Encapsulate all CLI needed methods"""
 
-    def parse(self) -> argparse.Namespace:
+    def parse(self, arguments: Optional[Sequence[str]] = None) -> argparse.Namespace:
         """Argument parser to get user inputs
 
         Returns:
@@ -61,7 +62,7 @@ class DroneCli:
             help="Level for logger",
         )
 
-        args = parser.parse_args()
+        args = parser.parse_args(arguments)
         return args
 
     def print_available_control(self) -> None:
@@ -99,7 +100,7 @@ class DroneCli:
         console = Console()
         console.print(table)
 
-    def not_implemeneted(self) -> None:
+    def _not_implemeneted(self) -> None:
         """Dummy method from not implemented methods
 
         Raises:
@@ -112,19 +113,15 @@ class DroneCli:
         as commands methods
 
         Args:
-            drone (BaseDrone): drone instance
+            drone (BaseDrone): Drone instance
 
         Returns:
-            Dict[str, Callable]: a dictionary mapping from index to control methods
+            Dict[str, Callable]: A dictionary mapping from index to control methods
         """
         assert isinstance(drone, BaseDrone), "Please provide a valid drone instance"
 
-        def cli_exit():
-            drone.stop()
-            sys.exit()
-
         available_commands = {
-            "q": cli_exit,
+            "q": self._cli_exit,
             "1": drone.upward,
             "2": drone.downward,
             "3": drone.right,
@@ -138,7 +135,7 @@ class DroneCli:
             "11": drone.hover,
             "12": drone.reset,
             "13": drone.emergency,
-            "14": self.not_implemeneted,
+            "14": self._not_implemeneted,
         }
 
         return available_commands
@@ -151,11 +148,11 @@ class DroneCli:
         """Main loop for drone connection and control
 
         Args:
-            args (argparse.NameSpace): args from user input
-            drone (BaseDrone): drone instance
+            args (argparse.NameSpace): Args from user input
+            drone (BaseDrone): Drone instance
 
         Raises:
-            NotImplementedError: drone testing is not implemented
+            NotImplementedError: Drone testing is not implemented
         """
         assert isinstance(
             drone, BaseDrone
@@ -194,4 +191,13 @@ class DroneCli:
                 print("")
 
         else:
-            raise NotImplementedError()
+            raise NotImplementedError("Drone tests are not implemented yet")
+
+    def _cli_exit(self, drone: BaseDrone) -> None:
+        """Exit the CLI and disconnect from drone
+
+        Args:
+            drone (BaseDrone): Drone instance
+        """
+        drone.stop()
+        sys.exit()

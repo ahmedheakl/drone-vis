@@ -153,8 +153,8 @@ def test_axis_config_limits(axis):
 def test_find_file_exists_in_current_directory():
     """Test that find returns the correct path for a file that exists in the current directory"""
     file_name = "test_file.txt"
-    with open(file_name, "w") as f:
-        f.write("test")
+    with open(file_name, "w", encoding="utf-8") as file:
+        file.write("test")
     assert find(file_name) == os.path.abspath(file_name)
     os.remove(file_name)
 
@@ -167,8 +167,8 @@ def test_find_file_does_not_exist():
 def test_find_file_is_root_directory():
     """Test that find returns an empty string when the file is in the root directory"""
     file_name = "test_file.txt"
-    with open(file_name, "w") as f:
-        f.write("test")
+    with open(file_name, "w", encoding="utf-8") as file:
+        file.write("test")
     assert find(file_name) == os.path.abspath(file_name)
     os.remove(file_name)
     assert find(file_name) == ""
