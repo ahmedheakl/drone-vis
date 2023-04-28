@@ -26,7 +26,6 @@ class FaceDetectModel(CVModel):
             Defaults to 0.5.
         """
         if not isinstance(confidence, (int, float)):
-            print("HERE")
             raise TypeError("Confidence must be a float or int")
 
         assert 0.0 <= confidence <= 1.0, "Confidence must be a score between 0 and 1"

@@ -33,6 +33,13 @@ class GestureRecognition(CVModel):
             min_detection_confidence(float, optional): Threshold for detection
             min_tracking_confidence(float, optional): Threshold for tracking. Defaults to 0.5.
         """
+        assert isinstance(
+            min_detection_confidence, (int, float)
+        ), "Confidence must be a number"
+
+        assert isinstance(
+            min_tracking_confidence, (int, float)
+        ), "Confidence must be a number"
         assert (
             0.0 <= min_detection_confidence <= 1
         ), "Detection confidence must be a score between 0 and 1"
@@ -80,7 +87,7 @@ class GestureRecognition(CVModel):
         Returns:
             np.array: Output image with keypoints drawn and gesture label recognized
         """
-        assert self.keypoints_classifier
+        assert self.keypoints_classifier, "Please load the model first"
         image.flags.writeable = False
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 

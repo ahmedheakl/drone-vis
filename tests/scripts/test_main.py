@@ -1,9 +1,7 @@
 """Testing main cli"""
 import sys
 import unittest
-
 import io
-
 from unittest.mock import patch
 
 from dronevis.__main__ import main, DroneCli, Drone

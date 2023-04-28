@@ -75,4 +75,4 @@ dronevis-features.md
 *.weights
 *.cfg
 *.ipynb
-
+test_data

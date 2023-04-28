@@ -5,7 +5,7 @@ import os
 import pytest
 
 from dronevis.abstract.base_video_thread import BaseVideoThread
-from dronevis.models.mediapipe_face_detection import FaceDetectModel
+from dronevis.models.face_detection import FaceDetectModel
 from dronevis.models import SSD
 
 TEST_DATA_PATH = os.getenv("TEST_DATA_PATH", "")

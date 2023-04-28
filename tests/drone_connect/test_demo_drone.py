@@ -6,7 +6,7 @@ import pytest
 from dronevis.drone_connect import DemoDrone
 from dronevis.drone_connect.demo_drone import DemoVideoThread, DemoNavThread
 from dronevis.utils.general import init_logger
-from dronevis.models.mediapipe_face_detection import FaceDetectModel
+from dronevis.models.face_detection import FaceDetectModel
 
 TEST_DATA_PATH = os.getenv("TEST_DATA_PATH", "")
 TEST_VIDEO = TEST_DATA_PATH + "/test_video.avi"

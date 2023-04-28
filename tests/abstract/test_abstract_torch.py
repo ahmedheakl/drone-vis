@@ -1,8 +1,9 @@
 """Testing detection with torch models abstract class"""
 import pytest
 import numpy as np
+import torch
 
-from dronevis.abstract.abstract_torch_model import TorchDetectionModel
+from dronevis.abstract.abstract_torch_model import TorchDetectionModel, cv2
 from dronevis.models import SSD
 
 
@@ -40,3 +41,35 @@ def test_prediction_raises(
 def test_load_model_with_weights(threshold, load_model_weights, load_dummy_data):
     with pytest.raises(AssertionError) as _:
         load_model_weights.predict(load_dummy_data, detection_threshold=threshold)
+
+
+@pytest.fixture
+def model():
+    ssd_model = SSD()
+    ssd_model.load_model()
+    yield ssd_model
+    del ssd_model
+
+
+def test_detect_webcam(model, mocker, monkeypatch):
+    mocked = mocker.Mock()
+    imshow_mock = mocker.Mock()
+    mocked.read.return_value = True, np.zeros((100, 100, 3), dtype=np.uint8)
+    monkeypatch.setattr(cv2, "VideoCapture", lambda x: mocked)
+    monkeypatch.setattr(cv2, "imshow", imshow_mock)
+    monkeypatch.setattr(cv2, "waitKey", lambda x: ord("q"))
+
+    model.detect_webcam()
+    args, _ = imshow_mock.call_args
+    assert args[1].shape == (100, 100, 3)
+    assert args[0].lower() == "Cam Detection".lower()
+
+
+def test_draw_boxes(model):
+    """Test drawing boxes"""
+    img = np.zeros((224, 224, 3), dtype=np.uint8)
+    boxes = np.array([[0, 0, 50, 50], [100, 100, 150, 150]])
+    classes = ["cat", "dog"]
+    labels = torch.tensor([0, 1]).to(dtype=torch.int32)
+    res = model.draw_boxes(boxes, classes, labels, img)
+    assert isinstance(res, np.ndarray)

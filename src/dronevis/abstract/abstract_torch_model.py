@@ -160,40 +160,18 @@ class TorchDetectionModel(CVModel):
         """
 
         cap = cv2.VideoCapture(video_index)
-        if not cap.isOpened():
-            _LOG.warning("Error while trying to read video. Please check path again")
-        prev_time = 0.0
+
         while cap.isOpened():
+            prev_time = time.time()
             _, frame = cap.read()
             with torch.no_grad():
                 image = self.predict(frame, 0.7)
-            cur_time = time.time()
-            fps = 1 / (cur_time - prev_time)
+            fps = 1 / (time.time() - prev_time)
             wait_time = max(1, int(fps / 4))
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             cv2.imshow(window_name, write_fps(image, fps))
-            prev_time = cur_time
             if cv2.waitKey(wait_time) & 0xFF == ord("q"):
                 break
 
         cap.release()
         cv2.destroyAllWindows()
-
-    def frame_detection(self, frame: np.ndarray) -> Tuple[np.ndarray, float, float]:
-        """Detect a single frame of a video stream
-
-        Args:
-            frame (numpy.ndarray): input frame
-
-        Returns:
-            Tuple[numpy.ndarray, float, fps]: image with detection results and wait
-            time between frames
-        """
-        start_time = time.time()
-        with torch.no_grad():
-            image = self.predict(frame, 0.7)
-        end_time = time.time()
-        fps = 1 / (end_time - start_time)
-        wait_time = max(1, int(fps / 4))
-        image = cv2.cvtColor(write_fps(image, fps), cv2.COLOR_BGR2RGB)
-        return image, wait_time, fps

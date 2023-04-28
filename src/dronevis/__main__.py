@@ -17,7 +17,6 @@ Version
  - dronevis v1.0.0
 """
 from typing import Optional, Sequence
-import sys
 import logging
 
 from dronevis.drone_connect import DemoDrone, Drone

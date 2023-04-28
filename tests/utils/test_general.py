@@ -31,6 +31,7 @@ def fps_image():
 
 @pytest.fixture
 def axis():
+    """Fixture for creating a matplotlib axis"""
     _, axis = plt.subplots()
     yield axis
 
