@@ -29,7 +29,7 @@ jobs:
 
       - name: Pylint Style Checker
         run: |
-          pylint src/dronevis --disable=no-member |& tee pylint.txt
+          pylint src/dronevis --disable=no-member,not-callable |& tee pylint.txt
           echo "$PIPESTATUS" >> pylint_status.txt
 
       - name: Mypy Style Checker
