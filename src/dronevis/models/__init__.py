@@ -6,4 +6,4 @@ from dronevis.models.pose_mediapipe import PoseSegEstimation
 from dronevis.models.ssd_torch import SSD
 from dronevis.models.yolov5_torch import YOLOv5
 from dronevis.models.gesture_recognition import GestureRecognition
-from dronevis.models.yolov8 import YOLOv8Detection
+from dronevis.models.yolov8 import YOLOv8Detection, YOLOv8Segmentation, YOLOv8Pose
