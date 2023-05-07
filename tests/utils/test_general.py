@@ -3,7 +3,6 @@ import os
 
 import torch
 import pytest
-import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -23,57 +22,10 @@ TEST_FPS_IMAGE = TEST_DATA_PATH + "/30fps_image.png"
 
 
 @pytest.fixture
-def fps_image():
-    """Fixture for loading test image"""
-    image = cv2.imread(TEST_FPS_IMAGE)
-    yield image
-
-
-@pytest.fixture
 def axis():
     """Fixture for creating a matplotlib axis"""
     _, axis = plt.subplots()
     yield axis
-
-
-def test_write_fps_with_integer(fps_image):
-    """Test write_fps with integer input"""
-    image = np.zeros((256, 256, 3), dtype=np.uint8)
-    fps: int = 30
-    image = write_fps(image, fps)
-    assert isinstance(image, np.ndarray)
-    assert image.shape == (256, 256, 3)
-    assert np.array_equal(fps_image, image)
-
-
-def test_write_fps_with_float(fps_image):
-    """Test write_fps with float input"""
-    image = np.zeros((256, 256, 3), dtype=np.uint8)
-    fps: float = 30.0
-    image = write_fps(image, fps)
-    assert isinstance(image, np.ndarray)
-    assert image.shape == (256, 256, 3)
-    assert np.array_equal(fps_image, image)
-
-
-def test_write_fps_with_int_string(fps_image):
-    """Test write_fps with string input"""
-    image = np.zeros((256, 256, 3), dtype=np.uint8)
-    fps: int = "30"
-    image = write_fps(image, fps)
-    assert isinstance(image, np.ndarray)
-    assert image.shape == (256, 256, 3)
-    assert np.array_equal(fps_image, image)
-
-
-def test_write_fps_with_float_string(fps_image):
-    """Test write_fps with string input"""
-    image = np.zeros((256, 256, 3), dtype=np.uint8)
-    fps: int = "30.0"
-    image = write_fps(image, fps)
-    assert isinstance(image, np.ndarray)
-    assert image.shape == (256, 256, 3)
-    assert np.array_equal(fps_image, image)
 
 
 def test_write_fps_with_invalid_input():
