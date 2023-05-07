@@ -57,10 +57,6 @@ def download_video(url: str, video_path: str) -> None:
 @pytest.fixture(scope="session", autouse=True)
 def remove_donwload_video() -> Generator[None, None, None]:
     yield
-    # if os.path.exists(TEST_DATA_PATH):
-    #     shutil.rmtree(TEST_DATA_PATH)
-
-    # Closing opened threads
     for _, thread in DemoVideoThread._instances.items():
         thread.close_thread()
         thread.join()

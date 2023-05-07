@@ -1,7 +1,8 @@
 """Testing SSD Model implementation"""
 from typing import Generator, Tuple
-import pytest
 import os
+
+import pytest
 from PIL import Image
 import numpy as np
 
@@ -11,6 +12,19 @@ TEST_DATA_PATH = os.getenv("TEST_DATA_PATH", "")
 HUMAN_PHOTO = TEST_DATA_PATH + "/human_photo.jpg"
 BLACK_PHOTO = TEST_DATA_PATH + "/black_photo.jpg"
 THRESHOLD_SCORE = 0.7
+
+
+def get_username():
+    """Get the current OS user name"""
+    if os.name == "posix":
+        # On Unix-like systems (Linux and macOS)
+        return os.getlogin()
+
+    if os.name == "nt":
+        # On Windows
+        return os.environ.get("USERNAME")
+
+    raise OSError(f"Unsupported OS: {os.name}")
 
 
 @pytest.fixture(scope="session")
@@ -24,7 +38,7 @@ def load_files() -> Generator[Tuple[np.ndarray, np.ndarray], None, None]:
     yield human_photo, black_photo
 
 
-@pytest.mark.skip
+@pytest.mark.skipif(get_username() == "heakl", reason="requires display")
 def test_model_predictions_with_human(load_files):
     """When the model is prompted with a photo of a human, it should
     generate a score for a huamn in the photo larger than a threshold

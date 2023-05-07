@@ -120,8 +120,12 @@ class DroneCli:
         """
         assert isinstance(drone, BaseDrone), "Please provide a valid drone instance"
 
+        def cli_exit():
+            drone.stop()
+            sys.exit()
+
         available_commands = {
-            "q": self._cli_exit,
+            "q": cli_exit,
             "1": drone.upward,
             "2": drone.downward,
             "3": drone.right,
@@ -192,12 +196,3 @@ class DroneCli:
 
         else:
             raise NotImplementedError("Drone tests are not implemented yet")
-
-    def _cli_exit(self, drone: BaseDrone) -> None:
-        """Exit the CLI and disconnect from drone
-
-        Args:
-            drone (BaseDrone): Drone instance
-        """
-        drone.stop()
-        sys.exit()

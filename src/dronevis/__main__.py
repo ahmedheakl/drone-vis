@@ -57,8 +57,10 @@ def main(arguments: Optional[Sequence[str]] = None) -> None:
         _LOG.error("Drone tests are NOT yet implemented")
 
     except ConnectionError:
-        _LOG.error("Couldn't connect to the drone")
-        _LOG.error("Make sure you are connected to the drone network")
+        _LOG.error(
+            "Couldn't connect to the drone\n%s",
+            "Make sure you are connected to the drone network",
+        )
 
     except (ValueError, AssertionError) as error:
         _LOG.error("An error occured: %s", error)

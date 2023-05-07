@@ -44,7 +44,6 @@ def test_index_to_control(cli):
     """Testing index to control"""
     mock_drone = MagicMock(spec=BaseDrone)
     expected_commands = {
-        "q": pytest.approx(cli._cli_exit),
         "1": pytest.approx(mock_drone.upward),
         "2": pytest.approx(mock_drone.downward),
         "3": pytest.approx(mock_drone.right),
@@ -60,7 +59,8 @@ def test_index_to_control(cli):
         "13": pytest.approx(mock_drone.emergency),
         "14": pytest.approx(cli._not_implemeneted),
     }
-    assert cli.index_to_control(mock_drone) == expected_commands
+    for key, command in expected_commands.items():
+        assert command == cli.index_to_control(mock_drone)[key]
 
 
 def test_index_to_control_not_base_drone(cli):
