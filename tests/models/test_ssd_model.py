@@ -16,15 +16,16 @@ THRESHOLD_SCORE = 0.7
 
 def get_username():
     """Get the current OS user name"""
-    if os.name == "posix":
-        # On Unix-like systems (Linux and macOS)
-        return os.getlogin()
+    try:
+        if os.name == "posix":
+            # On Unix-like systems (Linux and macOS)
+            return os.getlogin()
 
-    if os.name == "nt":
-        # On Windows
-        return os.environ.get("USERNAME")
-
-    raise OSError(f"Unsupported OS: {os.name}")
+        if os.name == "nt":
+            # On Windows
+            return os.environ.get("USERNAME")
+    except OSError:
+        return "No User"
 
 
 @pytest.fixture(scope="session")
