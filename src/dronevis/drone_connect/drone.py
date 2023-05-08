@@ -1,5 +1,5 @@
 """Implementation for real drone control"""
-from typing import Callable, Optional, List
+from typing import Callable, Optional, List, Tuple
 import logging
 import struct
 import time
@@ -48,7 +48,7 @@ class Drone(BaseDrone):
         super().connect_video(callback=callback, model=model)
 
         self.video_thread = VideoThread(callback, model, self.ip_address)
-        self.video_thread.start()
+        self.video_thread.resume()
         _LOG.debug("Initialized video thread")
 
     def disconnect_video(self) -> None:
@@ -58,7 +58,6 @@ class Drone(BaseDrone):
             return
 
         self.video_thread.stop()
-        self.video_thread = None
         _LOG.debug("Disconnected video thread")
 
     def connect(self) -> None:
@@ -112,11 +111,10 @@ class Drone(BaseDrone):
                 _LOG.critical(err_message)
                 raise AttributeError(err_message)
         # Then set each config
-        at_commands: List[str] = []
+        at_commands: List[Tuple[str, str]] = []
         for key_arg in kwargs:
-            at_commands = at_commands + cfg.SUPPORTED_CONFIG[key_arg.lower()](
-                kwargs[key_arg.lower()]
-            )
+            config_out = cfg.SUPPORTED_CONFIG[key_arg.lower()](kwargs[key_arg.lower()])
+            at_commands.extend(config_out)
         for at_command in at_commands:
             self.com_thread.configure(at_command[0], at_command[1])
         return True
@@ -324,7 +322,7 @@ class Drone(BaseDrone):
             self.nav_thread.join()
 
         if self.video_thread is not None:
-            self.video_thread.stop()
+            self.video_thread.close_thread()
             self.video_thread.join()
 
     def set_callback(self, callback=None):

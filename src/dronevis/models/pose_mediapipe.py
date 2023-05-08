@@ -1,5 +1,4 @@
 """Module for pose estimation and single-instance human segmentation"""
-
 import time
 from typing import Union
 import mediapipe as mp
@@ -145,9 +144,3 @@ class PoseSegEstimation(CVModel):
 
         cv2.destroyAllWindows()
         cap.release()
-
-
-if __name__ == "__main__":
-    model = PoseSegEstimation()
-    model.load_model()
-    model.detect_webcam()

@@ -1,4 +1,6 @@
 """Configurations for dronevis"""
+from typing import Dict, Any, Callable, Tuple, List
+
 from dronevis.utils.control_utils import (
     detect_tag,
     activate_gps,
@@ -11,7 +13,7 @@ from dronevis.utils.control_utils import (
     flip,
 )
 
-SUPPORTED_CONFIG = {
+SUPPORTED_CONFIG: Dict[str, Callable[[Any], List[Tuple[str, str]]]] = {
     "detect_tag": detect_tag,
     "activate_navdata": activate_navdata,
     "activate_gps": activate_gps,  # Data activation
@@ -20,13 +22,10 @@ SUPPORTED_CONFIG = {
     "nervosity_level": nervosity_level,
     "max_altitude": max_altitude,  # One-time config
 }
+
 AUTONOMOUS_FLIGHT = {"gps": goto_gps_point}
 ANIMATIONS = {"flip": flip}
 ANIMATIONS_INFOS = {"flip": "(side)"}
-# Check if animations corelate
-if ANIMATIONS.keys() != ANIMATIONS_INFOS.keys():
-    raise ImportError("Animations differs")
-
 
 MODELS_URLS = {
     "gesture_recognition": [

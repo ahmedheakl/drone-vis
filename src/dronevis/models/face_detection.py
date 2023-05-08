@@ -1,6 +1,7 @@
 """Implementation for face detection from mediapipe"""
 from typing import Union
 import time
+
 import cv2
 import mediapipe as mp
 import numpy as np
@@ -24,10 +25,12 @@ class FaceDetectModel(CVModel):
             **input is a probability [0, 1]**.
             Defaults to 0.5.
         """
-        assert 0.0 <= confidence <= 1, "Confidence must be a score between 0 and 1"
-        assert isinstance(confidence, (int, float)), "Confidence must be a number"
-        self.face_detection = mp.solutions.face_detection.FaceDetection(confidence)  # type: ignore
-        self.mp_drawing = mp.solutions.drawing_utils  # type: ignore
+        if not isinstance(confidence, (int, float)):
+            raise TypeError("Confidence must be a float or int")
+
+        assert 0.0 <= confidence <= 1.0, "Confidence must be a score between 0 and 1"
+        self.face_detection = mp.solutions.face_detection.FaceDetection(confidence)
+        self.mp_drawing = mp.solutions.drawing_utils
 
     def load_model(self) -> None:
         """Load model from memory"""

@@ -1,5 +1,5 @@
 """Implementation for demo drone for testing purposes"""
-from typing import Optional, Callable
+from typing import Optional, Callable, Union
 import logging
 import random
 import time
@@ -20,7 +20,6 @@ class DemoDrone(BaseDrone):
         super().__init__(ip_address)
         self.nav_thread: Optional[DemoNavThread] = None
         self.video_thread: Optional[DemoVideoThread] = None
-        self.ip_address = ip_address
 
     def connect_video(self, callback: Callable, model: CVModel) -> None:
         """Retrieve video stream by connecting to the video port
@@ -38,7 +37,7 @@ class DemoDrone(BaseDrone):
         super().connect_video(callback, model)
 
         self.video_thread = DemoVideoThread(callback, model)
-        self.video_thread.start()
+        self.video_thread.resume()
 
     def disconnect_video(self):
         """Disconnect video stream, and close the correspoding
@@ -54,8 +53,6 @@ class DemoDrone(BaseDrone):
             raise ValueError(err_message)
 
         self.video_thread.stop()
-        time.sleep(0.2)
-        self.video_thread = None
         _LOG.debug("Video thread stopped")
 
     def connect(self) -> None:
@@ -77,7 +74,7 @@ class DemoDrone(BaseDrone):
         if callback is None:
             callback = self._print_navdata
 
-        if not hasattr(callable, "__call__"):
+        if not hasattr(callback, "__call__"):
             err_message = "Please provide a function as a callback or None."
             _LOG.error(err_message)
             raise TypeError(err_message)
@@ -88,7 +85,6 @@ class DemoDrone(BaseDrone):
             _LOG.debug("Nav thread started")
         else:
             self.nav_thread.change_callback(callback)
-            self.nav_thread.start()
             _LOG.debug("Changed callback")
 
     def set_config(self, **kwargs) -> bool:
@@ -174,24 +170,27 @@ class DemoDrone(BaseDrone):
         _LOG.info("Emergency")
         return True
 
-    def stop(self):
+    def stop(self) -> None:
         """Simulate stopping"""
         self.is_connected = False
         if self.video_thread is not None:
-            self.video_thread.stop()
+            self.video_thread.close_thread()
             self.video_thread.join()
             _LOG.debug("Video thread stopped")
+            self.video_thread = None
 
         if self.nav_thread is not None:
             self.nav_thread.stop()
             self.nav_thread.join()
             _LOG.debug("Nav thread stopped")
+            self.nav_thread = None
 
         _LOG.warning("Drone disconnected")
 
-    def reset(self):
+    def reset(self) -> bool:
         """Simulate resting"""
         _LOG.info("Reseting")
+        return True
 
 
 class DemoVideoThread(BaseVideoThread):
@@ -202,8 +201,9 @@ class DemoVideoThread(BaseVideoThread):
         closing_callback: Callable,
         model: CVModel,
         ip_address: str = "192.168.1.1",
+        video_index: Union[int, str] = 0,
     ) -> None:
-        super().__init__(closing_callback, model, ip_address)
+        super().__init__(closing_callback, model, ip_address, video_index)
         self.frame = "Demo Video Capture"
 
 

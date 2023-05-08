@@ -1,6 +1,7 @@
 """Inteface for drone classes"""
 from typing import Callable, Optional
 import logging
+import socket
 from inspect import getmro
 
 from dronevis.abstract import CVModel
@@ -13,9 +14,20 @@ class BaseDrone:
     """Interface and base class for real and demo drone"""
 
     def __init__(self, ip_address: str = "192.168.1.1") -> None:
+        if not self._validate_ip(ip_address):
+            raise ValueError(f"Invalid IP address {ip_address}")
+
         self.ip_address = ip_address
         self.is_connected = False
         self.video_thread: Optional[BaseVideoThread] = None
+
+    def _validate_ip(self, ip_address) -> bool:
+        """Validate input IP address"""
+        try:
+            socket.inet_aton(ip_address)
+            return True
+        except OSError:
+            return False
 
     def connect_video(self, callback: Callable, model: CVModel) -> None:
         """Initialize and start video thread
