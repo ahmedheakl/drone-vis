@@ -102,10 +102,10 @@ To cite this repository:
 
 ```bibtex
 @software{drone-vis,
-  author  = {Ahmed Heakl, Abdallah-Elbarkokry, Fatma Youssef},
+  author  = {Ahmed Heakl, Abdallah-Elbarkokry, Fatma Youssef, Youssief Anas},
   title   = {Dronevis: Full compatible drone library to automate computer vision algorithms on parrot drones},
-  year    = {2022},
+  year    = {2023},
   url     = {github.com/ahmedheakl/drone-vis},
-  version = {0.2.2}
+  version = {1.0.0}
 }
 ```
