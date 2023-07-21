@@ -74,4 +74,5 @@ dronevis-features.md
 .pytest_cache
 *.weights
 *.cfg
-
+*.ipynb
+test_data

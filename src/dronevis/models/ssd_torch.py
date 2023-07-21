@@ -13,12 +13,6 @@ class SSD(TorchDetectionModel):
     """Single shot detector model implementation for object
     detection/recognition using torchvision pre-trained models"""
 
-    def __init__(self) -> None:
-        """Initialize SSD model and load weights"""
-        super().__init__()
-        self.weights = SSDLite320_MobileNet_V3_Large_Weights.DEFAULT
-        self.transform = self.weights.transforms()
-
     def load_model(self):
         """Load model from PyTorchHub
 
@@ -27,6 +21,8 @@ class SSD(TorchDetectionModel):
             Default weights used are ``ssdlite320_mobilenet_v3_large``.
         """
         _LOG.info("Loading SSD Torch model ...")
-        self.net = ssdlite320_mobilenet_v3_large(weights=self.weights)
+        weights = SSDLite320_MobileNet_V3_Large_Weights.DEFAULT
+        self.transform = weights.transforms()
+        self.net = ssdlite320_mobilenet_v3_large(weights=weights)
         self.net = self.net.eval().to(self.device)
         _LOG.info("Loaded SSD Torch model")

@@ -1,5 +1,5 @@
 """Utilities for dronevis library including image processing and parser"""
-from typing import Union
+from typing import Union, Optional, Sequence
 import logging
 import os
 import argparse
@@ -30,7 +30,7 @@ def write_fps(image: np.ndarray, fps: Union[str, int, float]) -> np.ndarray:
     """
     assert isinstance(fps, (str, int, float)), "Please enter a valid fps value"
     if not isinstance(fps, int):
-        fps = str(int(fps))
+        fps = str(int(float(fps)))
 
     cv2.putText(
         img=image,
@@ -56,7 +56,7 @@ def library_ontro() -> None:
     print("----------------------------------------------------------")
 
 
-def gui_parse() -> argparse.Namespace:
+def gui_parse(arguments: Optional[Sequence[str]] = None) -> argparse.Namespace:
     """Parse arguments for the GUI script
 
     Returns:
@@ -91,7 +91,7 @@ def gui_parse() -> argparse.Namespace:
         help="Level for logger",
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(arguments)
     return args
 
 

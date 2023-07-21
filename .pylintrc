@@ -1,0 +1,5 @@
+[MESSAGES CONTROL]
+disable=not-callable,no-member,duplicate-code
+
+[MASTER]
+ignore-patterns=tests/*

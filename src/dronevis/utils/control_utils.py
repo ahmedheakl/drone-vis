@@ -2,14 +2,14 @@
 from typing import List, Tuple
 
 
-def activate_navdata(activate: bool = True) -> List[Tuple[str, ...]]:
+def activate_navdata(activate: bool = True) -> List[Tuple[str, str]]:
     "Prepare the drone so he can send navdata back to us"
     if activate:
         return [("general:navdata_demo", "FALSE")]  # Activate navdata
     return [("general:navdata_demo", "TRUE")]
 
 
-def activate_gps(activate: bool = True) -> List[Tuple[str, ...]]:
+def activate_gps(activate: bool = True) -> List[Tuple[str, str]]:
     "Prepare the drone to receive GPS command"
     if activate:
         return [("control:flying_mode", "0"), ("control:autonomous_flight", "FALSE")]
@@ -113,10 +113,7 @@ def goto_gps_point(
         + str(cap)
         + ",0"
     )
-    # Let's go !
     com = []
-    # if not continuous:  com.append(("control:flying_mode","0")) # To Check
-    # if not continuous:  com.append(("control:autonomous_flight","FALSE")) # To Check
     if not continuous:
         com.append(("control:flying_camera_enable", "FALSE"))
     com.append(("control:flying_camera_mode", param1))
