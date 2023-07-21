@@ -9,7 +9,7 @@ from ultralytics import YOLO
 import cv2
 
 from dronevis.abstract.abstract_model import CVModel
-from dronevis.utils.general import write_fps
+from dronevis.utils.general import write_fps, device
 
 _LOG = logging.getLogger(__name__)
 
@@ -56,9 +56,9 @@ class YOLOv8(CVModel):
         assert self.model, "Please load the model first"
 
         if track:
-            results = self.model.track(image, stream=False, conf=confidence)
+            results = self.model.track(image, stream=False, conf=confidence, device=device())
         else:
-            results = self.model(image, stream=False, conf=confidence)
+            results = self.model(image, stream=False, conf=confidence, device=device())
         return results[0].plot()
 
     def detect_webcam(
@@ -104,7 +104,9 @@ class YOLOv8Detection(YOLOv8):
             weights in the ultralytics website which will be downloaded automatically.
             Defaults to "yolov8.pt".
         """
+        _LOG.info(f"Loading model weights with {device().upper()}")
         self.model = YOLO(model_weights)
+        self.model.to(device())
 
 
 class YOLOv8Segmentation(YOLOv8):
@@ -118,7 +120,10 @@ class YOLOv8Segmentation(YOLOv8):
             weights in the ultralytics website which will be downloaded automatically.
             Defaults to "yolov8-seg.pt".
         """
+        _LOG.info(f"Loading model weights with {device().upper()}")
         self.model = YOLO(model_weights)
+        self.model.to(device())
+
 
 
 class YOLOv8Pose(YOLOv8):
@@ -132,4 +137,6 @@ class YOLOv8Pose(YOLOv8):
             weights in the ultralytics website which will be downloaded automatically.
             Defaults to "yolov8-pose.pt".
         """
+        _LOG.info(f"Loading model weights with {device().upper()}")
         self.model = YOLO(model_weights)
+        self.model.to(device())

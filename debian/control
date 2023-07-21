@@ -1,0 +1,15 @@
+Source: dronevis
+Section: python
+Priority: optional
+Maintainer: Heakl ahmed.heakl@ejust.edu.eg
+Build-Depends: python3.8
+Standards-Version: 4.4.1
+Homepage: <insert the upstream URL, if relevant>
+#Vcs-Browser: https://salsa.debian.org/debian/dronevis
+#Vcs-Git: https://salsa.debian.org/debian/dronevis.git
+
+Package: dronevis
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>

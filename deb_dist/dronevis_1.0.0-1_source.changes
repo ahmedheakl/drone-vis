@@ -1,0 +1,28 @@
+Format: 1.8
+Date: Mon, 08 May 2023 21:59:47 +0300
+Source: dronevis
+Architecture: source
+Version: 1.0.0-1
+Distribution: unstable
+Urgency: low
+Maintainer: None <None>
+Changed-By: None <None>
+Changes:
+ dronevis (1.0.0-1) unstable; urgency=low
+ .
+   * source package automatically created by stdeb 0.10.0
+Checksums-Sha1:
+ 6aac583bec458ae22dec95bafc052dfcde76926a 819 dronevis_1.0.0-1.dsc
+ d378009993ed09abf9e089e3fc56d0c03b67a095 56952 dronevis_1.0.0.orig.tar.gz
+ 1d2ed093695c325729343ce2df34f90256c0acdc 1712 dronevis_1.0.0-1.debian.tar.xz
+ d2a32c04f204191d920abeb322997eb8ef647e3b 6829 dronevis_1.0.0-1_source.buildinfo
+Checksums-Sha256:
+ 9762139b7a58c39bc1fde17b089d3ba6f02423e44ca49870a233f35fbbee0dfb 819 dronevis_1.0.0-1.dsc
+ e44da3e783156427714f21595dc4f24d97585106cefb65ed1dab4b2f5e1f28c4 56952 dronevis_1.0.0.orig.tar.gz
+ ed2ada73090f68e67d808251ed5fab6111be152a3a8fb38a97e562ef00d2cb69 1712 dronevis_1.0.0-1.debian.tar.xz
+ d6140ab3783a648ad8e3ce36967337bc3e1859470cfe0157cbbd204d462735bb 6829 dronevis_1.0.0-1_source.buildinfo
+Files:
+ 60c8b75560689a2f5ac286fa49c39679 819 python optional dronevis_1.0.0-1.dsc
+ d10a56bf3fce99d4088bd360c5141060 56952 python optional dronevis_1.0.0.orig.tar.gz
+ c149abf1f6d74ba2f1d2c5d5829ddb02 1712 python optional dronevis_1.0.0-1.debian.tar.xz
+ ff8a4edcdead1c098ff803a171666f97 6829 python optional dronevis_1.0.0-1_source.buildinfo

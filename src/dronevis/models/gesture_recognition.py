@@ -3,6 +3,7 @@ from typing import Union, Optional
 import time
 import copy
 import itertools
+import logging
 
 import cv2
 import mediapipe as mp
@@ -14,6 +15,7 @@ from dronevis.abstract import CVModel
 from dronevis.utils.general import write_fps, download_file, device
 from dronevis.config.general import MODELS_URLS, GESTURES_LABELS
 
+_LOG = logging.getLogger(__name__)
 
 class GestureRecognition(CVModel):
     """Gesture Recognition class with mediapipe
@@ -33,6 +35,7 @@ class GestureRecognition(CVModel):
             min_detection_confidence(float, optional): Threshold for detection
             min_tracking_confidence(float, optional): Threshold for tracking. Defaults to 0.5.
         """
+        _LOG.warning("Running with device %s", device())
         assert isinstance(
             min_detection_confidence, (int, float)
         ), "Confidence must be a number"
@@ -67,12 +70,13 @@ class GestureRecognition(CVModel):
     def load_model(self, weights_path: Optional[str] = None) -> None:
         """Load model from memory"""
         if not weights_path:
+            _LOG.info("Loading gesture recognition model ...")
             weights_path = download_file(*MODELS_URLS["gesture_recognition"])
 
         self.keypoints_classifier = KeypointsClassifier()
-        self.keypoints_classifier = self.keypoints_classifier.to(device())
         self.keypoints_classifier.load_state_dict(torch.load(weights_path))
         self.keypoints_classifier.double()
+        self.keypoints_classifier = self.keypoints_classifier.to(device())
 
     def transform_img(self, image: np.ndarray) -> np.ndarray:
         """Idle transformation of the image"""
