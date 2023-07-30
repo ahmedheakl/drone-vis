@@ -9,7 +9,7 @@ from ultralytics import YOLO
 import cv2
 
 from dronevis.abstract.abstract_model import CVModel
-from dronevis.utils.general import write_fps
+from dronevis.utils.general import write_fps, device
 
 _LOG = logging.getLogger(__name__)
 
@@ -54,11 +54,21 @@ class YOLOv8(CVModel):
             np.ndarray: Predicted image with bounding boxes drawn.
         """
         assert self.model, "Please load the model first"
-
+        device_number = 0 if device() == "cuda" else "cpu"
         if track:
-            results = self.model.track(image, stream=False, conf=confidence)
+            results = self.model.track(
+                image,
+                stream=False,
+                conf=confidence,
+                device=device_number,
+            )
         else:
-            results = self.model(image, stream=False, conf=confidence)
+            results = self.model(
+                image,
+                stream=False,
+                conf=confidence,
+                device=device_number,
+            )
         return results[0].plot()
 
     def detect_webcam(
@@ -105,6 +115,7 @@ class YOLOv8Detection(YOLOv8):
             Defaults to "yolov8.pt".
         """
         self.model = YOLO(model_weights)
+        self.model.to(device())
 
 
 class YOLOv8Segmentation(YOLOv8):
@@ -119,6 +130,7 @@ class YOLOv8Segmentation(YOLOv8):
             Defaults to "yolov8-seg.pt".
         """
         self.model = YOLO(model_weights)
+        self.model.to(device())
 
 
 class YOLOv8Pose(YOLOv8):
@@ -133,3 +145,4 @@ class YOLOv8Pose(YOLOv8):
             Defaults to "yolov8-pose.pt".
         """
         self.model = YOLO(model_weights)
+        self.model.to(device())
