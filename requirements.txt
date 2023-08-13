@@ -18,3 +18,5 @@ wget
 googledrivedownloader
 seaborn
 ultralytics
+transformers~=4.31.0
+
