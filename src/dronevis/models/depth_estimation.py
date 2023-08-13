@@ -18,7 +18,10 @@ _LOG = logging.getLogger(__name__)
 
 
 class DepthEstimator(CVModel):
-    """Depth Estimation class with huggingface"""
+    """Depth Estimation class with huggingface
+
+    Source: https://huggingface.co/docs/transformers/tasks/monocular_depth_estimation
+    """
 
     def __init__(self) -> None:
         self.model: Optional[DepthEstimationPipeline] = None
