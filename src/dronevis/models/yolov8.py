@@ -17,8 +17,9 @@ _LOG = logging.getLogger(__name__)
 class YOLOv8(CVModel):
     """YOLOv8 implementation with ultralytics model (inherits from CVModel)"""
 
-    def __init__(self) -> None:
+    def __init__(self, track: bool = False) -> None:
         self.model: Optional[YOLO] = None
+        self.track = track
 
     @abstractmethod
     def load_model(self, model_weights: str = "yolov8.pt"):
@@ -55,7 +56,7 @@ class YOLOv8(CVModel):
         """
         assert self.model, "Please load the model first"
         device_number = 0 if device() == "cuda" else "cpu"
-        if track:
+        if track or self.track:
             results = self.model.track(
                 image,
                 stream=False,

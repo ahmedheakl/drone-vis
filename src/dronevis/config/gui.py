@@ -1,11 +1,13 @@
 """Configurations for dronevis GUI"""
 # colors
-MAIN_COLOR = "#01112a"
+MAIN_COLOR = "#161925"
+BUTTON_COLOR = "#5C95FF"
 LIGHT_MAIN_COLOR = "#04327a"
 WHITE_COLOR = "#fff"
 LIGHT_GREEN_COLOR = "#55eb75"
 GREEN_COLOR = "green"
 RED_COLOR = "#FF0000"
+FONT_COLOR = "#FAF9F9"
 
 # fonts
 MAIN_FONT_FAMILY = "monofur for Powerline"

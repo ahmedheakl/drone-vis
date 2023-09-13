@@ -7,7 +7,14 @@ from tkinter.ttk import Label, Frame
 from PIL import Image, ImageTk, ImageOps
 
 import dronevis
-from dronevis.config.gui import GREEN_COLOR, WHITE_COLOR, MAIN_COLOR, MAIN_FONT
+from dronevis.config.gui import (
+    GREEN_COLOR,
+    WHITE_COLOR,
+    MAIN_COLOR,
+    MAIN_FONT,
+    BUTTON_COLOR,
+    FONT_COLOR,
+)
 
 
 class CircularProgressbar:
@@ -121,7 +128,7 @@ class ImageBWButton(Button):
             is_inverted (bool): whether to invert the colors
         """
         super().__init__(master, *args, **kw)
-        self["background"] = MAIN_COLOR
+        self["background"] = BUTTON_COLOR
         self["activebackground"] = WHITE_COLOR
         package_path = os.path.dirname(inspect.getfile(dronevis))
         passive_img_path = f"{package_path}/assets/{img}"
@@ -175,8 +182,8 @@ class MainButton(Button):
             message (str): message to be displayed in message box
         """
         super().__init__(master, *args, **kw)
-        self["foreground"] = WHITE_COLOR
-        self["background"] = MAIN_COLOR
+        self["foreground"] = FONT_COLOR
+        self["background"] = BUTTON_COLOR
         self["activebackground"] = WHITE_COLOR
         self["font"] = MAIN_FONT
         self["borderwidth"] = 0

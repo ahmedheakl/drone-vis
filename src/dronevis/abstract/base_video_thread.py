@@ -34,6 +34,7 @@ class BaseVideoThread(threading.Thread, metaclass=Singleton):
     def __init__(
         self,
         closing_callback: Callable,
+        operation_callback: Callable,
         model: CVModel,
         ip_address: str = "192.168.1.1",
         video_index: Union[int, str] = 0,
@@ -44,12 +45,18 @@ class BaseVideoThread(threading.Thread, metaclass=Singleton):
             raise TypeError(err_message)
 
         if not hasattr(closing_callback, "__call__"):
-            err_message = "Callback provided is not callable"
+            err_message = "Close callback provided is not callable"
+            _LOG.critical(err_message)
+            raise TypeError(err_message)
+
+        if not hasattr(operation_callback, "__call__"):
+            err_message = "Operation callback provided is not callable"
             _LOG.critical(err_message)
             raise TypeError(err_message)
 
         super().__init__()
         self.close_callback = closing_callback
+        self.operation_callback = operation_callback
         self.ip_address = ip_address
         self.model = model
         self.running = False
@@ -65,8 +72,8 @@ class BaseVideoThread(threading.Thread, metaclass=Singleton):
         if not self.cap.isOpened():
             _LOG.warning("Error while trying to read video. Please check path again")
 
-        prev_time = 0.0
         while not self.is_stopped:
+            prev_time = time.perf_counter()
             if not self.running:
                 if not self.is_destroyed:
                     cv2.destroyWindow(self.frame_name)
@@ -88,13 +95,9 @@ class BaseVideoThread(threading.Thread, metaclass=Singleton):
 
             self.is_destroyed = False
             frame = self.model.predict(frame)
-            cur_time = time.time()
-            fps = 1 / (cur_time - prev_time)
-            prev_time = cur_time
-            cv2.imshow(self.frame_name, write_fps(frame, fps))
-
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                self.stop()
+            fps = 1 / (time.perf_counter() - prev_time)
+            frame = write_fps(frame, fps)
+            self.operation_callback(frame)
 
         _LOG.info("Closing video stream ...")
         self.cap.release()

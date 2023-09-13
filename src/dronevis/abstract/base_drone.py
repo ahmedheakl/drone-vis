@@ -29,19 +29,30 @@ class BaseDrone:
         except OSError:
             return False
 
-    def connect_video(self, callback: Callable, model: CVModel) -> None:
+    def connect_video(
+        self,
+        close_callback: Callable,
+        operation_callback: Callable,
+        model: CVModel,
+    ) -> None:
         """Initialize and start video thread
 
         Args:
-            callback (Callable): Callback to be invoked after closing the video thread
+            close_callback (Callable): Callback to be invoked after closing the video thread
             model (CVModel): Computer vision to run over the video stream
+            operation_callback (Callable): Callback to be invoked after each operation
 
         Raises:
             TypeError: Provided callback should be callable
         """
 
-        if not hasattr(callback, "__call__"):
-            err_message = "Callback provided is not callable"
+        if not hasattr(close_callback, "__call__"):
+            err_message = "Close callback provided is not callable"
+            _LOG.critical(err_message)
+            raise TypeError(err_message)
+
+        if not hasattr(operation_callback, "__call__"):
+            err_message = "Operation callback provided is not callable"
             _LOG.critical(err_message)
             raise TypeError(err_message)
 

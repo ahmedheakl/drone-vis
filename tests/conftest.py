@@ -4,7 +4,6 @@ import os
 from pathlib import Path
 import pytest
 import requests
-import shutil
 from google_drive_downloader import GoogleDriveDownloader as gdd
 
 from dronevis.drone_connect.demo_drone import DemoVideoThread

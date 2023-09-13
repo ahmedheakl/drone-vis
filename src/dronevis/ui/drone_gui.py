@@ -7,8 +7,19 @@ import logging
 from dataclasses import dataclass, field
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import cv2
+import numpy as np
+from PIL import Image, ImageTk
 
-from dronevis.models import FaceDetectModel, FasterRCNN, YOLOv5, PoseSegEstimation
+from dronevis.models import (
+    FaceDetectModel,
+    FasterRCNN,
+    YOLOv5,
+    PoseSegEstimation,
+    YOLOv8Detection,
+    YOLOv8Pose,
+    YOLOv8Segmentation,
+)
 from dronevis.drone_connect import DemoDrone
 from dronevis.abstract.base_drone import BaseDrone
 from dronevis.utils.general import axis_config
@@ -26,7 +37,6 @@ class GUIOpt:
     axis: Optional[plt.Axes] = None
     navdata: Optional[dict] = None
     plot_job: Optional[str] = None
-    is_stream: bool = False
     data: List[int] = field(default_factory=lambda: [0])
     index: List[float] = field(default_factory=lambda: [0.0])
     scatter: Optional[FigureCanvasTkAgg] = None
@@ -49,13 +59,17 @@ class DroneVisGui:
     """Implementation for the library GUI using Tkinter"""
 
     models = {
-        "none": NOOPModel,
-        "face": FaceDetectModel,
-        "yolov5": YOLOv5,
-        "faster r-cnn": FasterRCNN,
-        "pose": PoseSegEstimation,
-        "seg": PoseSegEstimation,
-        "pose+seg": PoseSegEstimation,
+        "None": NOOPModel,
+        "Face": FaceDetectModel,
+        "YOLOv5": YOLOv5,
+        "Faster R-CNN": FasterRCNN,
+        "Pose": PoseSegEstimation,
+        "Segment": PoseSegEstimation,
+        "Pose+Segment": PoseSegEstimation,
+        "YOLOv8Detect": YOLOv8Detection,
+        "YOLOv8Pose": YOLOv8Pose,
+        "YOLOv8Segment": YOLOv8Segmentation,
+        "YOLOv8Track": YOLOv8Detection,
     }
     mid_point = int((cfg.GUI_X_LIMIT / cfg.INDEX_STEP) // 2)
 
@@ -75,14 +89,16 @@ class DroneVisGui:
         ################# Configurations #######################
         _LOG.debug("Initializing root window ...")
         self.window.protocol("WM_DELETE_WINDOW", self.on_close_window)
-        self.window.geometry("1000x580")
+        screen_width = self.window.winfo_screenwidth()
+        screen_height = self.window.winfo_screenheight()
+        self.window.geometry(f"{screen_width}x{screen_height}+0+0")
         window_style = Style()
         window_style.theme_use("clam")
         window_style.configure(
             ".",
             font=cfg.MAIN_FONT,
             background=cfg.MAIN_COLOR,
-            foreground=cfg.WHITE_COLOR,
+            foreground=cfg.FONT_COLOR,
         )
         window_style.configure("MainFrame.TFrame", relief="solid", borderwidth=1)
         window_style.configure(
@@ -92,8 +108,8 @@ class DroneVisGui:
         )
         self.window.title("Drone Vision")
         self.window.rowconfigure(0, weight=1)
-        self.window.columnconfigure(0, minsize=600, weight=1)
-        self.window.columnconfigure(1, minsize=330, weight=1)
+        self.window.columnconfigure(0, weight=2)
+        self.window.columnconfigure(1, weight=1)
 
         # attributes initializations
         self.opt = GUIOpt()
@@ -192,24 +208,38 @@ class DroneVisGui:
         frm_right = Frame(master=self.window)
 
         # Left Configs
-        frm_left.rowconfigure(0, minsize=480, weight=1)
-        frm_left.rowconfigure(1, minsize=100, weight=1)
-        frm_left.columnconfigure(0, minsize=600, weight=1)
+        frm_left.rowconfigure(0, weight=2)
+        frm_left.rowconfigure(1, weight=3)
+        frm_left.columnconfigure(0, weight=1)
 
         # Right Configs
-        frm_right.columnconfigure(0, minsize=400, weight=1)
-        frm_right.rowconfigure(0, minsize=280, weight=1)
-        frm_right.rowconfigure(1, minsize=180, weight=1)
+        frm_right.columnconfigure(0, weight=1)
+        frm_right.rowconfigure(0, minsize=120, weight=1)
+        frm_right.rowconfigure(1, minsize=120, weight=1)
         frm_right.rowconfigure(2, minsize=120, weight=1)
-
-        frm_info = Frame(master=frm_left)
-        frm_info.rowconfigure(0, weight=2)
-        frm_info.rowconfigure(1, weight=3)
-        # frm_info.rowconfigure(2, weight=2)
-        frm_info.columnconfigure(0, weight=1)
-
+        frm_right.rowconfigure(3, minsize=120, weight=1)
+        frm_right.rowconfigure(4, minsize=120, weight=1)
+        ######################## Camera Feed ###################################
+        frm_camera = Frame(frm_left, style="MainFrame.TFrame")
+        frm_camera.rowconfigure(0, weight=1)
+        frm_camera.rowconfigure(1, weight=1)
+        frm_camera.columnconfigure(0, weight=1)
+        lbl_camera = Label(
+            frm_camera,
+            text="Camera Feed",
+            font=cfg.HEADER_FONT,
+            anchor="center",
+        )
+        self.camera_feed = Label(
+            frm_camera,
+            text="Camera Feed",
+            font=cfg.HEADER_FONT,
+            anchor="center",
+        )
+        frm_camera.rowconfigure(0, weight=1)
+        frm_camera.columnconfigure(0, weight=1)
         ######################## Battary Data ###################################
-        frm_battary = Frame(frm_info, style="MainFrame.TFrame")
+        frm_battary = Frame(frm_right, style="MainFrame.TFrame")
         lbl_battary = Label(
             frm_battary, text="Battery Percentage", font=cfg.HEADER_FONT
         )
@@ -231,7 +261,7 @@ class DroneVisGui:
         frm_battary.columnconfigure(0, weight=1)
 
         ####################### Graphs and Navdata ##############################
-        frm_nav_h = Frame(frm_info, style="MainFrame.TFrame")
+        frm_nav_h = Frame(frm_left, style="MainFrame.TFrame")
         frm_nav_h.columnconfigure(0, weight=4)
         frm_nav_h.columnconfigure(0, weight=2)
         frm_nav_h.rowconfigure(0, weight=1)
@@ -400,7 +430,7 @@ class DroneVisGui:
             frm_reset_control.columnconfigure(i, minsize=70, weight=1)
 
         ######################## Vision Control ##################################
-        frm_vision_control = Frame(master=frm_left, style="MainFrame.TFrame")
+        frm_vision_control = Frame(frm_right, style="MainFrame.TFrame")
         lbl_vision_control = Label(
             frm_vision_control, text="Vision Control", font=cfg.HEADER_FONT
         )
@@ -410,10 +440,32 @@ class DroneVisGui:
             message="Record a video which will be saved on drone controller memory",
         )
         self.models_choice = StringVar()
-        self.models_choice.set("none")
-        btn_detection = OptionMenu(
-            frm_vision_control, self.models_choice, *self.models.keys()
+        self.models_choice.set("None")
+        style = Style()
+        style.configure(
+            "TMenubutton",
+            foreground=cfg.FONT_COLOR,
+            background=cfg.BUTTON_COLOR,
         )
+        btn_detection = OptionMenu(
+            frm_vision_control,
+            self.models_choice,
+            *self.models.keys(),
+        )
+        on_enter_menu = lambda _: style.map(
+            "TMenubutton",
+            foreground=[("active", cfg.MAIN_COLOR)],
+            background=[("active", cfg.WHITE_COLOR)],
+        )
+
+        on_leave_menu = lambda _: style.map(
+            "TMenubutton",
+            foreground=[("active", cfg.FONT_COLOR)],
+            background=[("active", cfg.BUTTON_COLOR)],
+        )
+
+        btn_detection.bind("<Enter>", on_enter_menu)
+        btn_detection.bind("<Leave>", on_leave_menu)
 
         btn_video_stream = MainButton(
             frm_vision_control,
@@ -459,7 +511,6 @@ class DroneVisGui:
         frm_progress.grid(row=2, column=0)
 
         # height graph
-        frm_nav_h.grid(row=1, column=0, sticky="nsew")
         frm_navdata.grid(row=0, column=1, padx=5, pady=5, sticky="ns")
 
         # vision control
@@ -468,15 +519,20 @@ class DroneVisGui:
         btn_detection.grid(row=1, column=1, sticky="ew", padx=10, pady=10, ipady=2)
         btn_video_stream.grid(row=1, column=2, sticky="ew", padx=10, pady=10, ipady=2)
 
+        # camera feed
+        lbl_camera.grid(row=0, column=0, sticky="nsew")
+        self.camera_feed.grid(row=1, column=0, sticky="nsew")
+
         # Left Frame
-        frm_vision_control.grid(row=1, column=0, sticky="nsew")
-        frm_info.grid(row=0, column=0, sticky="nsew")
-        frm_battary.grid(row=0, column=0, sticky="nsew")
+        frm_camera.grid(row=0, column=0, sticky="nsew")
+        frm_nav_h.grid(row=1, column=0, sticky="nsew")
 
         # Right Frame
-        frm_basic_control.grid(row=0, column=0, sticky="nsew")
-        frm_special_control.grid(row=1, column=0, sticky="nsew")
-        frm_reset_control.grid(row=2, column=0, sticky="nsew")
+        frm_battary.grid(row=0, column=0, sticky="nsew")
+        frm_basic_control.grid(row=1, column=0, sticky="nsew")
+        frm_special_control.grid(row=2, column=0, sticky="nsew")
+        frm_reset_control.grid(row=3, column=0, sticky="nsew")
+        frm_vision_control.grid(row=4, column=0, sticky="nsew")
 
         frm_left.grid(row=0, column=0, sticky="nsew")
         frm_right.grid(row=0, column=1, sticky="nsew")
@@ -523,21 +579,22 @@ class DroneVisGui:
             return
 
         _LOG.info("Current Model: %s", self.models_choice.get())
-        self.opt.is_stream = True
         model = self.get_and_load_model()
         close_stream_callback = idle
-        self.drone.connect_video(close_stream_callback, model)
+        operation_callback = self.update_frame
+        self.drone.connect_video(close_stream_callback, operation_callback, model)
         self.frms.btn_video_stream["text"] = "change"
 
     def get_and_load_model(self):
         """Retrieve chosen model and load its weights"""
         model_class = self.models[self.models_choice.get()]
-        if self.models_choice.get() == "seg":
+        if self.models_choice.get() == "Segment":
             model = model_class(is_seg=True)  # type: ignore
 
-        elif self.models_choice.get() == "pose+seg":
+        elif self.models_choice.get() == "Pose+Segment":
             model = model_class(is_seg_pose=True)
-
+        elif self.models_choice.get() == "YOLOv8Track":
+            model = model_class(track=True)
         else:
             model = model_class()
 
@@ -555,7 +612,24 @@ class DroneVisGui:
         model = self.get_and_load_model()
         self.drone.video_thread.change_model(model)
 
+    def update_frame(self, frame: np.ndarray) -> None:
+        """Update camera feed frame
+
+        Args:
+            frame (np.ndarray): Frame data
+        """
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame = cv2.resize(frame, (640, 480))
+        frame = Image.fromarray(frame)
+        frame = ImageTk.PhotoImage(frame)
+        self.camera_feed.configure(image=frame)
+        self.camera_feed.image = frame
+
     def __call__(self) -> None:
+        """Run the GUI window"""
+        empty_frame = np.zeros((480, 600, 3), dtype=np.uint8)
+        self.update_frame(empty_frame)
+        self.on_stream()
         self.window.mainloop()
 
     def on_close_window(self):
