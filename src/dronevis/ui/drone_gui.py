@@ -53,6 +53,7 @@ class GUIFrames:
     btn_connect: MainButton
     btn_video_stream: MainButton
     lbl_count: Label
+    btn_control_gesture: ToggleButton
 
 
 class DroneVisGui:
@@ -242,7 +243,7 @@ class DroneVisGui:
             anchor="center",
         )
 
-        black_image = np.array([[[0, 0, 0]] * 640] * 480, dtype=np.uint8)
+        black_image = np.array([[[0, 0, 0]] * 400] * 380, dtype=np.uint8)
         img = Image.fromarray(black_image)
         imgtk = ImageTk.PhotoImage(image=img)
         self.gesture_feed.imgtk = imgtk
@@ -283,9 +284,11 @@ class DroneVisGui:
         lbl_control_gesture.grid(row=0, column=0)
         btn_control_gesture.grid(row=1, column=0)
         lbl_control_crowd = Label(frm_fine_control, text="Crowd")
-        btn_control_crowd = ToggleButton(frm_fine_control, self.on_crowd, self.on_crowd)
+        btn_control_gesture = ToggleButton(
+            frm_fine_control, self.on_crowd, self.on_crowd
+        )
         lbl_control_crowd.grid(row=0, column=1)
-        btn_control_crowd.grid(row=1, column=1)
+        btn_control_gesture.grid(row=1, column=1)
 
         ####################### Graphs and Navdata ##############################
         frm_nav_h = Frame(frm_left, style="MainFrame.TFrame")
@@ -590,6 +593,7 @@ class DroneVisGui:
             btn_connect=btn_connect,
             btn_video_stream=btn_video_stream,
             lbl_count=lbl_count,
+            btn_control_gesture=btn_control_gesture,
         )
 
     def on_crowd(self) -> None:
@@ -602,6 +606,9 @@ class DroneVisGui:
 
     def on_gesture(self) -> None:
         """Open gesture control"""
+        self.models_choice.set("None")
+        self.is_crowdcount = False
+        self.on_stream()
         if self.gesture_thread:
             self.gesture_thread.resume()
             return
@@ -680,7 +687,7 @@ class DroneVisGui:
         self.crowd_tick += 1
 
         output_image = cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB)
-        output_image = cv2.resize(output_image, (640, 480))
+        output_image = cv2.resize(output_image, (400, 380))
         output_image = Image.fromarray(output_image)
         output_image = ImageTk.PhotoImage(output_image)
         self.camera_feed.configure(image=output_image)
@@ -688,7 +695,7 @@ class DroneVisGui:
 
     def __call__(self) -> None:
         """Run the GUI window"""
-        empty_frame = np.zeros((480, 600, 3), dtype=np.uint8)
+        empty_frame = np.zeros((400, 380, 3), dtype=np.uint8)
         self.update_frame(empty_frame, empty_frame)
         self.on_stream()
         self.window.mainloop()

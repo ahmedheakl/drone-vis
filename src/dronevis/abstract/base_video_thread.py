@@ -88,7 +88,8 @@ class BaseVideoThread(threading.Thread, metaclass=Singleton):
             status, frame = self.cap.read()
 
             if not status:
-                continue
+                _LOG.warning("Stop reading the video stream")
+                break
 
             if not self._show_window:
                 _LOG.critical("Showing frames ...")

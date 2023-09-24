@@ -275,3 +275,11 @@ class ToggleButton(Button):
             self["image"] = self.on_img
             self.open_callback()
         self.is_on = not self.is_on
+
+    def change_image(self, image: ImageTk.PhotoImage) -> None:
+        """Change image of the button
+
+        Args:
+            image (ImageTk.PhotoImage): new image
+        """
+        self["image"] = image

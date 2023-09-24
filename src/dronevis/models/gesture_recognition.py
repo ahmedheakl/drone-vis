@@ -1,5 +1,6 @@
 """Implementation for gesture recognition using mediapipe"""
-from typing import Union, Optional
+# mypy: ignore-errors
+from typing import Union, Optional, Tuple
 import time
 import copy
 import itertools
@@ -23,6 +24,8 @@ class GestureRecognition(CVModel):
     This class inherits from base class ``CVModel``, and implements
     its abstract methods for code integrity.
     """
+
+    image_size: Tuple[int, int] = (250, 250)
 
     def __init__(
         self,
@@ -75,10 +78,13 @@ class GestureRecognition(CVModel):
         self.keypoints_classifier = KeypointsClassifier()
         self.keypoints_classifier = self.keypoints_classifier.to(device())
         self.keypoints_classifier.load_state_dict(torch.load(weights_path))
+        self.keypoints_classifier.to(device=device())
         self.keypoints_classifier.double()
 
     def transform_img(self, image: np.ndarray) -> np.ndarray:
         """Idle transformation of the image"""
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = cv2.resize(image, self.image_size)
         return image
 
     def predict(self, image: np.ndarray) -> np.ndarray:
@@ -91,9 +97,8 @@ class GestureRecognition(CVModel):
             np.array: Output image with keypoints drawn and gesture label recognized
         """
         assert self.keypoints_classifier, "Please load the model first"
+        image = self.transform_img(image)
         image.flags.writeable = False
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
         if not self.hands:
             self.hands = self.mp_hands.Hands(
                 model_complexity=0,
@@ -180,7 +185,9 @@ class GestureRecognition(CVModel):
             cap = cv2.VideoCapture(video_index)
             prev_time = 0.0
             while True:
-                _, frame = cap.read()
+                ret, frame = cap.read()
+                if not ret:
+                    break
                 cur_time = time.time()
                 image = self.predict(frame)
                 fps = 1 / (cur_time - prev_time)
@@ -212,7 +219,7 @@ class GestureRecognition(CVModel):
                     return
                 image = self.predict(frame)
                 img = Image.fromarray(image)
-                img = img.resize((640, 480), Image.BILINEAR)
+                img = img.resize((400, 380), Image.BILINEAR)
                 imgtk = ImageTk.PhotoImage(image=img)
                 label.imgtk = imgtk
                 label.configure(image=imgtk)
