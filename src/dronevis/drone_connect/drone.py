@@ -5,7 +5,6 @@ import struct
 import time
 import socket
 
-from dronevis.abstract import CVModel
 from dronevis.abstract.base_drone import BaseDrone
 from dronevis.drone_connect.video import VideoThread
 from dronevis.drone_connect.command import Command
@@ -38,25 +37,25 @@ class Drone(BaseDrone):
         self,
         close_callback: Callable,
         operation_callback: Callable,
-        model: CVModel,
+        model_name: str,
     ) -> None:
         """Initialize and start video thread
 
         Args:
             close_callback (Callable): Callback to be invoked after closing the video thread
-            model (CVModel): Computer vision to run over the video stream
+            model_name (str): Computer vision to run over the video stream
             operation_callback (Callable): Callback to be invoked after each operation
 
         Raises:
             TypeError: Provided callback should be callable
         """
 
-        super().connect_video(close_callback, operation_callback, model)
+        super().connect_video(close_callback, operation_callback, model_name)
 
         self.video_thread = VideoThread(
             close_callback,
             operation_callback,
-            model,
+            model_name,
             self.ip_address,
         )
         self.video_thread.resume()

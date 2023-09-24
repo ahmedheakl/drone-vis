@@ -2,10 +2,9 @@
 from typing import Callable, Optional
 import logging
 import socket
-from inspect import getmro
 
-from dronevis.abstract import CVModel
 from dronevis.abstract.base_video_thread import BaseVideoThread
+from dronevis.models import models_list
 
 _LOG = logging.getLogger(__name__)
 
@@ -33,13 +32,13 @@ class BaseDrone:
         self,
         close_callback: Callable,
         operation_callback: Callable,
-        model: CVModel,
+        model_name: str,
     ) -> None:
         """Initialize and start video thread
 
         Args:
             close_callback (Callable): Callback to be invoked after closing the video thread
-            model (CVModel): Computer vision to run over the video stream
+            model_name (str): Computer vision to run over the video stream
             operation_callback (Callable): Callback to be invoked after each operation
 
         Raises:
@@ -56,10 +55,10 @@ class BaseDrone:
             _LOG.critical(err_message)
             raise TypeError(err_message)
 
-        if CVModel not in getmro(type(model)):
-            err_message = "Model provided is not an instance of ``CVModel``"
-            _LOG.error(err_message)
-            raise TypeError(err_message)
+        if model_name not in models_list:
+            err_message = f"Model {model_name} is not supported"
+            _LOG.critical(err_message)
+            raise ValueError(err_message)
 
     def disconnect_video(self) -> None:
         """Disconnect video stream"""

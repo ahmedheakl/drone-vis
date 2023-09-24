@@ -1,7 +1,7 @@
 """Implementation of a tkinter circular progress bar for the GUI"""
 import os
 import inspect
-from typing import Tuple
+from typing import Tuple, Callable
 from tkinter import Canvas, Button, messagebox
 from tkinter.ttk import Label, Frame
 from PIL import Image, ImageTk, ImageOps
@@ -14,6 +14,7 @@ from dronevis.config.gui import (
     MAIN_FONT,
     BUTTON_COLOR,
     FONT_COLOR,
+    TOGGLE_SIZE,
 )
 
 
@@ -232,3 +233,45 @@ class DataFrame(Frame):
 
         self.lbl_title.grid(row=0, column=0)
         self.canvas.grid(row=1, column=0)
+
+
+class ToggleButton(Button):
+    """Main tkinter button for GUI"""
+
+    def __init__(
+        self, master, open_callback: Callable, close_callback: Callable, *args, **kw
+    ) -> None:
+        """Contruct main button style
+
+        Args:
+            master (tkiner.Widget): parent of the button
+            message (str): message to be displayed in message box
+        """
+        super().__init__(master, *args, **kw)
+        package_path = os.path.dirname(inspect.getfile(dronevis))
+        on_img_path = f"{package_path}/assets/on.png"
+        off_img_path = f"{package_path}/assets/off.png"
+        on_img = Image.open(on_img_path)
+        on_img = on_img.resize(TOGGLE_SIZE, Image.Resampling.HAMMING)
+        off_img = Image.open(off_img_path)
+        off_img = off_img.resize(TOGGLE_SIZE, Image.Resampling.HAMMING)
+        self.on_img = ImageTk.PhotoImage(on_img)
+        self.off_img = ImageTk.PhotoImage(off_img)
+        self["image"] = self.off_img
+        self["font"] = MAIN_FONT
+        self["borderwidth"] = 0
+        self.is_on = False
+        self.open_callback = open_callback
+        self.close_callback = close_callback
+
+        self.bind("<Button-1>", self.on_toggle)
+
+    def on_toggle(self, _) -> None:
+        """Contruct message box"""
+        if self.is_on:
+            self["image"] = self.off_img
+            self.close_callback()
+        else:
+            self["image"] = self.on_img
+            self.open_callback()
+        self.is_on = not self.is_on

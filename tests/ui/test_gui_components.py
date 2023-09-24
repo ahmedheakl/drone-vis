@@ -6,7 +6,7 @@ import os
 import pytest
 
 from dronevis.ui.gui_components import CircularProgressbar, MainButton, DataFrame
-from dronevis.config.gui import MAIN_COLOR, WHITE_COLOR
+from dronevis.config.gui import BUTTON_COLOR, WHITE_COLOR, FONT_COLOR
 
 
 @pytest.fixture
@@ -85,8 +85,8 @@ def main_btn():
 @pytest.mark.skipif(os.environ.get("DISPLAY") is None, reason="requires display")
 def test_main_button_properties(main_btn):
     """Testing main button properties"""
-    assert main_btn["background"] == MAIN_COLOR
-    assert main_btn["foreground"] == WHITE_COLOR
+    assert main_btn["background"] == BUTTON_COLOR
+    assert main_btn["foreground"] == FONT_COLOR
     assert main_btn["activebackground"] == WHITE_COLOR
     assert main_btn["borderwidth"] == 0
     assert main_btn.message == "Hello, world!"

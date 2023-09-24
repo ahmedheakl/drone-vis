@@ -1,7 +1,6 @@
 """Implementation of VideoMAE for video classification."""
 from typing import Optional, Union, List
 import logging
-import time
 
 import torch
 import numpy as np
@@ -15,7 +14,7 @@ from transformers import (
 import cv2
 
 from dronevis.abstract import CVModel
-from dronevis.utils.general import device, write_fps
+from dronevis.utils.general import device
 
 _LOG = logging.getLogger(__name__)
 
@@ -26,6 +25,10 @@ class ActionRecognizer(CVModel):
     This class inherits from base class ``CVModel``, and implements
     its abstract methods for code integrity.
     """
+
+    ACTION_GOOGLE_WEGIHTS = "google/vivit-b-16x2-kinetics400"
+    ACTION_FACEBOOK_WEIGHTS = "facebook/timesformer-base-finetuned-k600"
+    ACTION_MCG_WEIGHTS = "MCG-NJU/videomae-base-finetuned-kinetics"
 
     def __init__(self, num_preds: int = 1) -> None:
         """Construct model instance
@@ -38,38 +41,47 @@ class ActionRecognizer(CVModel):
         self.model: Optional[VideoMAEForVideoClassification] = None
         self.image_processor: Optional[AutoImageProcessor] = None
 
-    def load_model(
-        self,
-        weights: str = "MCG-NJU/videomae-base-finetuned-kinetics",
-    ) -> None:
+    def load_model(self, model_name: str = "mcg") -> None:
         """Load model from memory
 
         Args:
-            weights (str, optional): Weights name to be downloaded from huggingface.
-            Defaults to "MCG-NJU/videomae-base-finetuned-kinetics".
+            model_name (str, optional): Type of the model to be used. There are
+            3 available types ["google", "mcg", "facebook"]. Defaults to "mcg".
         """
-        # self.model = VideoMAEForVideoClassification.from_pretrained(weights)
-
-        # self.image_processor = AutoImageProcessor.from_pretrained(weights)
-        # self.image_processor = AutoImageProcessor.from_pretrained(
-        #     "facebook/timesformer-base-finetuned-k600"
-        # )
-        # self.model = TimesformerForVideoClassification.from_pretrained(
-        #     "facebook/timesformer-base-finetuned-k600"
-        # )
-
-        self.image_processor = VivitImageProcessor.from_pretrained(
-            "google/vivit-b-16x2-kinetics400"
-        )
-        self.model = VivitModel.from_pretrained("google/vivit-b-16x2-kinetics400")
+        model_name = model_name.lower()
+        if model_name == "google":
+            self.image_processor = VivitImageProcessor.from_pretrained(
+                self.ACTION_GOOGLE_WEGIHTS
+            )
+            self.model = VivitModel.from_pretrained(self.ACTION_GOOGLE_WEGIHTS)
+        elif model_name == "mcg":
+            self.image_processor = AutoImageProcessor.from_pretrained(
+                self.ACTION_MCG_WEIGHTS
+            )
+            self.model = VideoMAEForVideoClassification.from_pretrained(
+                self.ACTION_MCG_WEIGHTS
+            )
+        elif model_name == "facebook":
+            self.image_processor = AutoImageProcessor.from_pretrained(
+                self.ACTION_FACEBOOK_WEIGHTS
+            )
+            self.model = TimesformerForVideoClassification.from_pretrained(
+                self.ACTION_FACEBOOK_WEIGHTS
+            )
+        else:
+            raise ValueError(
+                "Invalid model name. Please choose from [google, mcg, facebook]"
+            )
         self.model.to(device())
 
-    def transform_img(self, video: np.ndarray) -> np.ndarray:
+    def transform_img(self, image: np.ndarray) -> np.ndarray:
         """Transform input video
 
         Args:
-            video (np.ndarray): input video
+            image (np.ndarray): input video, using "image" just for
+            inheritance purpose
         """
+        video = image
         if self.image_processor is None:
             _LOG.error("Model not loaded")
             return video
@@ -78,18 +90,20 @@ class ActionRecognizer(CVModel):
         video_tensor.to(device())
         return video_tensor
 
-    def predict(self, video: np.ndarray) -> List[str]:
+    def predict(self, image: np.ndarray) -> np.ndarray:
         """Run model inference on the provided video
 
         Args:
-            video (np.ndarray): input video
+            image (np.ndarray): input video, using "image" just for
+            inheritance purpose
 
         Returns:
             List[str]: List of predicted labels
         """
+        video = image
         if self.model is None:
             _LOG.error("Model not loaded")
-            return []
+            return np.array([])
 
         video_tensor = self.transform_img(video)
         with torch.no_grad():
@@ -97,9 +111,9 @@ class ActionRecognizer(CVModel):
             logits = outputs.logits
 
         predicted_labels = logits.argmax(-1).tolist()
-        predicted_labels = [
-            self.model.config.id2label[label] for label in predicted_labels
-        ]
+        predicted_labels = np.array(
+            [self.model.config.id2label[label] for label in predicted_labels]
+        )
         return predicted_labels
 
     def detect_webcam(
@@ -120,7 +134,7 @@ class ActionRecognizer(CVModel):
         cap = cv2.VideoCapture(video_index)
         counter = 0
         frames: List[np.ndarray] = []
-        results: List[str] = ["None"]
+        results: np.ndarray = np.array(["None"])
         while True:
             _, frame = cap.read()
 
@@ -137,7 +151,7 @@ class ActionRecognizer(CVModel):
             counter += 1
             cv2.putText(
                 frame,
-                ", ".join(results),
+                ", ".join(list(results)),
                 (10, 30),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.7,

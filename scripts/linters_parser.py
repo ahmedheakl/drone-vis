@@ -24,13 +24,16 @@ def get_pylint_data() -> str:
     if pylint_status:
         pylint_data = "* Pylint: ran :ok:"
     else:
-        pylint_data = "* <details><summary>Pylint: problems :warning: (click for details)</summary>\n"
+        pylint_data = (
+            "* <details><summary>Pylint: problems :warning: "
+            + "(click for details)</summary>\n"
+        )
         pylint_data += f"\n\t```\n{pylint_errors}\t```\n"
         pylint_data += "</details>"
     return pylint_data
 
 
-def get_mypy_data() -> None:
+def get_mypy_data() -> str:
     """Retrieve mypy stats"""
     mypy_errors = ""
     with open(MYPY_FILE_NAME, "r", encoding="utf-8") as mypy_file:
