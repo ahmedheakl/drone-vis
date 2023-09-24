@@ -1,5 +1,5 @@
 """Interface for models implemented with PyTorch"""
-from typing import Union, Tuple, List, Optional
+from typing import Union, List, Optional
 import time
 import logging
 

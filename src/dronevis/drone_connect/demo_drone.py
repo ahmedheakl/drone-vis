@@ -5,7 +5,6 @@ import random
 import time
 from threading import Thread
 
-from dronevis.abstract import CVModel
 from dronevis.abstract.base_drone import BaseDrone
 from dronevis.abstract.base_video_thread import BaseVideoThread
 
@@ -21,12 +20,18 @@ class DemoDrone(BaseDrone):
         self.nav_thread: Optional[DemoNavThread] = None
         self.video_thread: Optional[DemoVideoThread] = None
 
-    def connect_video(self, callback: Callable, model: CVModel) -> None:
+    def connect_video(
+        self,
+        close_callback: Callable,
+        operation_callback: Callable,
+        model_name: str,
+    ) -> None:
         """Retrieve video stream by connecting to the video port
 
         Args:
-            callback (Callable): Callback after closing the video thread
-            model (CVModel): Computer vision model to run on the video stream
+            close_callback (Callable): Callback after closing the video thread
+            model_name (str): Computer vision model to run on the video stream
+            operation_callback (Callable): Callback after each operation
 
         Raises:
             TypeError: `callback` must be a callable
@@ -34,9 +39,13 @@ class DemoDrone(BaseDrone):
             interface
         """
 
-        super().connect_video(callback, model)
+        super().connect_video(close_callback, operation_callback, model_name)
 
-        self.video_thread = DemoVideoThread(callback, model)
+        self.video_thread = DemoVideoThread(
+            close_callback,
+            operation_callback,
+            model_name,
+        )
         self.video_thread.resume()
 
     def disconnect_video(self):
@@ -199,11 +208,18 @@ class DemoVideoThread(BaseVideoThread):
     def __init__(
         self,
         closing_callback: Callable,
-        model: CVModel,
+        operation_callback: Callable,
+        model_name: str,
         ip_address: str = "192.168.1.1",
-        video_index: Union[int, str] = 0,
+        video_index: Union[int, str] = "sample_dance.mp4",
     ) -> None:
-        super().__init__(closing_callback, model, ip_address, video_index)
+        super().__init__(
+            closing_callback,
+            operation_callback,
+            model_name,
+            ip_address,
+            video_index,
+        )
         self.frame = "Demo Video Capture"
 
 

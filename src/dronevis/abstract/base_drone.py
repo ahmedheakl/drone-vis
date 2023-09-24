@@ -2,10 +2,9 @@
 from typing import Callable, Optional
 import logging
 import socket
-from inspect import getmro
 
-from dronevis.abstract import CVModel
 from dronevis.abstract.base_video_thread import BaseVideoThread
+from dronevis.models import models_list
 
 _LOG = logging.getLogger(__name__)
 
@@ -29,26 +28,37 @@ class BaseDrone:
         except OSError:
             return False
 
-    def connect_video(self, callback: Callable, model: CVModel) -> None:
+    def connect_video(
+        self,
+        close_callback: Callable,
+        operation_callback: Callable,
+        model_name: str,
+    ) -> None:
         """Initialize and start video thread
 
         Args:
-            callback (Callable): Callback to be invoked after closing the video thread
-            model (CVModel): Computer vision to run over the video stream
+            close_callback (Callable): Callback to be invoked after closing the video thread
+            model_name (str): Computer vision to run over the video stream
+            operation_callback (Callable): Callback to be invoked after each operation
 
         Raises:
             TypeError: Provided callback should be callable
         """
 
-        if not hasattr(callback, "__call__"):
-            err_message = "Callback provided is not callable"
+        if not hasattr(close_callback, "__call__"):
+            err_message = "Close callback provided is not callable"
             _LOG.critical(err_message)
             raise TypeError(err_message)
 
-        if CVModel not in getmro(type(model)):
-            err_message = "Model provided is not an instance of ``CVModel``"
-            _LOG.error(err_message)
+        if not hasattr(operation_callback, "__call__"):
+            err_message = "Operation callback provided is not callable"
+            _LOG.critical(err_message)
             raise TypeError(err_message)
+
+        if model_name not in models_list:
+            err_message = f"Model {model_name} is not supported"
+            _LOG.critical(err_message)
+            raise ValueError(err_message)
 
     def disconnect_video(self) -> None:
         """Disconnect video stream"""

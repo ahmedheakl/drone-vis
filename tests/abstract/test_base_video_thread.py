@@ -5,8 +5,6 @@ import os
 import pytest
 
 from dronevis.abstract.base_video_thread import BaseVideoThread
-from dronevis.models.face_detection import FaceDetectModel
-from dronevis.models import SSD
 
 TEST_DATA_PATH = os.getenv("TEST_DATA_PATH", "")
 VIDEO_PATH = TEST_DATA_PATH + "/test_video.avi"
@@ -15,8 +13,6 @@ VIDEO_PATH = TEST_DATA_PATH + "/test_video.avi"
 class DummyTest:
     """Dummy class for testing"""
 
-    pass
-
 
 @pytest.fixture(scope="session")
 def vid_thread() -> Generator[BaseVideoThread, None, None]:
@@ -24,9 +20,8 @@ def vid_thread() -> Generator[BaseVideoThread, None, None]:
     and callback"""
     BaseVideoThread._instances = {}
     closing_callback = lambda: None
-    model = FaceDetectModel()
-    model.load_model()
-    thread = BaseVideoThread(closing_callback, model)
+    operating_callback = lambda: None
+    thread = BaseVideoThread(closing_callback, operating_callback, "Face")
     thread.video_index = VIDEO_PATH
     yield thread
 
@@ -42,21 +37,22 @@ def close_video_thread(vid_thread: BaseVideoThread):
     BaseVideoThread._instances = {}
 
 
-@pytest.mark.parametrize(
-    "callback, model",
-    [
-        ("WRONG", "WRONG"),
-        ("WRONG", FaceDetectModel()),
-        (lambda: 3, "WRONG"),
-    ],
-)
-def test_initialize_thread_with_wrong_types(callback, model):
+def test_initialize_thread_with_wrong_types():
     """Thread class should catch and handle errors if user provided
     a wrong type of either a callback or a model.
     """
     BaseVideoThread._instances = {}
     with pytest.raises(TypeError):
-        BaseVideoThread(callback, model)
+        BaseVideoThread("Wrong", "Wrong", "Face")
+
+
+def test_initialize_thread_with_wrong_model():
+    """Thread class should catch and handle errors if user provided
+    a wrong model name.
+    """
+    BaseVideoThread._instances = {}
+    with pytest.raises(ValueError):
+        BaseVideoThread(lambda: None, lambda: None, "Wrong")
 
 
 def test_change_model_with_wrong_type():
@@ -66,20 +62,13 @@ def test_change_model_with_wrong_type():
     """
     BaseVideoThread._instances = {}
     closing_callback = lambda: None
-    model = FaceDetectModel()
-    model.load_model()
-    thread = BaseVideoThread(closing_callback, model, video_index=VIDEO_PATH)
-    with pytest.raises(TypeError):
-        thread.change_model(DummyTest())  # type: ignore
-
-
-def test_change_model_with_right_type():
-    closing_callback = lambda: None
-    face_detect_model = FaceDetectModel()
-    thread = BaseVideoThread(closing_callback, face_detect_model)
-    ssd_model = SSD()
-    thread.change_model(ssd_model)
-    assert thread.model == ssd_model
+    thread = BaseVideoThread(
+        closing_callback,
+        closing_callback,
+        "Face",
+    )
+    with pytest.raises(ValueError):
+        thread.change_model("Wrong")  # type: ignore
 
 
 def test_consecutive_threads():
@@ -87,23 +76,19 @@ def test_consecutive_threads():
     should not get stuck.
     """
     closing_callback = lambda: None
-    model = FaceDetectModel()
-    model.load_model()
-    thread1 = BaseVideoThread(closing_callback, model)
+    thread1 = BaseVideoThread(closing_callback, closing_callback, "Face")
     thread1.video_index = VIDEO_PATH
     assert thread1.video_index == VIDEO_PATH
     thread1.show_window = False
-    assert thread1.show_window == False
+    assert not thread1.show_window
     thread1.resume()
     time.sleep(2)
     thread1.stop()
     time.sleep(0.1)
 
     closing_callback = lambda: None
-    model = FaceDetectModel()
-    model.load_model()
-    thread2 = BaseVideoThread(closing_callback, model)
-    assert thread2.running == False
+    thread2 = BaseVideoThread(closing_callback, closing_callback, "Face")
+    assert not thread2.running
     thread2.video_index = VIDEO_PATH
     thread2.show_window = False
     thread2.resume()
@@ -120,4 +105,4 @@ def test_running_is_equal_true(vid_thread: BaseVideoThread):
     vid_thread.resume()
     assert vid_thread.running
     vid_thread.stop()
-    assert vid_thread.running == False
+    assert not vid_thread.running

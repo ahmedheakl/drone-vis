@@ -3,12 +3,14 @@ from typing import Union, Optional
 import time
 import copy
 import itertools
+from tkinter.ttk import Label
 
 import cv2
 import mediapipe as mp
 import numpy as np
 import torch
 from torch import nn
+from PIL import Image, ImageTk
 
 from dronevis.abstract import CVModel
 from dronevis.utils.general import write_fps, download_file, device
@@ -63,6 +65,7 @@ class GestureRecognition(CVModel):
 
         self.keypoints_classifier: Optional[nn.Module] = None
         self.hands: Optional[mp.solutions.hands.Hands] = None
+        self.is_frame_detection = False
 
     def load_model(self, weights_path: Optional[str] = None) -> None:
         """Load model from memory"""
@@ -187,6 +190,42 @@ class GestureRecognition(CVModel):
                     break
         cv2.destroyAllWindows()
         cap.release()
+
+    def on_frame_detect(self, label: Label, video_index: Union[int, str] = 0) -> None:
+        """Run detection on tkinter label
+
+        Args:
+            label (Label): Tkinter label to view output
+            video_index (int, optional): Index of the video device. Defaults to 0.
+        """
+        cap = cv2.VideoCapture(video_index)
+        self.is_frame_detection = True
+
+        def update_frame(label, cap):
+            with self.mp_hands.Hands(
+                model_complexity=0,
+                min_detection_confidence=self.min_detection_confidence,
+                min_tracking_confidence=self.min_tracking_confidence,
+            ) as self.hands:
+                ret, frame = cap.read()
+                if ret is False:
+                    return
+                image = self.predict(frame)
+                img = Image.fromarray(image)
+                img = img.resize((640, 480), Image.BILINEAR)
+                imgtk = ImageTk.PhotoImage(image=img)
+                label.imgtk = imgtk
+                label.configure(image=imgtk)
+            if self.is_frame_detection:
+                label.after(1, update_frame, label, cap)
+            else:
+                cap.release()
+
+        update_frame(label, cap)
+
+    def stop_frame_detection(self) -> None:
+        """Stop frame detection"""
+        self.is_frame_detection = False
 
     def _calc_landmark_list(
         self,

@@ -1,13 +1,13 @@
 """Interface for video thread"""
+# mypy: ignore-errors
 import threading
 from typing import Callable, Union
 import logging
-from inspect import getmro
 import time
 import cv2
 
-from dronevis.abstract.abstract_model import CVModel
 from dronevis.utils.general import write_fps
+from dronevis.models.model_factory import ModelFactory
 
 _LOG = logging.getLogger(__name__)
 
@@ -34,24 +34,31 @@ class BaseVideoThread(threading.Thread, metaclass=Singleton):
     def __init__(
         self,
         closing_callback: Callable,
-        model: CVModel,
+        operation_callback: Callable,
+        model_name: str,
         ip_address: str = "192.168.1.1",
         video_index: Union[int, str] = 0,
     ):
-        if CVModel not in getmro(type(model)):
-            err_message = "Model provided is not an instance of ``CVModel``"
-            _LOG.error(err_message)
-            raise TypeError(err_message)
-
         if not hasattr(closing_callback, "__call__"):
-            err_message = "Callback provided is not callable"
+            err_message = "Close callback provided is not callable"
             _LOG.critical(err_message)
             raise TypeError(err_message)
 
+        if not hasattr(operation_callback, "__call__"):
+            err_message = "Operation callback provided is not callable"
+            _LOG.critical(err_message)
+            raise TypeError(err_message)
+
+        if model_name not in ModelFactory.models_list:
+            err_message = f"Model {model_name} is not supported"
+            _LOG.critical(err_message)
+            raise ValueError(err_message)
+
         super().__init__()
         self.close_callback = closing_callback
+        self.operation_callback = operation_callback
         self.ip_address = ip_address
-        self.model = model
+        self.model = ModelFactory.create_model(model_name)
         self.running = False
         self._video_index = video_index
         self.is_stopped = False
@@ -64,9 +71,10 @@ class BaseVideoThread(threading.Thread, metaclass=Singleton):
         """Create video stream and view frames"""
         if not self.cap.isOpened():
             _LOG.warning("Error while trying to read video. Please check path again")
-
-        prev_time = 0.0
+        prev_time = time.perf_counter()
         while not self.is_stopped:
+            fps = 1 / (time.perf_counter() - prev_time)
+            prev_time = time.perf_counter()
             if not self.running:
                 if not self.is_destroyed:
                     cv2.destroyWindow(self.frame_name)
@@ -87,14 +95,13 @@ class BaseVideoThread(threading.Thread, metaclass=Singleton):
                 continue
 
             self.is_destroyed = False
-            frame = self.model.predict(frame)
-            cur_time = time.time()
-            fps = 1 / (cur_time - prev_time)
-            prev_time = cur_time
-            cv2.imshow(self.frame_name, write_fps(frame, fps))
-
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                self.stop()
+            output_image = self.model.predict(frame)
+            output_image = write_fps(output_image, fps)
+            self.operation_callback(output_image, frame)
+            predict_time = int((time.perf_counter() - prev_time) * 1000)
+            if predict_time > 30:
+                continue
+            time.sleep((30 - predict_time) / 1000)
 
         _LOG.info("Closing video stream ...")
         self.cap.release()
@@ -123,15 +130,10 @@ class BaseVideoThread(threading.Thread, metaclass=Singleton):
         """Setter for show window property"""
         self._show_window = is_shown
 
-    def change_model(self, model: CVModel):
+    def change_model(self, model_name: str):
         """Change computer vision model running on the video stream"""
 
-        if CVModel not in getmro(type(model)):
-            err_message = "Model provided is not an instance of ``CVModel``"
-            _LOG.error(err_message)
-            raise TypeError(err_message)
-
-        self.model = model
+        self.model = ModelFactory.create_model(model_name)
         _LOG.debug("Model for video thread changed")
 
     def stop(self) -> None:

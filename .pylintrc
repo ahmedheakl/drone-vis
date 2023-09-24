@@ -1,5 +1,5 @@
 [MESSAGES CONTROL]
-disable=not-callable,no-member,duplicate-code
+disable=not-callable,no-member,duplicate-code,too-many-ancestors,too-many-instance-attributes,too-many-arguments,too-many-public-methods
 
 [MASTER]
 ignore-patterns=tests/*

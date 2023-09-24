@@ -5,7 +5,6 @@ import struct
 import time
 import socket
 
-from dronevis.abstract import CVModel
 from dronevis.abstract.base_drone import BaseDrone
 from dronevis.drone_connect.video import VideoThread
 from dronevis.drone_connect.command import Command
@@ -34,20 +33,31 @@ class Drone(BaseDrone):
         self.nav_thread: Optional[Navdata] = None
         self.com: Optional[Callable[[str], bool]] = None
 
-    def connect_video(self, callback: Callable, model: CVModel) -> None:
+    def connect_video(
+        self,
+        close_callback: Callable,
+        operation_callback: Callable,
+        model_name: str,
+    ) -> None:
         """Initialize and start video thread
 
         Args:
-            callback (Callable): Callback to be invoked after closing the video thread
-            model (CVModel): Computer vision to run over the video stream
+            close_callback (Callable): Callback to be invoked after closing the video thread
+            model_name (str): Computer vision to run over the video stream
+            operation_callback (Callable): Callback to be invoked after each operation
 
         Raises:
             TypeError: Provided callback should be callable
         """
 
-        super().connect_video(callback=callback, model=model)
+        super().connect_video(close_callback, operation_callback, model_name)
 
-        self.video_thread = VideoThread(callback, model, self.ip_address)
+        self.video_thread = VideoThread(
+            close_callback,
+            operation_callback,
+            model_name,
+            self.ip_address,
+        )
         self.video_thread.resume()
         _LOG.debug("Initialized video thread")
 
@@ -75,7 +85,6 @@ class Drone(BaseDrone):
             _LOG.critical(err_message)
             raise ConnectionError(err_message)
         try:
-
             self.com_thread = Command(self.ip_address)
             self.com = self.com_thread.command  # Alias
             self.com_thread.start()

@@ -106,18 +106,18 @@ def test_video_thread_should_not_close_when_disconnect_video() -> None:
     """
     closing_callback = lambda: None
     DemoVideoThread._instances = {}
-    model = FaceDetectModel()
-    model.load_model()
-    _ = DemoVideoThread(closing_callback, model, video_index=TEST_VIDEO)
+    _ = DemoVideoThread(
+        closing_callback, closing_callback, "Face", video_index=TEST_VIDEO
+    )
     drone = DemoDrone()
-    drone.connect_video(closing_callback, model)
+    drone.connect_video(closing_callback, closing_callback, "Face")
     assert drone.video_thread is not None
     assert drone.video_thread.running
 
     drone.disconnect_video()
     assert drone.video_thread is not None
-    assert drone.video_thread.is_stopped == False
-    assert drone.video_thread.running == False
+    assert not drone.video_thread.is_stopped
+    assert not drone.video_thread.running
 
 
 def test_stop_video_thread(capsys):
@@ -126,9 +126,7 @@ def test_stop_video_thread(capsys):
     """
     init_logger("debug")
     drone = DemoDrone()
-    model = FaceDetectModel()
-    model.load_model()
-    drone.connect_video(print, model)
+    drone.connect_video(print, print, "Face")
     assert drone.video_thread is not None
     assert drone.video_thread.running
     time.sleep(2)
@@ -157,7 +155,7 @@ def test_set_callback():
     should set the provided callback as a callback for nav thread
     """
     drone = DemoDrone()
-    callback = lambda navdata: None
+    callback = lambda _: None
     drone.set_callback(callback)
     assert drone.nav_thread is not None
     assert drone.nav_thread.callback == callback
