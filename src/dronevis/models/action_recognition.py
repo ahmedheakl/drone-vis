@@ -38,7 +38,7 @@ class ActionRecognizer(CVModel):
             Defaults to 1.
         """
         self.num_preds = num_preds
-        self.model: Optional[VideoMAEForVideoClassification] = None
+        self.net: Optional[VideoMAEForVideoClassification] = None
         self.image_processor: Optional[AutoImageProcessor] = None
 
     def load_model(self, model_name: str = "mcg") -> None:
@@ -53,26 +53,26 @@ class ActionRecognizer(CVModel):
             self.image_processor = VivitImageProcessor.from_pretrained(
                 self.ACTION_GOOGLE_WEGIHTS
             )
-            self.model = VivitModel.from_pretrained(self.ACTION_GOOGLE_WEGIHTS)
+            self.net = VivitModel.from_pretrained(self.ACTION_GOOGLE_WEGIHTS)
         elif model_name == "mcg":
             self.image_processor = AutoImageProcessor.from_pretrained(
                 self.ACTION_MCG_WEIGHTS
             )
-            self.model = VideoMAEForVideoClassification.from_pretrained(
+            self.net = VideoMAEForVideoClassification.from_pretrained(
                 self.ACTION_MCG_WEIGHTS
             )
         elif model_name == "facebook":
             self.image_processor = AutoImageProcessor.from_pretrained(
                 self.ACTION_FACEBOOK_WEIGHTS
             )
-            self.model = TimesformerForVideoClassification.from_pretrained(
+            self.net = TimesformerForVideoClassification.from_pretrained(
                 self.ACTION_FACEBOOK_WEIGHTS
             )
         else:
             raise ValueError(
                 "Invalid model name. Please choose from [google, mcg, facebook]"
             )
-        self.model.to(device())
+        self.net.to(device())
 
     def transform_img(self, image: np.ndarray) -> np.ndarray:
         """Transform input video
@@ -101,18 +101,18 @@ class ActionRecognizer(CVModel):
             List[str]: List of predicted labels
         """
         video = image
-        if self.model is None:
-            _LOG.error("Model not loaded")
-            return np.array([])
+        if self.net is None:
+            self.load_model()
+            assert self.net
 
         video_tensor = self.transform_img(video)
         with torch.no_grad():
-            outputs = self.model(**video_tensor)
+            outputs = self.net(**video_tensor)
             logits = outputs.logits
 
         predicted_labels = logits.argmax(-1).tolist()
         predicted_labels = np.array(
-            [self.model.config.id2label[label] for label in predicted_labels]
+            [self.net.config.id2label[label] for label in predicted_labels]
         )
         return predicted_labels
 

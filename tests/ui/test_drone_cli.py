@@ -1,6 +1,6 @@
 """Testing dronevis cli"""
 from unittest.mock import MagicMock, Mock
-
+from typing import Generator
 import pytest
 
 from dronevis.ui.drone_cli import DroneCli
@@ -8,7 +8,7 @@ from dronevis.abstract.base_drone import BaseDrone
 
 
 @pytest.fixture
-def cli() -> DroneCli:
+def cli() -> Generator[DroneCli, None, None]:
     """Fixture to create a cli instance"""
     drone_cli = DroneCli()
     yield drone_cli
