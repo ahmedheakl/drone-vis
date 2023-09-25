@@ -78,5 +78,5 @@ def test_detect_webcam(monkeypatch, mocker):
     model.load_model()
     model.detect_webcam()
     args, _ = imshow_mock.call_args
-    assert args[1].shape == (100, 100, 3)
+    assert args[1].shape == (250, 250, 3)
     assert args[0].lower() == "Gesture Recognition".lower()

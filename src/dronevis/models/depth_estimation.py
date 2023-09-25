@@ -24,7 +24,7 @@ class DepthEstimator(CVModel):
     """
 
     def __init__(self) -> None:
-        self.model: Optional[DepthEstimationPipeline] = None
+        self.net: Optional[DepthEstimationPipeline] = None
 
     def load_model(self, model_name: str = "vinvino02/glpn-nyu") -> None:
         """Load the model from huggingface model hub
@@ -32,7 +32,7 @@ class DepthEstimator(CVModel):
         Args:
             model_name (str, optional): Model name to load. Defaults to "vinvino02/glpn-nyu".
         """
-        self.model = pipeline(
+        self.net = pipeline(
             task="depth-estimation",
             model=model_name,
             device=device(),
@@ -61,9 +61,13 @@ class DepthEstimator(CVModel):
         Returns:
             np.ndarray: Predicted image with bounding boxes drawn.
         """
-        assert self.model, "Please load the model first"
+        if self.net is None:
+            _LOG.warning("Model not loaded. Loading default model ...")
+            self.load_model()
+            assert self.net
+
         image = self.transform_img(image)
-        result = self.model(image)
+        result = self.net(image)
         return np.array(result["depth"])
 
     def detect_webcam(

@@ -67,15 +67,16 @@ class YOLOv5(CVModel):
         Returns:
             torch.hub.models.self.common.Detections: detections object
         """
-        assert (
-            self.net
-        ), "Please load the model first by invoking the ``load_model`` method."
+        if self.net is None:
+            _LOG.warning("Model not loaded. Loading default model...")
+            self.load_model()
+            assert self.net
         return self.net(image).render()[0]
 
     def detect_webcam(
         self,
         video_index: Union[str, int] = 0,
-        window_name: str = "Cam Detection",
+        window_name: str = "YOLOv5 Detection",
     ) -> None:
         """Start webcam detection from video_index
         *(to quit running this function press 'q')*
@@ -88,6 +89,9 @@ class YOLOv5(CVModel):
             window_name (str, optional): name of cv2 window. Defaults to "Cam Detection".
         """
         cap: cv2.VideoCapture = cv2.VideoCapture(video_index)
+        if not cap.isOpened():
+            _LOG.error("Cannot open camera")
+            return
         prev_time = 0.0
         while True:
             _, frame = cap.read()

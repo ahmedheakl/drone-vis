@@ -51,9 +51,9 @@ class CrowdCounter(CVModel):
             np.ndarray: Crowd count
         """
         if self.net is None:
+            _LOG.warning("Model is not loaded. Loading model...")
             self.load_model()
             assert self.net is not None
-            _LOG.warning("Please load logger first")
 
         image = self.transform_img(image)
         density_map = self.net(image)

@@ -64,7 +64,3 @@ def main(arguments: Optional[Sequence[str]] = None) -> None:
 
     except (ValueError, AssertionError) as error:
         _LOG.error("An error occured: %s", error)
-
-
-if __name__ == "__main__":
-    main()

@@ -25,11 +25,14 @@ class GestureThread(threading.Thread):
     def run(self) -> None:
         """Run the thread"""
         self.model.on_frame_detect(self.label, self.video_index)
+        self.running = False
 
     def resume(self) -> None:
         """Resume the thread"""
         self.model.on_frame_detect(self.label, self.video_index)
+        self.running = False
 
     def stop(self) -> None:
         """Stop the thread"""
         self.model.stop_frame_detection()
+        self.running = False

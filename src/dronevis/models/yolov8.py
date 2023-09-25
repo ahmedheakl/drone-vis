@@ -18,7 +18,7 @@ class YOLOv8(CVModel):
     """YOLOv8 implementation with ultralytics model (inherits from CVModel)"""
 
     def __init__(self, track: bool = False) -> None:
-        self.model: Optional[YOLO] = None
+        self.net: Optional[YOLO] = None
         self.track = track
 
     @abstractmethod
@@ -54,17 +54,21 @@ class YOLOv8(CVModel):
         Returns:
             np.ndarray: Predicted image with bounding boxes drawn.
         """
-        assert self.model, "Please load the model first"
+        if self.net is None:
+            _LOG.warning("Model is not loaded. Loading default model...")
+            self.load_model()
+            assert self.net
+
         device_number = 0 if device() == "cuda" else "cpu"
         if track or self.track:
-            results = self.model.track(
+            results = self.net.track(
                 image,
                 stream=False,
                 conf=confidence,
                 device=device_number,
             )
         else:
-            results = self.model(
+            results = self.net(
                 image,
                 stream=False,
                 conf=confidence,
@@ -75,7 +79,7 @@ class YOLOv8(CVModel):
     def detect_webcam(
         self,
         video_index: Union[str, int] = 0,
-        window_name="Cam Detection",
+        window_name="YOLOv8",
         track: bool = False,
     ):
         """Run web cam detection with yolov8 model
@@ -90,8 +94,9 @@ class YOLOv8(CVModel):
         cap = cv2.VideoCapture(video_index)
         if not cap.isOpened():
             _LOG.warning("Something is wrong with the video feed")
+            return
 
-        while cap.isOpened():
+        while True:
             prev_time = time.time()
             _, frame = cap.read()
             image = self.predict(frame, track=track)
@@ -115,8 +120,8 @@ class YOLOv8Detection(YOLOv8):
             weights in the ultralytics website which will be downloaded automatically.
             Defaults to "yolov8.pt".
         """
-        self.model = YOLO(model_weights)
-        self.model.to(device())
+        self.net = YOLO(model_weights)
+        self.net.to(device())
 
 
 class YOLOv8Segmentation(YOLOv8):
@@ -130,8 +135,8 @@ class YOLOv8Segmentation(YOLOv8):
             weights in the ultralytics website which will be downloaded automatically.
             Defaults to "yolov8-seg.pt".
         """
-        self.model = YOLO(model_weights)
-        self.model.to(device())
+        self.net = YOLO(model_weights)
+        self.net.to(device())
 
 
 class YOLOv8Pose(YOLOv8):
@@ -145,5 +150,5 @@ class YOLOv8Pose(YOLOv8):
             weights in the ultralytics website which will be downloaded automatically.
             Defaults to "yolov8-pose.pt".
         """
-        self.model = YOLO(model_weights)
-        self.model.to(device())
+        self.net = YOLO(model_weights)
+        self.net.to(device())
