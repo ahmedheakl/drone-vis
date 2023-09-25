@@ -1,6 +1,5 @@
 """Test the GUI components module"""
 from tkinter import Canvas, Tk
-from unittest import mock
 import os
 
 import pytest
