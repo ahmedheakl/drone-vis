@@ -211,7 +211,7 @@ class DemoVideoThread(BaseVideoThread):
         operation_callback: Callable,
         model_name: str,
         ip_address: str = "192.168.1.1",
-        video_index: Union[int, str] = "solidWhiteRight.mp4",
+        video_index: Union[int, str] = 0,
     ) -> None:
         super().__init__(
             closing_callback,
