@@ -33,7 +33,7 @@ def test_write_fps_with_invalid_input():
     image = np.zeros((500, 500, 3), dtype=np.uint8)
     fps = "invalid"
     with pytest.raises(ValueError):
-        out_image = write_fps(image, fps)
+        _ = write_fps(image, fps)
 
     fps = ["dronevis"]
     with pytest.raises(AssertionError):
@@ -130,13 +130,14 @@ def test_find_file_is_root_directory():
 def test_device_returns_cpu_when_cuda_not_available():
     """Test that device returns 'cpu' when cuda is not available"""
     with torch.cuda.device(-1):
-        assert device() == "cpu"
+        assert device() == torch.device("cpu")
 
 
 def test_device_returns_custom_device_from_environment_variable():
     """Test that device returns a custom device from an environment variable"""
     os.environ["DEVICE"] = "custom_device"
-    assert device() == "custom_device"
+    with pytest.raises(RuntimeError):
+        assert device() == "custom_device"
     del os.environ["DEVICE"]
 
 

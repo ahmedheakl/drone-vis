@@ -203,7 +203,8 @@ def download_file(file_url: str, file_name: str) -> str:
     return model_weights_path
 
 
-def device() -> str:
+def device() -> torch.device:
     """Returns the device to be used for inference"""
     device_name = os.getenv("DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
-    return device_name
+    device_type = torch.device(device_name)
+    return device_type
