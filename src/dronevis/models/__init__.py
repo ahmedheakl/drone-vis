@@ -10,6 +10,7 @@ from dronevis.models.yolov8 import YOLOv8Detection, YOLOv8Segmentation, YOLOv8Po
 from dronevis.models.depth_estimation import DepthEstimator
 from dronevis.models.action_recognition import ActionRecognizer
 from dronevis.models.croud_count import CrowdCounter
+from dronevis.models.road_segmentation import RoadSegmentation, LaneDetection
 
 
 models_list = {
@@ -29,4 +30,6 @@ models_list = {
     "ActionFacebook": ActionRecognizer,
     "ActionMCG": ActionRecognizer,
     "DepthEstimator": DepthEstimator,
+    "RoadSegmentation": RoadSegmentation,
+    "LaneDetection": LaneDetection,
 }
