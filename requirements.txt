@@ -21,3 +21,4 @@ ultralytics
 transformers~=4.31.0
 ezcrowdcount
 prefetch_generator
+dlib

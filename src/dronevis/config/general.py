@@ -32,6 +32,26 @@ MODELS_URLS = {
         "https://drive.google.com/uc?export=download&id=1FTJWeavbHwmu9Vkr_M5k5mV4Lt8sWGFo",
         "gesture_recognition.pth",
     ],
+    "dnn_face_detection_caffee": [
+        "https://drive.google.com/uc?export=download&id=1xC99ZJFZbjw7jQUtMmLmFtGEOm3eJEBQ",
+        "res10_300x300_ssd_iter_140000_fp16.caffemodel",
+    ],
+    "dnn_face_detection_protof": [
+        "https://drive.google.com/uc?export=download&id=1k5Bp7dYL5eKC38mtUb6YFmkX7YFiWaA1",
+        "deploy.prototxt",
+    ],
+    "dnn_face_detection_tf": [
+        "https://drive.google.com/uc?export=download&id=1A3tUaJxTA4dkoY7kaky87ITkL3ovh4gy",
+        "opencv_face_detector_uint8.pb",
+    ],
+    "dnn_face_detection_tf_txt": [
+        "https://drive.google.com/uc?export=download&id=1sCEe7AujTd0OiJg-3ieNB-GjFQOf4Bz3",
+        "opencv_face_detector.pbtxt",
+    ],
+    "cnn_face_detection": [
+        "https://drive.google.com/uc?export=download&id=1ttZzN2x-DzkhuKDxZxEQtp5bu6794dWD",
+        "mmod_human_face_detector.dat",
+    ],
 }
 
 GESTURES_LABELS = {

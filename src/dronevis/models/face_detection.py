@@ -69,14 +69,12 @@ class FaceDetectModel(CVModel):
             window_name (str, optional): name of opencv window. Defaults to "Face Detection".
         """
         cap = cv2.VideoCapture(video_index)
-        prev_time = 0.0
         while True:
             _, frame = cap.read()
-            cur_time = time.time()
+            prev_time = time.perf_counter()
             image = self.predict(frame)
-            fps = 1 / (cur_time - prev_time)
+            fps = 1 / (time.perf_counter() - prev_time)
             cv2.imshow(window_name, write_fps(image, fps))
-            prev_time = cur_time
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 

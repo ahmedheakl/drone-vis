@@ -11,6 +11,10 @@ from dronevis.models.depth_estimation import DepthEstimator
 from dronevis.models.action_recognition import ActionRecognizer
 from dronevis.models.croud_count import CrowdCounter
 from dronevis.models.road_segmentation import RoadSegmentation, LaneDetection
+from dronevis.models.haar_face_detection import HaarFaceDetection
+from dronevis.models.cnn_face_detection import CNNFaceDetection
+from dronevis.models.dnn_face_detection import DNNFaceDetection
+from dronevis.models.hog_face_detection import HOGFaceDetection
 
 
 models_list = {
@@ -32,4 +36,8 @@ models_list = {
     "DepthEstimator": DepthEstimator,
     "RoadSegmentation": RoadSegmentation,
     "LaneDetection": LaneDetection,
+    "HaarFaceDetector": HaarFaceDetection,
+    "HOGFaceDetector": HOGFaceDetection,
+    "CNNFaceDetector": CNNFaceDetection,
+    "DNNFaceDetector": DNNFaceDetection,
 }
