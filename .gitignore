@@ -76,3 +76,4 @@ dronevis-features.md
 *.cfg
 *.ipynb
 test_data
+val_data

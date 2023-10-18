@@ -9,7 +9,7 @@ from ultralytics import YOLO
 import cv2
 
 from dronevis.abstract.abstract_model import CVModel
-from dronevis.utils.general import write_fps, device
+from dronevis.utils.general import write_fps
 
 _LOG = logging.getLogger(__name__)
 
@@ -57,22 +57,19 @@ class YOLOv8(CVModel):
         if self.net is None:
             _LOG.warning("Model is not loaded. Loading default model...")
             self.load_model()
-            assert self.net
+            assert self.net, "Model could not be loaded"
 
-        device_number = 0 if device() == "cuda" else "cpu"
         if track or self.track:
             results = self.net.track(
                 image,
                 stream=False,
                 conf=confidence,
-                device=device_number,
             )
         else:
             results = self.net(
                 image,
                 stream=False,
                 conf=confidence,
-                device=device_number,
             )
         return results[0].plot()
 
@@ -97,10 +94,10 @@ class YOLOv8(CVModel):
             return
 
         while True:
-            prev_time = time.time()
+            prev_time = time.perf_counter()
             _, frame = cap.read()
             image = self.predict(frame, track=track)
-            fps = 1 / (time.time() - prev_time)
+            fps = 1 / (time.perf_counter() - prev_time)
             cv2.imshow(window_name, write_fps(image, fps))
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -121,7 +118,6 @@ class YOLOv8Detection(YOLOv8):
             Defaults to "yolov8.pt".
         """
         self.net = YOLO(model_weights)
-        self.net.to(device())
 
 
 class YOLOv8Segmentation(YOLOv8):
@@ -136,7 +132,6 @@ class YOLOv8Segmentation(YOLOv8):
             Defaults to "yolov8-seg.pt".
         """
         self.net = YOLO(model_weights)
-        self.net.to(device())
 
 
 class YOLOv8Pose(YOLOv8):
@@ -151,4 +146,3 @@ class YOLOv8Pose(YOLOv8):
             Defaults to "yolov8-pose.pt".
         """
         self.net = YOLO(model_weights)
-        self.net.to(device())

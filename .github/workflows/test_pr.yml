@@ -5,7 +5,7 @@ on: pull_request
 jobs:
   Testing:
     runs-on: ubuntu-latest
-    name: An example job to comment a PR
+    name: Test PR
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -23,7 +23,7 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pytest --cov=dronevis tests
+          pytest --cov=src/dronevis tests
           echo "${PIPESTATUS[0]}" |& tee coverage_status.log
           python3 -m coverage report --ignore-errors --show-missing |& tee coverage.log
 
