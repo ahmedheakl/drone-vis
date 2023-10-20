@@ -56,15 +56,10 @@ pip install dronevis # install the library
 dronevis-gui # run library GUI
 ```
 
-<p align="center">
-<img src="imgs/dronevis-gui.png" width=700>
-</p>
-
 Press the ``start`` button to start a demo drone simulation, and run your favourite algorithms with the ``stream`` button.
 
-
 <p align="center">
-<img src="imgs/dronevis-gui-demo.png" width=700>
+<img src="imgs/dronevis-gui.jpeg" width=700>
 </p>
 
 You can control your drone with our ``CLI``:
