@@ -111,6 +111,6 @@ To cite this repository:
   title   = {Dronevis: Full compatible drone library to automate computer vision algorithms on parrot drones},
   year    = {2023},
   url     = {github.com/ahmedheakl/drone-vis},
-  version = {1.2.1}
+  version = {1.3.0}
 }
 ```

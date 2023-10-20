@@ -14,7 +14,7 @@ Or just run the following to the default
 
 Version
 ------------------
- - dronevis v1.2.1
+ - dronevis v1.3.0
 """
 from typing import Optional, Sequence
 import logging
