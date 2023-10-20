@@ -77,3 +77,4 @@ dronevis-features.md
 *.ipynb
 test_data
 val_data
+inference_output

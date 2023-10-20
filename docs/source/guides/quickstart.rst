@@ -14,8 +14,9 @@ You can simply run the GUI interface as follows, which opens-up the GUI window u
 
    (.dronevisvenv) $ dronevis-gui
 
-.. image:: gui-main.png
+.. image:: dronevis-gui.jpeg
   :width: 600
+  :align: center
   :alt: Main GUI Window
 
 
@@ -23,6 +24,7 @@ You can *right-click* on any button to view its functionality. For example, here
 
 .. image:: gui-btn-info.png
   :width: 600
+  :align: center
   :alt: GUI Sample Button Info
 
 
@@ -57,4 +59,5 @@ You can control the drone using hand gestures. We developed a model to detect ac
 
 .. image:: hand-gestures.png
   :width: 700
+  :align: center
   :alt: Hand Gesture Control

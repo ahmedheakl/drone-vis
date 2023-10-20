@@ -80,10 +80,17 @@ The library supports all of the following drone controls. The drone can be contr
    detection/fasterrcnn
 
 .. toctree::
+   :maxdepth: 1
+   :caption: Instance Segmentation
+
+   segmentation/yolov8_segment
+
+.. toctree::
    :maxdepth: 2
    :caption: Pose Estimation
 
-   pose/pose
+   pose/mediapipe
+   pose/yolov8_pose
 
 .. toctree::
    :maxdepth: 1
@@ -95,6 +102,29 @@ The library supports all of the following drone controls. The drone can be contr
    face_detect/hog_face_detection
    face_detect/dlib_cnn_face_detection
    face_detect/opencv_dnn_face_detection
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Crowd Counting
+
+   crowd_counting/mtl_counting.rst
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Depth Estimation
+
+   depth_estimation/glp_depth
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Action Recognition
+
+   action_recognition/action_recognition_models
+   action_recognition/times_transformer
+   action_recognition/video_vision_transformer
+   action_recognition/video_masked_transformer
 
 
 .. toctree::

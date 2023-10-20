@@ -10,7 +10,8 @@ detector in OpenCV is its higher computational cost compared to the Haar cascade
 such as smartphones or embedded systems.
 
 
-Example:
+Example
+-------
 
 .. code-block:: python
 

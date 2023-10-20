@@ -8,7 +8,8 @@ data, which makes them more effective in dealing with complex tasks like face de
 the model is robust to variations in lighting, pose, and expression, making it suitable for real-world applications.
 
 
-Example:
+Example
+-------
 
 .. code-block:: python
 

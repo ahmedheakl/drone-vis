@@ -9,7 +9,8 @@ the MediaPipe Face Classifier is also computationally efficient. The model can b
 for real-world face detection applications. It has a major drawback though making it hard to use for drone applications, i.e. the model is only applicable for close-up faces; it almost
 does not detect faces for distant people.
 
-Example: 
+Example
+-------
 
 .. code-block:: python
 

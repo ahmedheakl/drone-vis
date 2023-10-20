@@ -10,7 +10,8 @@ classifier is computationally more efficient than the Haar classifier, making it
 an accuracy of 95.6\% with a false positive rate of 0.13. However, the HOG classifier also has some limitations. It requires a large amount of training data to achieve good performance, and the
 training process can be computationally expensive. Additionally, the classifier is sensitive to the choice of parameters, such as the size of the cells and the number of bins used in the histogram.
 
-Example:
+Example
+-------
 
 .. code-block:: python
 
