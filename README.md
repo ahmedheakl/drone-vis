@@ -26,7 +26,7 @@ Drone Vision (DroneVis) is a full compatible drone library to automate computer 
 You provide a wide variety of 20+ computer vision and recommends users to the best models in terms of accuracy and speed, whilst giving users the chance to use any model of their choice.
 
 <p align="center">
-  <img src="imgs/dronevis-models-comparison.png">
+  <img src="https://github.com/ahmedheakl/drone-vis/blob/master/imgs/dronevis-models-comparison.png?raw=true">
 </p>
 
 ### Drone Control
@@ -59,7 +59,7 @@ dronevis-gui # run library GUI
 Press the ``start`` button to start a demo drone simulation, and run your favourite algorithms with the ``stream`` button.
 
 <p align="center">
-<img src="imgs/dronevis-gui.jpeg" width=700>
+<img src="https://github.com/ahmedheakl/drone-vis/blob/master/imgs/dronevis-gui.jpeg" width=700>
 </p>
 
 You can control your drone with our ``CLI``:
@@ -68,7 +68,7 @@ dronevis
 ```
 
 <p align="center">
-<img src="imgs/dronevis-cli.png" width=400>
+<img src="https://github.com/ahmedheakl/drone-vis/blob/master/imgs/dronevis-cli.png" width=400>
 </p>
 
 ## Getting Started 
@@ -80,7 +80,7 @@ dronevis --help
 ```
 
 <p align="center">
-<img src="imgs/dronevis-cli-help.png" width=500>
+<img src="https://github.com/ahmedheakl/drone-vis/blob/master/imgs/dronevis-cli-help.png" width=500>
 </p>
 
 The default mode for running either the CLI or the GUI is the ``demo`` mode. You can alter the mode by providing "real" to ``--drone`` argument.
