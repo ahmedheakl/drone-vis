@@ -8,7 +8,7 @@
 
 Drone Vision (DroneVis) is a full compatible drone library to automate computer vision algorithms on parrot drones. You can read a detailed documentation of Drone Vision [docs](https://drone-vis.readthedocs.io/en/latest).
 
-**DroneVis** is a cutting-edge drone software library that has been specifically designed for use with the AR. Drone 2.0. It has been extensively tested both indoors and outdoors, and offers a wide range of features including adaptability in connecting to the drone, advanced computer vision algorithms, and a user-friendly interface. This makes it easy for users to take full advantage of the drone's capabilities and control it with simple commands.All of the implemented real-time data, inference, and detection achieve a minimum ``fps >= 4.5`` on an Intel core 8 CPU.
+**DroneVis** is a cutting-edge drone software library that has been specifically designed for use with the AR. Drone. It has been extensively tested both indoors and outdoors, and offers a wide range of features including adaptability in connecting to the drone, advanced computer vision algorithms, and 3 user-friendly interfaces. This makes it easy for users to take full advantage of the drone's capabilities and control it with simple commands. All of the implemented real-time data, inference, and detection achieve a minimum ``fps >= 4.5`` on an Intel core 8 CPU.
 
 ## Features
 - Unified state-of-the art computer vision algoritms
@@ -19,23 +19,35 @@ Drone Vision (DroneVis) is a full compatible drone library to automate computer 
 - Clean code
 - Multiple implementations for the same models
 - Logger with timestamps
-- Two UI for easier usage (GUI, CLI)
+- Three UI for easier usage (GUI, CLI, Gesture Recognition)
 
+### Computer Vision Models
 
+You provide a wide variety of 20+ computer vision and recommends users to the best models in terms of accuracy and speed, whilst giving users the chance to use any model of their choice.
 
-| Drone Control         | Computer Vision Models| Usage                 |   Implementation      |
-|-----------------------|-----------------------|-----------------------|-----------------------|
-| Right, Left           | Faster R-CNN          | Detection/Recognition | PyTorch               |
-| Up, Down              | CenterNet             | Detection/Recognition | MxNet                 |
-| Forward, Backward     | YOLO                  | Detection/Recognition | MxNet                 |
-| Takeoff, Land         | YOLOv5                | Detection/Recognition | PyTorch               |
-| Reset, Emergency      | SSD                   | Detection/Recognition | PyTorch               |
-| Rotate Left/Right     | CSRNet                | Crowd Counting        | PyTorch               |
-| Hover, Caliberate     | BlazeFace             | Face Detection        | MediaPipe             |
-| Camera Stream         | BlazePose             | Pose Estimation       | MediaPipe             |
-| Hand Gesture Control  | BlazePose             | Segmenation           | Mediapipe             |
+<p align="center">
+  <img src="imgs/dronevis-models-comparison.png">
+</p>
+
+### Drone Control
+
+- Right ➡️, Left :arrow_left:
+- Up ⬆️, Down :arrow_down:
+- Forward ▶️, Backward ◀️
+- Takeoff 🚀, Land 🛬
+- Reset 🔄, Emergency 🚨
+- Rotate Left ↩️ /Right :arrow_right_hook:
+- Hover 🔍, Calibrate 🔧
+- Camera Stream 📹/Record ⏺️
+- Hand Gesture Control 🖌️
+
 
 ## How to Install 
+
+<details>
+  <summary>Install PyTorch</summary>
+  You should consider installing the version of <a href="https://pytorch.org/get-started/previous-versions/">Pytorch</a> that corresponds to your cuda version.
+</details>
 
 You start controling your drone now with just two commands:
 
@@ -44,15 +56,10 @@ pip install dronevis # install the library
 dronevis-gui # run library GUI
 ```
 
-<p align="center">
-<img src="imgs/dronevis-gui.png" width=700>
-</p>
-
 Press the ``start`` button to start a demo drone simulation, and run your favourite algorithms with the ``stream`` button.
 
-
 <p align="center">
-<img src="imgs/dronevis-gui-demo.png" width=700>
+<img src="imgs/dronevis-gui.jpeg" width=700>
 </p>
 
 You can control your drone with our ``CLI``:
@@ -63,8 +70,6 @@ dronevis
 <p align="center">
 <img src="imgs/dronevis-cli.png" width=400>
 </p>
-
-> :warning: **If you are a Windows**: models implemented with Mxnet library are buggy.
 
 ## Getting Started 
 
@@ -102,10 +107,10 @@ To cite this repository:
 
 ```bibtex
 @software{drone-vis,
-  author  = {Ahmed Heakl, Abdallah-Elbarkokry, Fatma Youssef, Youssief Anas},
+  author  = {Ahmed Heakl, Fatma Youssef, Abdallah-Elbarkokry},
   title   = {Dronevis: Full compatible drone library to automate computer vision algorithms on parrot drones},
   year    = {2023},
   url     = {github.com/ahmedheakl/drone-vis},
-  version = {1.0.0}
+  version = {1.2.1}
 }
 ```

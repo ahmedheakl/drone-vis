@@ -26,28 +26,31 @@ Main Features
 - Clean code
 - Multiple implementations for the same models
 
-+-------------------+----------------------+----------------+
-| Drone Control     | Detection Models     | Human Counting |
-+===================+======================+================+
-| Right, Left       | Faster R-CNN         | CSRNet         |
-+-------------------+----------------------+----------------+
-| Up, Down          | CenterNet            | ...            |
-+-------------------+----------------------+----------------+
-| Forward, Back     | YOLO                 | ...            |
-+-------------------+----------------------+----------------+
-| Takeoff, Land     | Single Shot Detector | ...            |
-+-------------------+----------------------+----------------+
-| Reset, Emergency  | ...                  | ...            |
-+-------------------+----------------------+----------------+
-| Rotate Left/Right | ...                  | ...            |
-+-------------------+----------------------+----------------+
-| Hover, Caliberate | ...                  | ...            |
-+-------------------+----------------------+----------------+
+
+Computer Vision Models
+----------------------
 
 
-.. note::
 
-   This project is under active development.
+.. image:: dronevis-models-comparison.png
+  :width: 800
+  :alt: Comparison betweewn all models
+
+
+Drone Controls
+--------------
+The library supports all of the following drone controls. The drone can be controlled using the keyboard or the GUI.
+
+
+- Right ➡️, Left ⬅️
+- Up ⬆️, Down ⬇️
+- Forward ▶️, Backward ◀️
+- Takeoff 🚀, Land 🛬
+- Reset 🔄, Emergency 🚨
+- Rotate Left ↩️ /Right ↪️
+- Hover 🔍, Calibrate 🔧
+- Camera Stream 📹/Record ⏺️
+- Hand Gesture Control 🖌️
 
 
 .. toctree::
@@ -69,7 +72,7 @@ Main Features
 
 .. toctree::
    :maxdepth: 2
-   :caption: Detection
+   :caption: Object Detection
 
    detection/detect_algo
    detection/ssd
@@ -77,16 +80,52 @@ Main Features
    detection/fasterrcnn
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Pose Estimation and Segmentation
+   :maxdepth: 1
+   :caption: Instance Segmentation
 
-   pose/pose
+   segmentation/yolov8_segment
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Pose Estimation
+
+   pose/mediapipe
+   pose/yolov8_pose
 
 .. toctree::
    :maxdepth: 1
    :caption: Face Detection
 
-   face_detect/face_detect
+   face_detect/face_detection
+   face_detect/mediapipe_face_detection
+   face_detect/haar_face_detection
+   face_detect/hog_face_detection
+   face_detect/dlib_cnn_face_detection
+   face_detect/opencv_dnn_face_detection
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Crowd Counting
+
+   crowd_counting/mtl_counting.rst
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Depth Estimation
+
+   depth_estimation/glp_depth
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Action Recognition
+
+   action_recognition/action_recognition_models
+   action_recognition/times_transformer
+   action_recognition/video_vision_transformer
+   action_recognition/video_masked_transformer
+
 
 .. toctree::
    :maxdepth: 1
@@ -94,6 +133,7 @@ Main Features
 
    interfaces/gui
    interfaces/commandline
+   interfaces/gesture_control
 
 Indices and tables
 ==================

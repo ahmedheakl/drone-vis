@@ -3,15 +3,23 @@
 Detection Algorithms
 ====================
 
-Detection algorithms are the most frequenlty used in computer vision alogrithms generally, and in drones navigation specifically.
+Object detection is a fundamental task in computer vision, particularly in the context of Parrot drones. It involves the automatic identification
+and localization of multiple objects within images or video streams. By employing advanced algorithms and techniques, object detection enables Parrot
+drones to navigate and avoid obstacles autonomously. The significance of object detection lies in its wide range of applications, such as aerial surveillance,
+search and rescue operations, agriculture monitoring, and autonomous navigation in complex environments.
 Henceforth, the library comes in equipped with **state-of-the-art (SOTA) algorithms** along with different implementations: 
 
 .. _detectionimplement:
 
 - `Faster Region-based CNN (R-CNN) <https://arxiv.org/abs/1506.01497>`_ (PyTorch)
-- `CenterNet <https://arxiv.org/abs/1904.08189>`_ (Mxnet)
-- `You Only Look Once (YOLO) <https://arxiv.org/abs/1506.02640>`_ (Mxnet)
-- `Signle-Shot Detector (SSD) <https://arxiv.org/abs/1512.02325>`_ (PyTorch, Mxnet)
+- `You Only Look Once (YOLOv5) <https://docs.ultralytics.com/yolov5/>`_ (PyTorch)
+- `YOLOv8 <https://docs.ultralytics.com/>`_ (PyTorch)
+- `Signle-Shot Detector (SSD) <https://arxiv.org/abs/1512.02325>`_ (PyTorch)
+
+.. image:: detection_model_comparison.png
+  :width: 600
+  :alt: Comparison betweewn detection models inference
+
 
 Detection on Your Web Camera
 ----------------------------
