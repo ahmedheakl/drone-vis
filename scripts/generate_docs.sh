@@ -1,8 +1,7 @@
-#!usr/bin/bash 
-
+#!usr/bin/bash
 while true; do
     read -p "Which format you want to generate (html/pdf/all)?" choice
-    case $choice in 
+    case $choice in
         [html,h]* ) echo "Generating HTML docs ..." &&
                   echo "You'll find the generated HTML at docs/build/html/index.html" &&
                   cd docs && make html;;

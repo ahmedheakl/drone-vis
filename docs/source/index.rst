@@ -26,28 +26,31 @@ Main Features
 - Clean code
 - Multiple implementations for the same models
 
-+-------------------+----------------------+----------------+
-| Drone Control     | Detection Models     | Human Counting |
-+===================+======================+================+
-| Right, Left       | Faster R-CNN         | CSRNet         |
-+-------------------+----------------------+----------------+
-| Up, Down          | CenterNet            | ...            |
-+-------------------+----------------------+----------------+
-| Forward, Back     | YOLO                 | ...            |
-+-------------------+----------------------+----------------+
-| Takeoff, Land     | Single Shot Detector | ...            |
-+-------------------+----------------------+----------------+
-| Reset, Emergency  | ...                  | ...            |
-+-------------------+----------------------+----------------+
-| Rotate Left/Right | ...                  | ...            |
-+-------------------+----------------------+----------------+
-| Hover, Caliberate | ...                  | ...            |
-+-------------------+----------------------+----------------+
+
+Computer Vision Models
+----------------------
 
 
-.. note::
 
-   This project is under active development.
+.. image:: dronevis-models-comparison.png
+  :width: 800
+  :alt: Comparison betweewn all models
+
+
+Drone Controls
+--------------
+The library supports all of the following drone controls. The drone can be controlled using the keyboard or the GUI.
+
+
+- Right ➡️, Left ⬅️
+- Up ⬆️, Down ⬇️
+- Forward ▶️, Backward ◀️
+- Takeoff 🚀, Land 🛬
+- Reset 🔄, Emergency 🚨
+- Rotate Left ↩️ /Right ↪️
+- Hover 🔍, Calibrate 🔧
+- Camera Stream 📹/Record ⏺️
+- Hand Gesture Control 🖌️
 
 
 .. toctree::
@@ -69,7 +72,7 @@ Main Features
 
 .. toctree::
    :maxdepth: 2
-   :caption: Detection
+   :caption: Object Detection
 
    detection/detect_algo
    detection/ssd
@@ -78,7 +81,7 @@ Main Features
 
 .. toctree::
    :maxdepth: 2
-   :caption: Pose Estimation and Segmentation
+   :caption: Pose Estimation
 
    pose/pose
 
@@ -86,7 +89,13 @@ Main Features
    :maxdepth: 1
    :caption: Face Detection
 
-   face_detect/face_detect
+   face_detect/face_detection
+   face_detect/mediapipe_face_detection
+   face_detect/haar_face_detection
+   face_detect/hog_face_detection
+   face_detect/dlib_cnn_face_detection
+   face_detect/opencv_dnn_face_detection
+
 
 .. toctree::
    :maxdepth: 1
@@ -94,6 +103,7 @@ Main Features
 
    interfaces/gui
    interfaces/commandline
+   interfaces/gesture_control
 
 Indices and tables
 ==================

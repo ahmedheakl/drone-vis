@@ -4,26 +4,17 @@ Installation
 Prerequisites
 -------------
 
-DroneVis requires python 3.7+, PyTorch >= 1.13.0, TorchVision >= 0.14.0, and mxnet >= 1.9.0
+DroneVis requires python 3.7+, PyTorch >= 1.13.0, TorchVision >= 0.14.0
 
-Windows 10
-----------
 
-Currently, the library is **neighter tested nor built on Windows 10 platform**. There are two options available though:
+Linux, Windows, MacOs
+--------------------- 
 
-1. Use `WSL <https://learn.microsoft.com/en-us/windows/wsl/install>`_ to install Linux on Windows.
-2. Fetch our docker image from `DockerHub <https://hub.docker.com/>`_, and run it. 
-3. Create a `Docker <https://www.docker.com/>`_ container with *ubuntu >= 20.04*, and install our library.
+You need to install the PyTorch version that match your GPU capabilities. You can find the right version for your GPU `here <https://pytorch.org/get-started/locally/>`_. Also, the Pytorch version should match your cuda version, check it `here <https://pytorch.org/get-started/previous-versions/>`_.
 
-You can visit the section :ref:`docker <dockerinstall>` for more details.
 
-Linux
------
-
-The library is **only** heavily tested on ``Ubuntu >= 20.04``. 
-
-Creating a virtual env
-~~~~~~~~~~~~~~~~~~~~~~
+Creating a virtual env (Optional)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 On ubuntu `20.04` and python `3.8`:
 
@@ -55,13 +46,19 @@ To use DroneVis, you need to install it using pip:
 Development version
 -------------------
 
-To contribute to DroneVis, with support for running tests and building the documentation.
+To contribute to DroneVis, with support for running tests and building the documentation. 
 
 .. code-block:: console
 
     $ git clone https://github.com/ahmedheakl/drone-vis
     $ cd drone-vis
     $ pip install -e .[docs]
+
+Additionally, to have a comprehensive development environment, you can install the development dependencies:
+
+.. code-block:: console
+    
+    $ pip install -r requirements-dev.txt
 
 .. _dockerinstall:
 

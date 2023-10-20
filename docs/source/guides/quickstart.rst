@@ -27,7 +27,7 @@ You can *right-click* on any button to view its functionality. For example, here
 
 
 
-1. Command-Line Interface
+2. Command-Line Interface
 -------------------------
 
 If you are not a GUI fan, you can use the command-line to run library and connect to the drone by specifying some command-line arguments. 
@@ -37,6 +37,24 @@ If you are not a GUI fan, you can use the command-line to run library and connec
     (.dronevisvenv) $ dronevis   
 
 
+.. image:: dronevis-cli.png
+  :width: 500
+  :alt: Main CLI Window
+
+
 .. note::
 
-    The library is built with default configurations, however, you can change those configurations by incorporating your own `.config` files. 
+    The library is built with default configurations, however, you can change those configurations by running
+    
+    .. code-block:: console
+    
+        (.dronevisvenv) $ dronevis --help
+
+3. Hand Gesture Control
+-----------------------
+
+You can control the drone using hand gestures. We developed a model to detect actions from hand gestures and it is already incorporated on the GUI.
+
+.. image:: hand-gestures.png
+  :width: 700
+  :alt: Hand Gesture Control
