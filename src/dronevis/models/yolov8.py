@@ -9,7 +9,8 @@ from ultralytics import YOLO
 import cv2
 
 from dronevis.abstract.abstract_model import CVModel
-from dronevis.utils.general import write_fps
+from dronevis.utils.general import write_fps, download_file
+from dronevis.config.general import MODELS_URLS
 
 _LOG = logging.getLogger(__name__)
 
@@ -17,9 +18,11 @@ _LOG = logging.getLogger(__name__)
 class YOLOv8(CVModel):
     """YOLOv8 implementation with ultralytics model (inherits from CVModel)"""
 
-    def __init__(self, track: bool = False) -> None:
+    def __init__(self, track: bool = False, show_conf=True, show_labels=True) -> None:
         self.net: Optional[YOLO] = None
         self.track = track
+        self.show_conf = show_conf
+        self.show_labels = show_labels
 
     @abstractmethod
     def load_model(self, model_weights: str = "yolov8.pt"):
@@ -71,7 +74,7 @@ class YOLOv8(CVModel):
                 stream=False,
                 conf=confidence,
             )
-        return results[0].plot()
+        return results[0].plot(conf=self.show_conf, labels=self.show_labels)
 
     def detect_webcam(
         self,
@@ -146,3 +149,17 @@ class YOLOv8Pose(YOLOv8):
             Defaults to "yolov8-pose.pt".
         """
         self.net = YOLO(model_weights)
+
+
+class YOLOv8Faces(YOLOv8):
+    """Custom YOLOv8 for face detection"""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.show_conf = False
+        self.show_labels = False
+
+    def load_model(self, model_weights: str = "") -> None:
+        """Load model weights from google drive"""
+        model_weights = download_file(*MODELS_URLS["yolov8_faces"])
+        self.net = YOLO(model=model_weights)

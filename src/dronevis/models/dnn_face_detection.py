@@ -98,12 +98,14 @@ class DNNFaceDetection(CVModel):
         for i in range(detections.shape[2]):
             confidence = detections[0, 0, i, 2]
             if confidence > 0.5:
-                x1 = int(detections[0, 0, i, 3] * image.shape[1])
-                y1 = int(detections[0, 0, i, 4] * image.shape[0])
-                x2 = int(detections[0, 0, i, 5] * image.shape[1])
-                y2 = int(detections[0, 0, i, 6] * image.shape[0])
+                x1_cor = int(detections[0, 0, i, 3] * image.shape[1])
+                y1_cor = int(detections[0, 0, i, 4] * image.shape[0])
+                x2_cor = int(detections[0, 0, i, 5] * image.shape[1])
+                y2_cor = int(detections[0, 0, i, 6] * image.shape[0])
 
-                cv2.rectangle(image, (x1, y1), (x2, y2), green_color, thickness)
+                cv2.rectangle(
+                    image, (x1_cor, y1_cor), (x2_cor, y2_cor), green_color, thickness
+                )
 
         return image
 

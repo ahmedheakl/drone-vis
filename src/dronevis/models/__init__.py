@@ -6,7 +6,12 @@ from dronevis.models.pose_mediapipe import PoseSegEstimation
 from dronevis.models.ssd_torch import SSD
 from dronevis.models.yolov5_torch import YOLOv5
 from dronevis.models.gesture_recognition import GestureRecognition
-from dronevis.models.yolov8 import YOLOv8Detection, YOLOv8Segmentation, YOLOv8Pose
+from dronevis.models.yolov8 import (
+    YOLOv8Detection,
+    YOLOv8Segmentation,
+    YOLOv8Pose,
+    YOLOv8Faces,
+)
 from dronevis.models.depth_estimation import DepthEstimator
 from dronevis.models.action_recognition import ActionRecognizer
 from dronevis.models.croud_count import CrowdCounter
@@ -30,6 +35,7 @@ models_list = {
     "YOLOv8Pose": YOLOv8Pose,
     "YOLOv8Segment": YOLOv8Segmentation,
     "YOLOv8Track": YOLOv8Detection,
+    "YOLOv8Faces": YOLOv8Faces,
     "ActionGoogle": ActionRecognizer,
     "ActionFacebook": ActionRecognizer,
     "ActionMCG": ActionRecognizer,

@@ -71,8 +71,14 @@ class HaarFaceDetection(CVModel):
             minSize=self.min_size,
         )
 
-        for x, y, w, h in faces:
-            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        for x_cor, y_cor, width, height in faces:
+            cv2.rectangle(
+                image,
+                pt1=(x_cor, y_cor),
+                pt2=(x_cor + width, y_cor + height),
+                color=(0, 255, 0),
+                thickness=2,
+            )
 
         return image
 

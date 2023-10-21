@@ -52,6 +52,12 @@ MODELS_URLS = {
         "https://drive.google.com/uc?export=download&id=1ttZzN2x-DzkhuKDxZxEQtp5bu6794dWD",
         "mmod_human_face_detector.dat",
     ],
+    "yolov8_faces": [
+        "https://drive.google.com/uc?id=1MfCOhSYmHHXRWhGZH6u-xAiQisD9F042&export=download&confirm="
+        + "t&uuid=8baf402d-5bc7-48a9-b6df-2ed8dd50f9e1&at="
+        + "AB6BwCCFgCRFkCw8iTfnmslRsFvZ:1697889087054",
+        "yolov8-faces.pt",
+    ],
 }
 
 GESTURES_LABELS = {
