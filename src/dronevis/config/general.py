@@ -58,6 +58,11 @@ MODELS_URLS = {
         + "AB6BwCCFgCRFkCw8iTfnmslRsFvZ:1697889087054",
         "yolov8-faces.pt",
     ],
+    "yolop": [
+        "https://drive.google.com/uc?id=1AZu7JnRJ28UEcy9udF0zNb6wldspTUp5&export=download&confirm=t&"
+        + "uuid=50b58900-286e-4469-9c44-92e67030bfd7&at=AB6BwCCtjk0l4PXyD9FvwUXojvtR:1698573571180",
+        "yolop.zip",
+    ],
 }
 
 GESTURES_LABELS = {
