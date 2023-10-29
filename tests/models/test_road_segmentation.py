@@ -12,6 +12,7 @@ def test_init():
     assert model.net is None
 
 
+@pytest.mark.skip(reason="Not working properly with xdist plugin")
 def test_load_model():
     """Test model loading"""
     model = RoadSegmentation()
