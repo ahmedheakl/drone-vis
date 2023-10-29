@@ -1,3 +1,5 @@
 [run]
 omit = 
     src/dronevis/ui/*
+    src/dronevis/models/yolov5_torch.py
+    src/dronevis/main_gui.py

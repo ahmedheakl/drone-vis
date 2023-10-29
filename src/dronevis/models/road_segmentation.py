@@ -1,13 +1,16 @@
 """Implementation of road segmentation and lane detection models"""
 from typing import Optional
 import time
+import zipfile
+import os
 
 import torch
 import numpy as np
 import cv2
 
 from dronevis.abstract.abstract_model import CVModel
-from dronevis.utils.general import device, write_fps
+from dronevis.utils.general import device, write_fps, download_file
+from dronevis.config.general import MODELS_URLS
 
 
 class YOLOP(CVModel):
@@ -21,13 +24,28 @@ class YOLOP(CVModel):
         self.net: Optional[torch.nn.Module] = None
         self.size = 640
 
-    def load_model(self, weights_name: str = "hustvl/yolop") -> None:
+    def load_model(self) -> None:
         """Load model weights from torch hub
 
         Args:
             weights_name (str, optional): Weights name on torch hub. Defaults to 'hustvl/yolop'.
         """
-        self.net = torch.hub.load(weights_name, "yolop", pretrained=True)
+        if self.net is not None:
+            return
+
+        path_to_zip = download_file(*MODELS_URLS["yolop"])
+        path_to_cache = path_to_zip.replace(".zip", "")
+        with zipfile.ZipFile(path_to_zip, "r") as zip_ref:
+            zip_ref.extractall(path_to_cache)
+
+        path_to_model = os.path.join(path_to_cache, "hustvl_yolop_main")
+
+        self.net = torch.hub.load(
+            repo_or_dir=path_to_model,
+            model="yolop",
+            source="local",
+            pretrained=True,
+        )
         assert self.net, "Model not loaded properly"
         self.net.to(device=device())
 

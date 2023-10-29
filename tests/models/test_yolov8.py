@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 import cv2
 
-from dronevis.models import YOLOv8Detection, YOLOv8Pose, YOLOv8Segmentation
+from dronevis.models import YOLOv8Detection, YOLOv8Pose, YOLOv8Segmentation, YOLOv8Faces
 
 
 @pytest.mark.parametrize(
@@ -93,7 +93,7 @@ def test_predict_detection_track(mocker):
     model = YOLOv8Detection(track=True)
     net_mocker = mocker.Mock()
     results_mocker = mocker.Mock()
-    results_mocker.plot = lambda: image
+    results_mocker.plot = lambda conf, labels: image
     net_mocker.track = mocker.Mock(return_value=[results_mocker])
     model.net = net_mocker
 
@@ -139,3 +139,13 @@ def test_detect_webcam(monkeypatch: pytest.MonkeyPatch, mocker):
     monkeypatch.setattr(mocked, "isOpened", lambda: False)
     model.detect_webcam()
     assert imshow_mock.call_count == 1
+
+
+def test_load_faces():
+    """Test load faces"""
+    model = YOLOv8Faces()
+    assert not model.show_conf
+    assert not model.show_labels
+
+    model.load_model()
+    assert model.net

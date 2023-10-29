@@ -1,9 +1,15 @@
 """Test gesture recongnition model"""
+import os
+
 import pytest
 import numpy as np
 import cv2
+from PIL import Image
 
 from dronevis.models.gesture_recognition import GestureRecognition
+
+TEST_DATA_PATH = os.getenv("TEST_DATA_PATH", "")
+TEST_PHOTO = TEST_DATA_PATH + "/human_photo.jpg"
 
 
 @pytest.fixture
@@ -80,3 +86,13 @@ def test_detect_webcam(monkeypatch, mocker):
     args, _ = imshow_mock.call_args
     assert args[1].shape == (250, 250, 3)
     assert args[0].lower() == "Gesture Recognition".lower()
+
+
+def test_predict_with_hands():
+    """Test predict with hands"""
+    model = GestureRecognition()
+    model.load_model()
+    image = np.array(Image.open(TEST_PHOTO).convert("RGB"), dtype=np.uint8)
+    prediction = model.predict(image)
+    assert prediction.shape == (250, 250, 3)
+    assert prediction != image
