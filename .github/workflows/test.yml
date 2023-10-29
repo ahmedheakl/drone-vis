@@ -1,7 +1,7 @@
 name: test
 
 on:
-  push:
+  branch: master
 
 permissions:
   contents: read

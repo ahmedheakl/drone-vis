@@ -1,8 +1,14 @@
 """Testing pose estimation module"""
+import os
+from PIL import Image
+
 import pytest
 import numpy as np
 
 from dronevis.models.pose_mediapipe import PoseSegEstimation, cv2
+
+TEST_DATA_PATH = os.getenv("TEST_DATA_PATH", "")
+TEST_PHOTO = TEST_DATA_PATH + "/human_photo.jpg"
 
 
 @pytest.fixture
@@ -68,3 +74,49 @@ def test_detect_webcam(monkeypatch, mocker):
     args, _ = imshow_mock.call_args
     assert args[1].shape == (100, 100, 3)
     assert args[0].lower() == "Segmented Pose".lower()
+
+
+def test_predict_pose():
+    """Test predict pose"""
+    model = PoseSegEstimation()
+    model.load_model()
+    image = np.array(Image.open(TEST_PHOTO).convert("RGB"), dtype=np.uint8)
+    prediction = model.predict(image)
+    assert prediction.shape == image.shape
+    assert np.not_equal(prediction, image).any()
+
+
+def test_predict_seg():
+    """Test predict seg"""
+    model = PoseSegEstimation(is_seg=True)
+    model.load_model()
+    image = np.array(Image.open(TEST_PHOTO).convert("RGB"), dtype=np.uint8)
+    prediction = model.predict(image)
+    assert prediction.shape == image.shape
+    assert np.not_equal(prediction, image).any()
+
+
+def test_predict_seg_pose():
+    """Test predict seg pose"""
+    model = PoseSegEstimation(is_seg_pose=True)
+    model.load_model()
+    image = np.array(Image.open(TEST_PHOTO).convert("RGB"), dtype=np.uint8)
+    prediction = model.predict(image)
+    assert prediction.shape == image.shape
+    assert np.not_equal(prediction, image).any()
+
+
+def test_predict_all_formats():
+    """Test predict all formats"""
+    model = PoseSegEstimation()
+    model.load_model()
+    image = np.array(Image.open(TEST_PHOTO).convert("RGB"), dtype=np.uint8)
+    pose, seg, pose_seg = model.predict(image, all_formats=True)
+    assert pose.shape == image.shape
+    assert np.not_equal(pose, image).any()
+
+    assert seg.shape == image.shape
+    assert np.not_equal(seg, image).any()
+
+    assert pose_seg.shape == image.shape
+    assert np.not_equal(pose_seg, image).any()

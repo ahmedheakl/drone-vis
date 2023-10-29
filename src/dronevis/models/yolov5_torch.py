@@ -1,9 +1,7 @@
 """Implementation of CVModel for YOLOv5 used for object detection"""
 from typing import Union
-import os
 import time
 import logging
-import getpass
 import torch
 import cv2
 import numpy as np
@@ -20,10 +18,7 @@ class YOLOv5(CVModel):
     For more details see `YOLOv5 <https://pytorch.org/hub/ultralytics_yolov5>`_.
     """
 
-    local_name = "ultralytics_yolov5_master"
     remote_name = "ultralytics/yolov5"
-    model_local_path = f"/home/{getpass.getuser()}/.cache/torch/hub/{local_name}"
-    model_source = "local"
     model_name = "yolov5s"
 
     def __init__(self) -> None:
@@ -33,14 +28,7 @@ class YOLOv5(CVModel):
     def load_model(self) -> None:
         """Load model from PyTorchHub"""
         _LOG.info("Loading YOLOv5 Torch model ...")
-        if os.path.exists(self.model_local_path):
-            self.net = torch.hub.load(
-                self.model_local_path,
-                model=self.model_name,
-                source=self.model_source,
-            )
-        else:
-            self.net = torch.hub.load(self.remote_name, self.model_name)
+        self.net = torch.hub.load(self.remote_name, self.model_name)
         _LOG.info("Loaded YOLOv5 Torch model")
 
     def transform_img(self, image: np.ndarray) -> np.ndarray:

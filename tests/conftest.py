@@ -14,6 +14,7 @@ URL_NAME_DICT = {
     "https://drive.google.com/file/d/1o1LQoiOQ_l6iSJ91hVXPJvqEhp1gB-vJ/view?usp=sharing": "human_photo.jpg",
     "https://drive.google.com/file/d/15cvqF5FuWliuRey4b64Fdh-ewCZ0K7yu/view?usp=sharing": "black_photo.jpg",
     "https://drive.google.com/file/d/1jo3vjs_Lbw6KFVNf6V35IwiTKsp1gvmU/view?usp=sharing": "30fps_image.png",
+    "https://drive.google.com/file/d/1XiXKr9j9VvaYgrHKVgdi0LtTr5H6GO0V/view?usp=sharing": "human_face.png",
 }
 
 TEST_DATA_FOLDER = "test_data"

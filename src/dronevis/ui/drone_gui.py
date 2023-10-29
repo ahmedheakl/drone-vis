@@ -102,6 +102,7 @@ class DroneVisGui:
         # attributes initializations
         self.opt = GUIOpt()
         self.init_frames()
+        self.connect_key_passes()
         self.gesture_thread: Optional[GestureThread] = None
         self.is_crowdcount = False
         self.crowd_model = CrowdCounter()
@@ -192,6 +193,19 @@ class DroneVisGui:
 
         # recursive call to the plot function to run each 51 ms
         self.opt.plot_job = self.window.after(ms=51, func=self.on_plot)
+
+    def connect_key_passes(self) -> None:
+        """Connect keypasses to actions"""
+        self.window.bind("<Up>", lambda _: self.drone.forward())
+        self.window.bind("<Down>", lambda _: self.drone.backward())
+        self.window.bind("<Right>", lambda _: self.drone.right())
+        self.window.bind("<Left>", lambda _: self.drone.left())
+        self.window.bind("<space>", lambda _: self.drone.hover())
+
+        self.window.bind("<w>", lambda _: self.drone.upward())
+        self.window.bind("<s>", lambda _: self.drone.downward())
+        self.window.bind("<e>", lambda _: self.drone.takeoff())
+        self.window.bind("<r>", lambda _: self.drone.land())
 
     # pylint: disable=too-many-statements,too-many-locals
     def init_frames(self):
