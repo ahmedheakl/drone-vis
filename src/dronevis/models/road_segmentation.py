@@ -27,7 +27,12 @@ class YOLOP(CVModel):
         Args:
             weights_name (str, optional): Weights name on torch hub. Defaults to 'hustvl/yolop'.
         """
-        self.net = torch.hub.load(weights_name, "yolop", pretrained=True)
+        self.net = torch.hub.load(
+            repo_or_dir=weights_name,
+            model="yolop",
+            pretrained=True,
+            trust_repo=True,
+        )
         assert self.net, "Model not loaded properly"
         self.net.to(device=device())
 
