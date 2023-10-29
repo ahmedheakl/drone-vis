@@ -6,13 +6,14 @@ import cv2
 from dronevis.models import RoadSegmentation
 
 
+@pytest.mark.order(2)
 def test_init():
     """Test initailization"""
     model = RoadSegmentation()
     assert model.net is None
 
 
-@pytest.mark.skip(reason="Not working properly with xdist plugin")
+@pytest.mark.order(1)
 def test_load_model():
     """Test model loading"""
     model = RoadSegmentation()
@@ -20,6 +21,7 @@ def test_load_model():
     assert model.net
 
 
+@pytest.mark.order(3)
 def test_transform_image():
     """Test transform_img"""
     model = RoadSegmentation()
@@ -28,6 +30,7 @@ def test_transform_image():
     assert processed_image != image
 
 
+@pytest.mark.order(4)
 def test_predict():
     """Test predict"""
     model = RoadSegmentation()
@@ -37,6 +40,7 @@ def test_predict():
     assert prediction.shape == (model.size, model.size, 3)
 
 
+@pytest.mark.order(5)
 def test_predict_with_unloaded_model():
     """Test predict with unloaded model"""
     model = RoadSegmentation()
@@ -47,6 +51,7 @@ def test_predict_with_unloaded_model():
     assert prediction.shape == (model.size, model.size, 3)
 
 
+@pytest.mark.order(6)
 def test_detect_webcam(monkeypatch: pytest.MonkeyPatch, mocker):
     """Test webcam detection"""
     mocked = mocker.Mock()

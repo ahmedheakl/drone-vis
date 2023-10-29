@@ -35,10 +35,10 @@ class YOLOP(CVModel):
 
         path_to_zip = download_file(*MODELS_URLS["yolop"])
         path_to_cache = path_to_zip.replace(".zip", "")
-        with zipfile.ZipFile(path_to_zip, "r") as zip_ref:
-            zip_ref.extractall(path_to_cache)
-
         path_to_model = os.path.join(path_to_cache, "hustvl_yolop_main")
+        if not os.path.exists(path_to_cache):
+            with zipfile.ZipFile(path_to_zip, "r") as zip_ref:
+                zip_ref.extractall(path_to_cache)
 
         self.net = torch.hub.load(
             repo_or_dir=path_to_model,
