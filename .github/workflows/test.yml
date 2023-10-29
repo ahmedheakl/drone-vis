@@ -1,7 +1,9 @@
 name: test
 
 on:
-  branch: master
+  push:
+    branches:
+      - master
 
 permissions:
   contents: read
@@ -19,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 pytest pytest-cov pytest-mock
+          pip install flake8 pytest pytest-cov pytest-mock pytest-xdist
           pip install -e .
       - name: Lint with flake8
         run: |
@@ -27,7 +29,7 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Run tests and collect coverage
-        run: pytest --cov=src/dronevis .
+        run: pytest --cov=src/dronevis tests -n 8
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
