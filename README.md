@@ -4,6 +4,7 @@
 [![Documentation Status](https://readthedocs.org/projects/drone-vis/badge/?version=latest)](https://drone-vis.readthedocs.io/) ![coverage report](https://codecov.io/github/ahmedheakl/drone-vis/branch/master/graph/badge.svg)
 [![codestyle](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 ![Version](https://badge.fury.io/py/dronevis.svg)
+[![arXiv](https://img.shields.io/badge/arXiv-2406.18120-b31b1b.svg)](https://arxiv.org/abs/2406.00447)
 # DroneVision
 
 Drone Vision (DroneVis) is a full compatible drone library to automate computer vision algorithms on parrot drones. You can read a detailed documentation of Drone Vision [docs](https://drone-vis.readthedocs.io/en/latest).
